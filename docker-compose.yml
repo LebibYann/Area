@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "8080:8080"
+
+  client_mobile:
+    build: ./mobile
+    volumes:
+      - shared-volume:/app/shared
+
+  client_web:
+    build: ./web
+    ports:
+      - "8081:8081"
+    volumes:
+      - shared-volume:/app/shared
+    depends_on:
+      - server
+      - client_mobile
+
+volumes:
+  shared-volume:
