@@ -14,7 +14,7 @@ similar to the [IFTTT](https://ifttt.com/) service and/or the
  - A web clienr to interact with the application server from a web browser
  - A mobile client to interact with the application server from a mobile device
 
-# Summary
+## Summary
 
 * [Description](#description)
 * [Summary](#summary)
@@ -22,11 +22,11 @@ similar to the [IFTTT](https://ifttt.com/) service and/or the
 * [Built With](#built-with)
 * [Usage](#usage)
    * [Pre-requisites](#server)
-   * [Build](#client)
-   * [Run](#client)
-   * [Stop](#client)
+   * [Build](#build)
+   * [Run](#run)
+   * [Stop](#stop)
 * [Contributing](#contributing)
-* [Developers Documentation](#developers-documentation)
+* [Documentation](#documentation)
 
 ## Context
 
@@ -37,14 +37,14 @@ The web client will be written in TypeScript and will use the React framework.
 
 The mobile client will be written in Dart and will use the Flutter framework.
 
-# Our Team
+## Our Team
 
 * Enzo PFEIFFER <enzo.pfeiffer@epitech.eu>
 * Valentin MAUREL <valentin1.maurel@epitech.eu>
 * Joseph SUSANYAN <joseph.susanyan@epitech.eu>
 * Yann LEBIB <yann.lebib@epitech.eu>
 
-# Built With
+## Built With
 
 * Docker ![C++](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)  
 * React ![CMake](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)  
@@ -85,7 +85,7 @@ docker-compose down
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
-# Documentation
+## Documentation
 
 You can find the developers documentation [in the wiki of the repository](https://github.com/EpitechPromo2026/B-DEV-500-PAR-5-2-area-enzo.pfeiffer.git/wiki)
 
