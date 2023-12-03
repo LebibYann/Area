@@ -11,7 +11,7 @@ similar to the [IFTTT](https://ifttt.com/) service and/or the
 [Zapier](https://zapier.com/) service.
 
  - An application server
- - A web clienr to interact with the application server from a web browser
+ - A web client to interact with the application server from a web browser
  - A mobile client to interact with the application server from a mobile device
 
 ## Summary
