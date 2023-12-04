@@ -1,7 +1,7 @@
 # Dockerfile for the ReactTS web app
 
 # Base image
-FROM node:20
+FROM node
 
 # Create app directory
 WORKDIR /usr/src/app
