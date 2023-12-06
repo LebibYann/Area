@@ -20,6 +20,6 @@ services:
     depends_on:
       - server
       - client_mobile
-
+    
 volumes:
   shared-volume:
