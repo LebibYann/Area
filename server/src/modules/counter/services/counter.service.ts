@@ -11,9 +11,16 @@ export class CounterService {
   ) {}
 
   async incrementCounter(): Promise<number> {
-    let counter = await this.counterRepository.findOneBy({id: 1});
+    console.log('incrementCounter');
+    let counter = null;
+    try {
+      counter = await this.counterRepository.findOneBy({ id: 1 });
+    } catch (e) {
+      console.log(e);
+    }
     if (!counter) {
       counter = this.counterRepository.create();
+      counter.count = 0;
     }
     counter.count += 1;
     await this.counterRepository.save(counter);
