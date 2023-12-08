@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/pages/home/my_area.dart';
+import 'package:mobile/pages/home/explore.dart';
+import 'package:mobile/pages/home/create.dart';
+import 'package:mobile/pages/home/activity.dart';
+import 'package:mobile/pages/home/profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -48,7 +53,7 @@ class _HomePageState extends State<HomePage> {
             label: 'Profile',
           ),
         ],
-        unselectedLabelStyle: const TextStyle(color: Colors.black),
+        selectedItemColor: Colors.black,
       ),
     );
   }
@@ -57,29 +62,19 @@ class _HomePageState extends State<HomePage> {
     switch (index) {
       case 0:
         // Page pour 'My AREA'
-        return const Center(
-          child: Text('My AREA Page'),
-        );
+        return const MyAreaPage();
       case 1:
         // Page pour 'Explore'
-        return const Center(
-          child: Text('Explore Page'),
-        );
+        return const ExplorePage();
       case 2:
         // Page pour 'Create'
-        return const Center(
-          child: Text('Create Page'),
-        );
+        return const CreatePage();
       case 3:
         // Page pour 'Activity'
-        return const Center(
-          child: Text('Activity Page'),
-        );
+        return const ActivityPage();
       case 4:
         // Page pour 'Profile'
-        return const Center(
-          child: Text('Profile Page'),
-        );
+        return const ProfilePage();
       default:
         return Container();
     }
