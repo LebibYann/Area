@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AboutModule } from './modules/about/about.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CounterModule } from './modules/counter/counter.module';
 
@@ -16,6 +17,7 @@ import { CounterModule } from './modules/counter/counter.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    AboutModule,
     CounterModule,
   ],
   controllers: [AppController],
