@@ -18,7 +18,6 @@ import { UsersModule } from './modules/users/users.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    CounterModule,
     AboutModule,
     UsersModule
   ],
