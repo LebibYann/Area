@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AboutModule } from './modules/about/about.module';
 import { CounterModule } from './modules/counter/counter.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { CounterModule } from './modules/counter/counter.module';
       synchronize: true,
     }),
     CounterModule,
+    AboutModule
   ],
   controllers: [AppController],
   providers: [AppService],
