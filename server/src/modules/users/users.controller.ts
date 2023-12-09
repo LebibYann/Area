@@ -3,12 +3,13 @@ import {
     Post,
     Get,
     Body,
-    HttpCode,
     HttpStatus,
     Param,
     Delete,
-    Patch
+    Patch,
+    Res
 } from '@nestjs/common';
+import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { User } from './users.entity';
@@ -20,14 +21,19 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @Post()
-    @HttpCode(HttpStatus.CREATED)
+    /* @Post()
     @ApiOperation({ summary: 'Create user' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'The user has been successfully created.'})
     @ApiResponse({ status: HttpStatus.CONFLICT, description: 'The email is already taken.'})
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'The email or password is invalid.'})
-    async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-        return this.usersService.create(createUserDto);
+    async create(@Body() createUserDto: CreateUserDto, @Res() res: Response): Promise<User> {
+        const user = await this.usersService.findOneByEmail(createUserDto.email);
+        if (user) {
+            res.status(HttpStatus.CONFLICT).send('The email is already taken.');
+        }
+        const newUser = await this.usersService.create(createUserDto);
+        res.status(HttpStatus.CREATED).send(newUser);
+        return newUser;
     }
 
     @Get()
@@ -67,4 +73,5 @@ export class UsersController {
     async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<void> {
         return this.usersService.update(id, updateUserDto);
     }
+     */
 }

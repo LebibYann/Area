@@ -1,13 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { AboutModule } from './modules/about/about.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CounterModule } from './modules/counter/counter.module';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql', // docker-compose.yml
       host: 'db', // docker-compose.yml
@@ -19,7 +24,8 @@ import { UsersModule } from './modules/users/users.module';
       synchronize: true,
     }),
     AboutModule,
-    UsersModule
+    UsersModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
