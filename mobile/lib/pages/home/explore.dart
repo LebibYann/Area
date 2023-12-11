@@ -1,77 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/pages/AREAS/instagram.dart';
 
 class ExplorePage extends StatelessWidget {
-  const ExplorePage({Key? key}) : super(key: key);
+  ExplorePage({Key? key}) : super(key: key);
+  final List<String> areaNames = ['instagram', 'facebook', 'discord', 'spotify', 'gdrive', 'gmail'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "All (0)",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('AREAS'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Divider(
-            height: 20,
-            indent: 20,
-            endIndent: 20,
-            color: Colors.grey,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              margin: const EdgeInsets.only(top: 20.0),
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(13.0),
-                color: Colors.black,
-              ),
-              child: const Text(
-                'Save time and money by making the internet work for you! We believe you might like...',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+        ),
+        itemCount: areaNames.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              if (areaNames[index] == 'instagram') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const InstagramAREA()),
+                );
+              }
+            },
+            child: Card(
+              child: Image.asset('assets/AREA/${areaNames[index]}.png'),
             ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-            child: InkWell(
-              onTap: () {
-                print('You want to create your applet');
-              },
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(13.0),
-                  color: Colors.black,
-                ),
-                child: const Text(
-                  'Create your applet',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

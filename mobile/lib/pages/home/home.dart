@@ -60,19 +60,14 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPage(int index) {
     switch (index) {
       case 0:
-        // Page pour 'My AREA'
         return const MyAreaPage();
       case 1:
-        // Page pour 'Explore'
-        return const ExplorePage();
+        return ExplorePage();
       case 2:
-        // Page pour 'Create'
         return const CreatePage();
       case 3:
-        // Page pour 'Activity'
         return const ActivityPage();
       case 4:
-        // Page pour 'Profile'
         return const ProfilePage();
       default:
         return Container();
