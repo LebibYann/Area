@@ -1,0 +1,78 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    align-items: center;
+    margin-top: 200px;
+    background-color: #fff;
+    padding-bottom: 30px;
+    max-width: 36em;
+    margin: 2em auto 4em;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    text-align: center;
+    background-color: #fff;
+    max-width: 27em;
+}
+
+.form-title {
+    font-size: 3.0rem;
+    font-weight: 800;
+    line-height: 3rem;
+}
+
+.form-input {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    background: #fff;
+}
+
+.form-input input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #222;
+    font-size: 19px;
+    width: 100%;
+    border: 0.25em solid #eee;
+    border-radius: 0.5em;
+    padding: 0.5em 0.75em;
+    font-weight: 700;
+    font-size: 1.3em;
+}
+
+.form-input input:focus {
+    border-color: #222;
+}
+
+.form-submit input{
+    width: 100%;
+    height: 4em;
+    display: inline-flex;
+    -moz-justify-content: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 2.4rem;
+    border-radius: 5rem;
+    color: #fff;
+    background-color: #222;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.form-submit input:hover {
+    opacity: 0.95;
+}
+
+.form-submit input:active {
+    opacity: 0.90;
+}

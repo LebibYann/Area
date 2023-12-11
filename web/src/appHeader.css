@@ -1,0 +1,18 @@
+
+@media (min-width: 724px) and (min-width: 1025px) 
+{
+    header.unified-header {
+        margin-right: 1em;
+    }
+}
+
+header.unified-header {
+    width: 100%;
+    font-weight: 700;
+    line-height: 1;
+    z-index: 1000;
+}
+
+header {
+    display: block;
+}
