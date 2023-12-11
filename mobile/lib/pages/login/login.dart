@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:mobile/pages/home/home.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPage createState() => _LoginPage();
+}
+
+class _LoginPage extends State<LoginPage> {
+
+final TextEditingController _emailTEC = TextEditingController();
+final TextEditingController _passwordTEC = TextEditingController();
+
+postAuth(String mail, String password)async{
+  try{
+    var responce = await http.post(Uri.parse("http://localhost:8080/auth/login"),
+    body: {
+      "email": mail,
+      "password": password
+    });
+    print(mail);
+    print(password);
+    print(responce.body);
+  }catch(e){
+    print(e);
+  }  
+}
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +48,7 @@ class LoginPage extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               child: TextFormField(
+                controller: _emailTEC,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(
@@ -34,6 +60,7 @@ class LoginPage extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               child: TextFormField(
+                controller: _passwordTEC,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(
@@ -45,12 +72,12 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-              },
+              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text), //{
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => const HomePage()),
+              //   );
+              // },
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
@@ -64,12 +91,12 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-              },
+              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text), //{
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => const HomePage()),
+              //   );
+              // },
               style: TextButton.styleFrom(
                 primary: Colors.black,
               ),
