@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as requestIp from 'request-ip';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.set('trust proxy', true);
