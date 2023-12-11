@@ -23,7 +23,7 @@ const Register = (): JSX.Element => {
     return (
         <section className='login-container'>
             <h2 className='form-title'>
-                Sign in
+                Sign up
             </h2>
             <div className='form-container'>
                 <div className='form-input'>
