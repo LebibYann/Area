@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobile/pages/AREAS/instagram.dart';
 import 'package:mobile/pages/AREAS/facebook.dart';
 import 'package:mobile/pages/AREAS/discord.dart';
+import 'package:mobile/pages/AREAS/spotify.dart';
+import 'package:mobile/pages/AREAS/gdrive.dart';
+import 'package:mobile/pages/AREAS/gmail.dart';
 
 class ExplorePage extends StatelessWidget {
   ExplorePage({Key? key}) : super(key: key);
@@ -37,6 +40,21 @@ class ExplorePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const DiscordAREA()),
+                );
+              } else if(areaNames[index] == 'spotify') {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SpotifyAREA()),
+                );
+              } else if(areaNames[index] == 'gdrive') {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GdriveAREA()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GmailAREA()),
                 );
               }
             },
