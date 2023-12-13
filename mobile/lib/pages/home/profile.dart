@@ -72,6 +72,7 @@ class ProfilePage extends StatelessWidget {
       'Display',
       'Sync options',
       'Evaluate IFTTT',
+      'Sign out',
     ];
 
     return ListView.separated(

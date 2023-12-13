@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
@@ -127,7 +128,7 @@ postAuth(String mail, String password)async{
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => launchURL(url),
+              onPressed: () => nav(),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
