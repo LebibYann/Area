@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+
 import 'package:mobile/pages/home/home.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,6 +16,37 @@ class _LoginPage extends State<LoginPage> {
 
 final TextEditingController _emailTEC = TextEditingController();
 final TextEditingController _passwordTEC = TextEditingController();
+final Uri url = Uri.parse('https://discord.com/api/oauth2/authorize?client_id=1183869804822671380&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8083%2Fdiscord%2Fcallback&scope=identify');
+
+void handleCallback() {
+  HttpServer.bind('127.0.0.1', 8083).then((server) {
+    server.listen((HttpRequest request) async {
+      String authorizationCode = request.uri.queryParameters['code'] ?? '';
+      await server.close();
+      print('Authorization Code: $authorizationCode');
+    });
+  });
+}
+
+launchURL(Uri url) async {
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    print ("Could not launch $url");
+  }
+}
+
+discordAuth() async {
+  launchURL(url);
+  handleCallback();
+}
+
+nav() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const HomePage()),
+  );
+}
 
 postAuth(String mail, String password)async{
   try{
@@ -21,9 +55,8 @@ postAuth(String mail, String password)async{
       "email": mail,
       "password": password
     });
-    print(mail);
-    print(password);
     print(responce.body);
+    nav();
   }catch(e){
     print(e);
   }  
@@ -72,12 +105,7 @@ postAuth(String mail, String password)async{
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text), //{
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => const HomePage()),
-              //   );
-              // },
+              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
@@ -91,12 +119,7 @@ postAuth(String mail, String password)async{
               ),
             ),
             TextButton(
-              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text), //{
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => const HomePage()),
-              //   );
-              // },
+              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text), //ici mettre la fonction signup
               style: TextButton.styleFrom(
                 primary: Colors.black,
               ),
@@ -104,19 +127,13 @@ postAuth(String mail, String password)async{
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-              },
+              onPressed: () => launchURL(url),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                // minimumSize: const Size(50, 20), ca ne fonctionne pas
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -134,12 +151,7 @@ postAuth(String mail, String password)async{
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-              },
+              onPressed: () => discordAuth(),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
@@ -151,12 +163,12 @@ postAuth(String mail, String password)async{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.facebook,
+                    Icons.discord,
                     color: Colors.white,
                   ),
                   SizedBox(width: 8.0),
                   Text(
-                    'Login with Facebook',
+                    'Login with Discord',
                     style: TextStyle(fontSize: 20.0),
                   ),
                 ],
