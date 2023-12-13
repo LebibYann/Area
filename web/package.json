@@ -26,7 +26,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",
     "sort-by": "^1.2.0",
-    "tss-react": "^4.9.3"
+    "tss-react": "^4.9.3",
+    "use-local-storage-state": "^19.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",

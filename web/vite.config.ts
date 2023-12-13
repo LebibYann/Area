@@ -10,6 +10,6 @@ export default defineConfig({
     },
     server: {
         host: 'localhost',
-        port: 8081
+        port: 8081,
     }
 })

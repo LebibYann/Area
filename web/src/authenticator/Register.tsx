@@ -18,6 +18,27 @@ const Register = (): JSX.Element => {
     }
 
     const handleInscription = (): void => {
+        fetch("http://localhost:8080/auth/register", {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(
+                {
+                  "email": form.email,
+                  "password": form.password
+                }),
+            })
+              .then((response) => {
+                
+                console.log(response.status);
+                return (response.json());
+              })
+              .then((data) => {
+                console.log(data);
+            })
+                .catch((error) => console.log(error));    
     }
 
     return (
