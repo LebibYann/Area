@@ -9,12 +9,12 @@ import 'package:mobile/pages/AREAS/gmail.dart';
 class ExplorePage extends StatelessWidget {
   ExplorePage({Key? key}) : super(key: key);
   final List<String> areaNames = [
-    'Instagram',
-    'Facebook',
-    'Discord',
-    'Spotify',
-    'Gdrive',
-    'Gmail'
+    'instagram',
+    'facebook',
+    'discord',
+    'spotify',
+    'gdrive',
+    'gmail'
   ];
 
   @override
@@ -24,7 +24,9 @@ class ExplorePage extends StatelessWidget {
         title: const Text('AREAS',
           style: TextStyle(fontWeight: FontWeight.bold),),
         centerTitle: true,
+
       ),
+
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
@@ -34,9 +36,11 @@ class ExplorePage extends StatelessWidget {
         itemCount: areaNames.length,
         itemBuilder: (context, index) {
           return Column(
+
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+
               Text(
                 areaNames[index],
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -96,4 +100,3 @@ class ExplorePage extends StatelessWidget {
     );
   }
 }
-
