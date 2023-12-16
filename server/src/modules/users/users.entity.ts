@@ -9,16 +9,9 @@ export class User {
     @Column({ unique: true })
     email: string;
 
-    @Column()
-    password: string;
-
     @CreateDateColumn()
     created: Date;
 
     @UpdateDateColumn()
     updated: Date;
-
-    async validatePassword(password: string): Promise<boolean> {
-        return await bcrypt.compare(password, this.password);
-    }
 }

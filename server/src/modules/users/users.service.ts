@@ -5,17 +5,20 @@ import { User } from './users.entity';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import * as bcrypt from 'bcrypt';
+import { CredentialService } from '../auth/services/credential.service';
+import { TokenService } from '../auth/services/token.service';
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
+        private credentialService: CredentialService,
+        private tokenService: TokenService,
     ) {}
 
-    async create(userData: CreateUserDto): Promise<User> {
-        const newUser = this.usersRepository.create(userData);
-        newUser.password = await bcrypt.hash(newUser.password, 10);
+    async create(email: string): Promise<User> {
+        const newUser = this.usersRepository.create({ email });
         return this.usersRepository.save(newUser);
     }
 
@@ -37,5 +40,7 @@ export class UsersService {
 
     async remove(id: number): Promise<void> {
         await this.usersRepository.delete(id);
+        await this.credentialService.delete(id);
+        await this.tokenService.delete(id);
     }
 }
