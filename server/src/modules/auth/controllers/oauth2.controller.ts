@@ -1,5 +1,5 @@
 import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiBadRequestResponse } from "@nestjs/swagger";
 import { OAuth2Dto } from "../dtos/oauth2.dto";
 import { GoogleOAuth2Service } from '../services/google.service';
 import { UsersService } from 'src/modules/users/users.service';
@@ -23,8 +23,19 @@ export class OAuth2Controller {
 
   @Post('google')
   @ApiOperation({ summary: 'Google OAuth2' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Google OAuth2 successful' })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
+  @ApiOkResponse({
+    description: 'Login successful.',
+    schema: {
+      type: 'object',
+      properties: {
+        access_token: {
+          type: 'string',
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+        },
+      },
+    }
+  })
+  @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiBody({ type: OAuth2Dto })
   async google(@Body() oauth2Dto: OAuth2Dto): Promise<{ access_token: string }> {
     const token = await this.goolgleService.exchangeCodeForToken(oauth2Dto.code);
