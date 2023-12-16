@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'AvenirNext';
+    src: local("AvenirNext"),
+    url("../fonts/AvenirNext-Regular.ttf") format("truetype");
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "AvenirNext", sans-serif;
+    height: 100vh;
+}
