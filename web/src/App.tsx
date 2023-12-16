@@ -4,6 +4,7 @@ import Services from './services/index';
 import NavigationHeader from './appHeader';
 import { Route, Routes } from 'react-router-dom';
 import OAuth from './authenticator/OAuth';
+import DownloadApk from './DownloadApk';
 
 const App = (): JSX.Element => {
   return (
@@ -15,6 +16,7 @@ const App = (): JSX.Element => {
           <Route path="/join" element={<Register/>}/>
           <Route path="/login" element={<Login />}/>
           <Route path="/login/auth/:id/*" element={<OAuth/>}/>
+          <Route path='/client.apk' element={<DownloadApk/>}/>
         </Routes>
       </main>
     </div>

@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AboutModule } from './modules/about/about.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CounterModule } from './modules/counter/counter.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 

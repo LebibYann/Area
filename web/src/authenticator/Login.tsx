@@ -1,6 +1,6 @@
-import React, { MutableRefObject, useRef } from 'react';
+import React, { MutableRefObject, useEffect, useRef } from 'react';
 import './Authenticator.css';
-import { url } from 'inspector';
+import { login, useLogin } from './utils';
 
 export interface LoginFormData {
     email: string;
@@ -31,6 +31,14 @@ const Login = (): JSX.Element => {
         password: ''
     });
 
+    useEffect(() => {
+        const isLogged = useLogin();
+
+        if (isLogged) {
+            window.location.replace(window.location.origin);
+        }
+    }, [])
+
     const handleChange = (
         key: string, 
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -54,7 +62,7 @@ const Login = (): JSX.Element => {
             console.log(response.status);
             return (response.json());
         }).then((data) => {
-            console.log(data);
+            login();
         }).catch((error) => console.log(error));
     };
 
