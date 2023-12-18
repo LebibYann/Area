@@ -18,10 +18,13 @@ async function bootstrap() {
   }));
 
   const options = new DocumentBuilder()
-    .setTitle('NestJS API')
-    .setDescription('The NestJS API description')
+    .setTitle('AREA API')
+    .setDescription('The AREA API description')
     .setVersion('1.0')
-    .addTag('nestjs')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

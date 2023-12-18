@@ -27,7 +27,7 @@ export class AuthController {
       },
     }
   })
-  @ApiUnauthorizedResponse({description: 'email or password is incorrect.'})
+  @ApiUnauthorizedResponse({description: 'Email or password is incorrect.'})
   @ApiBody({ type: LoginDto })
   async login(@Body() loginDto: LoginDto): Promise<any> {
     return await this.authService.login(loginDto);

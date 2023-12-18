@@ -14,11 +14,15 @@ export class Credential {
     password: string;
 
     @Column({ default: false })
-    googleId: boolean;
+    google: boolean;
 
     @OneToOne(() => User)
     @JoinColumn({ name: 'userId' })
     user: User;
+
+    static async hashPassword(password: string): Promise<string> {
+        return bcrypt.hash(password, 10);
+    }
 
     async validatePassword(password: string): Promise<boolean> {
         return bcrypt.compare(password, this.password);
