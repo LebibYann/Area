@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/pages/AREAS/triggers.dart';
+import 'package:mobile/pages/AREAS/actions.dart';
 
 const Color discordBlue = Color(0xFF7289DA);
 
@@ -95,7 +96,7 @@ class DiscordAREA extends StatelessWidget {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16.0),
-            ..._buildActionsButtons(),
+            ..._buildActionsButtons(context),
           ],
         ),
       ),
@@ -130,7 +131,6 @@ class DiscordAREA extends StatelessWidget {
         child: const Text('New pinned message in a channel'),
       ),
       const SizedBox(height: 15.0),
-
       ElevatedButton(
         onPressed: () {
           Navigator.push(
@@ -157,7 +157,6 @@ class DiscordAREA extends StatelessWidget {
         child: const Text('New message in a channel'),
       ),
       const SizedBox(height: 15.0),
-
       ElevatedButton(
         onPressed: () {
           // todo
@@ -179,10 +178,27 @@ class DiscordAREA extends StatelessWidget {
   }
 }
 
-List<Widget> _buildActionsButtons() {
+List<Widget> _buildActionsButtons(BuildContext context) {
   return [
     ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ActionsDetails(
+                    color: 0xFF7289DA,
+                    service: 'Discord',
+                    triggerName: 'Post a message to a channel',
+                    description:
+                        'This action will send a message from the IFTTT Bot to the channel you specify',
+                    actionText: 'Add this action',
+                    onActionTap: () {
+                      // Your action code here
+                    },
+                    logoPath: 'assets/AREA/discord.png',
+                  )),
+        );
+      },
       style: ElevatedButton.styleFrom(
         primary: discordBlue,
         onPrimary: Colors.white,
@@ -191,7 +207,24 @@ List<Widget> _buildActionsButtons() {
     ),
     const SizedBox(height: 15.0),
     ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ActionsDetails(
+                    color: 0xFF7289DA,
+                    service: 'Discord',
+                    triggerName: 'Post a rich message to a channel',
+                    description:
+                        'This action will send a rich message from the IFTTT Bot to the channel you specify',
+                    actionText: 'Add this action',
+                    onActionTap: () {
+                      // Your action code here
+                    },
+                    logoPath: 'assets/AREA/discord.png',
+                  )),
+        );
+      },
       style: ElevatedButton.styleFrom(
         primary: discordBlue,
         onPrimary: Colors.white,
