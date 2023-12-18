@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
@@ -17,13 +16,27 @@ class _LoginPage extends State<LoginPage> {
 
 final TextEditingController _emailTEC = TextEditingController();
 final TextEditingController _passwordTEC = TextEditingController();
-final Uri url = Uri.parse('https://discord.com/api/oauth2/authorize?client_id=1183869804822671380&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8083%2Fdiscord%2Fcallback&scope=identify');
+final Uri DiscordUrl = Uri.parse('https://discord.com/api/oauth2/authorize?client_id=1183869804822671380&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8083%2Fdiscord%2Fcallback&scope=identify');
+
+postAuth2(String token, String url)async{
+  try{
+    var responce = await http.post(Uri.parse(url),
+    body: {
+      "token": token,
+    });
+    print(responce.body);
+    nav();
+  }catch(e){
+    print(e);
+  }  
+}
 
 void handleCallback() {
   HttpServer.bind('127.0.0.1', 8083).then((server) {
     server.listen((HttpRequest request) async {
       String authorizationCode = request.uri.queryParameters['code'] ?? '';
-      await server.close();
+      await server.close(force: true);
+      await postAuth2(authorizationCode, "http://localhost:8080/auth/discord");
       print('Authorization Code: $authorizationCode');
     });
   });
@@ -37,7 +50,7 @@ launchURL(Uri url) async {
   }
 }
 
-discordAuth() async {
+oauth2(Uri url) async {
   launchURL(url);
   handleCallback();
 }
@@ -49,9 +62,9 @@ nav() {
   );
 }
 
-postAuth(String mail, String password)async{
+postAuth(String mail, String password, String url)async{
   try{
-    var responce = await http.post(Uri.parse("http://localhost:8080/auth/login"),
+    var responce = await http.post(Uri.parse(url),
     body: {
       "email": mail,
       "password": password
@@ -106,7 +119,7 @@ postAuth(String mail, String password)async{
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text),
+              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text, "http://localhost:8080/auth/login"),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
@@ -120,7 +133,7 @@ postAuth(String mail, String password)async{
               ),
             ),
             TextButton(
-              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text), //ici mettre la fonction signup
+              onPressed: () => postAuth(_emailTEC.text, _passwordTEC.text, "http://localhost:8080/auth/register"),
               style: TextButton.styleFrom(
                 primary: Colors.black,
               ),
@@ -128,7 +141,7 @@ postAuth(String mail, String password)async{
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => nav(),
+              onPressed: () => nav(), //oauth2(GoogleUrl)
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
@@ -152,7 +165,7 @@ postAuth(String mail, String password)async{
               ),
             ),
             ElevatedButton(
-              onPressed: () => discordAuth(),
+              onPressed: () => oauth2(DiscordUrl),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
