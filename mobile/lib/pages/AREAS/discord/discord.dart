@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile/pages/AREAS/triggers.dart';
 
 const Color discordBlue = Color(0xFF7289DA);
 
@@ -87,7 +88,7 @@ class DiscordAREA extends StatelessWidget {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            ..._buildTriggerButtons(),
+            ..._buildTriggerButtons(context),
             const SizedBox(height: 16.0),
             const Text(
               'Actions',
@@ -101,10 +102,26 @@ class DiscordAREA extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildTriggerButtons() {
+  List<Widget> _buildTriggerButtons(BuildContext context) {
     return [
       ElevatedButton(
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TriggerDetails(
+                      color: 0xFF7289DA,
+                      service: 'Discord',
+                      triggerName: 'New pinned message in a channel',
+                      description:
+                          'This Trigger fires when a new message is pinned in a channel you select',
+                      actionText: 'Add this trigger',
+                      onActionTap: () {
+                        // Your action code here
+                      },
+                      logoPath: 'assets/AREA/discord.png',
+                    )),
+          );
         },
         style: ElevatedButton.styleFrom(
           primary: discordBlue,
@@ -113,8 +130,25 @@ class DiscordAREA extends StatelessWidget {
         child: const Text('New pinned message in a channel'),
       ),
       const SizedBox(height: 15.0),
+
       ElevatedButton(
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TriggerDetails(
+                      color: 0xFF7289DA,
+                      service: 'Discord',
+                      triggerName: 'New message in a channel',
+                      description:
+                          'This Trigger fires when a new message is posted in a channel you select',
+                      actionText: 'Add this trigger',
+                      onActionTap: () {
+                        // Your action code here
+                      },
+                      logoPath: 'assets/AREA/discord.png',
+                    )),
+          );
         },
         style: ElevatedButton.styleFrom(
           primary: discordBlue,
@@ -123,20 +157,24 @@ class DiscordAREA extends StatelessWidget {
         child: const Text('New message in a channel'),
       ),
       const SizedBox(height: 15.0),
-    ElevatedButton(
-      onPressed: () {
-      },
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(color: Colors.black, width: 2.0,)
+
+      ElevatedButton(
+        onPressed: () {
+          // todo
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+              side: BorderSide(
+                color: Colors.black,
+                width: 2.0,
+              )),
+          primary: Colors.white,
+          onPrimary: Colors.black,
         ),
-        primary: Colors.white,
-        onPrimary: Colors.black,
+        child: const Text('Suggest a new trigger',
+            style: TextStyle(fontWeight: FontWeight.bold)),
       ),
-      child: const Text('Suggest a new trigger',
-          style: TextStyle(fontWeight: FontWeight.bold)),
-    ),
     ];
   }
 }
@@ -144,8 +182,7 @@ class DiscordAREA extends StatelessWidget {
 List<Widget> _buildActionsButtons() {
   return [
     ElevatedButton(
-      onPressed: () {
-      },
+      onPressed: () {},
       style: ElevatedButton.styleFrom(
         primary: discordBlue,
         onPrimary: Colors.white,
@@ -154,8 +191,7 @@ List<Widget> _buildActionsButtons() {
     ),
     const SizedBox(height: 15.0),
     ElevatedButton(
-      onPressed: () {
-      },
+      onPressed: () {},
       style: ElevatedButton.styleFrom(
         primary: discordBlue,
         onPrimary: Colors.white,
@@ -164,13 +200,14 @@ List<Widget> _buildActionsButtons() {
     ),
     const SizedBox(height: 15.0),
     ElevatedButton(
-      onPressed: () {
-      },
+      onPressed: () {},
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(color: Colors.black, width: 2.0,)
-        ),
+            borderRadius: BorderRadius.circular(5),
+            side: BorderSide(
+              color: Colors.black,
+              width: 2.0,
+            )),
         primary: Colors.white,
         onPrimary: Colors.black,
       ),
