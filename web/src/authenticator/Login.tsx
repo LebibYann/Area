@@ -11,7 +11,7 @@ const Login = (): JSX.Element => {
 
     const domain = "https://accounts.google.com/o/oauth2/v2/auth";
     const redirectUri = "http://localhost:8081/login/auth/google";
-    const responseType = "token";
+    const responseType = "code";
     const scope = "https://www.googleapis.com/auth/drive.metadata.readonly";
     const includeGrantedScopes = "true";
     const state = "pass-through value";
