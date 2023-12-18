@@ -34,8 +34,9 @@ export class UsersService {
         return this.usersRepository.findOneBy({ email: email });
     }
 
-    async update(id: number, userData: UpdateUserDto): Promise<void> {
+    async update(id: number, userData: UpdateUserDto): Promise<User> {
         await this.usersRepository.update(id, userData);
+        return this.usersRepository.findOneBy({ id });
     }
 
     async remove(id: number): Promise<void> {
