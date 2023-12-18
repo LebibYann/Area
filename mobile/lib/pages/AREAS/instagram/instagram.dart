@@ -52,7 +52,7 @@ class InstagramAREA extends StatelessWidget {
                           },
                           child: const Text('Connect'),
                         ),
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             _launchURL('https://instagram.com');
                           },
