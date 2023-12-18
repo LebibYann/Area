@@ -143,6 +143,24 @@ class InstagramAREA extends StatelessWidget {
         },
         child: const Text('Any new video by you'),
       ),
+      const SizedBox(height: 15.0),
+      ElevatedButton(
+        onPressed: () {
+          // todo
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+              side: BorderSide(
+                color: Colors.black,
+                width: 2.0,
+              )),
+          primary: Colors.white,
+          onPrimary: Colors.black,
+        ),
+        child: const Text('Suggest a new trigger',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
     ];
   }
 }
