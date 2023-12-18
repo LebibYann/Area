@@ -6,24 +6,34 @@ import { User } from '../../users/users.entity';
 
 @Injectable()
 export class CredentialService {
-    constructor(
-        @InjectRepository(Credential)
-        private credentialRepository: Repository<Credential>,
-    ) {}
+	constructor(
+		@InjectRepository(Credential)
+		private credentialRepository: Repository<Credential>,
+	) { }
 
-    async findOneByUserId(userId: number): Promise<Credential> {
-        return this.credentialRepository.findOneBy({ userId })
-    }
+	async findOneByUserId(userId: number): Promise<Credential> {
+		return this.credentialRepository.findOneBy({ userId })
+	}
 
-    async create(userId: number, password?: string, google: boolean = false): Promise<Credential> {
-        return this.credentialRepository.save({ userId, password, google });
-    }
+	async create(
+		userId: number,
+		password?: string,
+		google: boolean = false
+	): Promise<Credential> {
+		const hashedPassword = password ?
+			await Credential.hashPassword(password) : undefined;
+		return this.credentialRepository.save({
+			userId,
+			password: hashedPassword,
+			google
+		});
+	}
 
-    async update(id: number, credentialData: Partial<Credential>): Promise<void> {
-        await this.credentialRepository.update(id, credentialData);
-    }
+	async update(id: number, credentialData: Partial<Credential>): Promise<void> {
+		await this.credentialRepository.update(id, credentialData);
+	}
 
-    async delete(id: number): Promise<void> {
-        await this.credentialRepository.delete(id);
-    }
+	async delete(id: number): Promise<void> {
+		await this.credentialRepository.delete(id);
+	}
 }
