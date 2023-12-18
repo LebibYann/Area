@@ -1,6 +1,6 @@
 import React, { MutableRefObject, useEffect, useRef } from 'react';
 import './Authenticator.css';
-import { login, useLogin } from './utils';
+import { login, useLogin } from '../utils';
 
 export interface LoginFormData {
     email: string;
@@ -11,7 +11,7 @@ const Login = (): JSX.Element => {
 
     const domain = "https://accounts.google.com/o/oauth2/v2/auth";
     const redirectUri = "http://localhost:8081/login/auth/google";
-    const responseType = "code";
+    const responseType = "authorization_codde";
     const scope = "https://www.googleapis.com/auth/drive.metadata.readonly";
     const includeGrantedScopes = "true";
     const state = "pass-through value";
@@ -24,7 +24,7 @@ const Login = (): JSX.Element => {
     `&include_granted_scopes=${includeGrantedScopes}` +
     `&state=${state}`
 
-    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify+email+connections"
+    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify"
 
     const [form, setForm] = React.useState<LoginFormData>({
         email: '',
