@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 const Color facebookBlue = Color(0xFF4267B2);
 
 class FacebookAREA extends StatelessWidget {
@@ -17,7 +16,6 @@ class FacebookAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -88,6 +86,24 @@ class FacebookAREA extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             ..._buildTriggerButtons(),
+            const SizedBox(height: 15.0),
+            ElevatedButton(
+              onPressed: () {
+                // todo
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    side: BorderSide(
+                      color: Colors.black,
+                      width: 2.0,
+                    )),
+                primary: Colors.white,
+                onPrimary: Colors.black,
+              ),
+              child: const Text('Suggest a new trigger',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
           ],
         ),
       ),
@@ -97,8 +113,7 @@ class FacebookAREA extends StatelessWidget {
   List<Widget> _buildTriggerButtons() {
     return [
       ElevatedButton(
-        onPressed: () {
-        },
+        onPressed: () {},
         style: ElevatedButton.styleFrom(
           primary: facebookBlue,
           onPrimary: Colors.white,
@@ -107,8 +122,7 @@ class FacebookAREA extends StatelessWidget {
       ),
       const SizedBox(height: 15.0),
       ElevatedButton(
-        onPressed: () {
-        },
+        onPressed: () {},
         style: ElevatedButton.styleFrom(
           primary: facebookBlue,
           onPrimary: Colors.white,
@@ -117,8 +131,7 @@ class FacebookAREA extends StatelessWidget {
       ),
       const SizedBox(height: 15.0),
       ElevatedButton(
-        onPressed: () {
-        },
+        onPressed: () {},
         style: ElevatedButton.styleFrom(
           primary: facebookBlue,
           onPrimary: Colors.white,
