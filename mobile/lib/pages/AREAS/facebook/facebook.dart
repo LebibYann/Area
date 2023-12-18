@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const Color facebookBlue = Color(0xFF4267B2);
 
 class FacebookAREA extends StatelessWidget {
   const FacebookAREA({Key? key}) : super(key: key);
 
-  // void _launchURL(String url) async {
-  //   if (await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class FacebookAREA extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // _launchURL('https://www.facebook.com/login');
+                            _launchURL('https://www.facebook.com/login');
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,
@@ -65,7 +65,7 @@ class FacebookAREA extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            // _launchURL('https://facebook.com');
+                            _launchURL('https://facebook.com');
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,
