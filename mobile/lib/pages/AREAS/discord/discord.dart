@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/pages/AREAS/triggers.dart';
 import 'package:mobile/pages/AREAS/actions.dart';
 
@@ -8,13 +8,13 @@ const Color discordBlue = Color(0xFF7289DA);
 class DiscordAREA extends StatelessWidget {
   const DiscordAREA({Key? key}) : super(key: key);
 
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // void _launchURL(String url) async {
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class DiscordAREA extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            _launchURL('https://discord.com/login');
+                            // _launchURL('https://discord.com/login');
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,
@@ -69,7 +69,7 @@ class DiscordAREA extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            _launchURL('https://discord.com/');
+                            // _launchURL('https://discord.com/');
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,

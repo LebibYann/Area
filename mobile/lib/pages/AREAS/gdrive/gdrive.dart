@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 const Color gdriveBlue = Color(0xFF3D6EC9);
 
 class GdriveAREA extends StatelessWidget {
   const GdriveAREA({Key? key}) : super(key: key);
 
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // void _launchURL(String url) async {
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,7 @@ class GdriveAREA extends StatelessWidget {
 
   Widget _buildUrlButton(String text, String url, Color color) {
     return ElevatedButton(
-      onPressed: () => _launchURL(url),
+      onPressed: () {},// => _launchURL(url),
       style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: color),
       child: Text(text),
     );

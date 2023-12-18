@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/pages/AREAS/actions.dart';
 
 const Color gmailBlue = Color(0xFF3D6EC9);
@@ -7,13 +7,13 @@ const Color gmailBlue = Color(0xFF3D6EC9);
 class GmailAREA extends StatelessWidget {
   const GmailAREA({Key? key}) : super(key: key);
 
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // void _launchURL(String url) async {
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,8 @@ class GmailAREA extends StatelessWidget {
 
   Widget _buildUrlButton(String text, String url, Color color) {
     return ElevatedButton(
-      onPressed: () => _launchURL(url),
+      onPressed: () {},
+      // onPressed: () => _launchURL(url),
       style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: color),
       child: Text(text),
     );
