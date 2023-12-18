@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 const Color spotifyGreen = Color(0xFF1DB954);
 
 class SpotifyAREA extends StatelessWidget {
   const SpotifyAREA({Key? key}) : super(key: key);
 
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // void _launchURL(String url) async {
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,8 @@ class SpotifyAREA extends StatelessWidget {
 
   Widget _buildUrlButton(String text, String url, Color color) {
     return ElevatedButton(
-      onPressed: () => _launchURL(url),
+      onPressed: () {},
+      // onPressed: () => _launchURL(url),
       style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: color),
       child: Text(text),
     );

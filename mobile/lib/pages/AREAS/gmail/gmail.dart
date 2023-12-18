@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile/pages/AREAS/actions.dart';
 
 const Color gmailBlue = Color(0xFF3D6EC9);
 
 class GmailAREA extends StatelessWidget {
   const GmailAREA({Key? key}) : super(key: key);
 
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // void _launchURL(String url) async {
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,10 @@ class GmailAREA extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Gmail',
-            style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, fontFamily: 'Italic')),
+            style: TextStyle(
+                fontSize: 28.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Italic')),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -31,10 +35,10 @@ class GmailAREA extends StatelessWidget {
               _buildCard(),
               const SizedBox(height: 32.0),
               _buildSectionTitle('Actions'),
-              ..._buildButtons([
-                'Send an email',
-                'Send yourself an email',
-              ], gmailBlue),
+              _buildActionButtons('Send an email', gmailBlue, context,
+                  'This action will send an email to up to twenty recipients from your Gmail account.'),
+              _buildActionButtons(
+                  'Send yourself an email', gmailBlue, context, 'This action will send yourself an email. HTML, images and links are supported.'),
               _buildSuggestionButton(),
             ],
           ),
@@ -54,8 +58,7 @@ class GmailAREA extends StatelessWidget {
           children: [
             Image.asset('assets/AREA/gmail.png', height: 100.0),
             const SizedBox(height: 8.0),
-            const Text(
-                'Connect Gmail to send emails to yourself and others.',
+            const Text('Connect Gmail to send emails to yourself and others.',
                 style: TextStyle(fontSize: 16.0, color: Colors.white)),
             const SizedBox(height: 16.0),
             _buildConnectVisitButtons(),
@@ -81,24 +84,40 @@ class GmailAREA extends StatelessWidget {
 
   Widget _buildUrlButton(String text, String url, Color color) {
     return ElevatedButton(
-      onPressed: () => _launchURL(url),
+      onPressed: () {},
+      // onPressed: () => _launchURL(url),
       style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: color),
       child: Text(text),
     );
   }
 
-  List<Widget> _buildButtons(List<String> texts, Color color) {
-    return texts
-        .map((text) => Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    primary: color, onPrimary: Colors.white),
-                child: Text(text),
-              ),
-            ))
-        .toList();
+  Widget _buildActionButtons(
+      String text, Color color, BuildContext context, String description) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15.0),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ActionsDetails(
+                      color: 0xFF3D6EC9,
+                      service: 'Gmail',
+                      triggerName: text,
+                      description: description,
+                      actionText: 'Add this action',
+                      onActionTap: () {
+                        // Your action code here
+                      },
+                      logoPath: 'assets/AREA/gmail.png',
+                    )),
+          );
+        },
+        style:
+            ElevatedButton.styleFrom(primary: color, onPrimary: Colors.white),
+        child: Text(text),
+      ),
+    );
   }
 
   Widget _buildSectionTitle(String title) {

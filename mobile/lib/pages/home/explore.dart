@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/pages/AREAS/instagram.dart';
-import 'package:mobile/pages/AREAS/facebook.dart';
-import 'package:mobile/pages/AREAS/discord.dart';
-import 'package:mobile/pages/AREAS/spotify.dart';
-import 'package:mobile/pages/AREAS/gdrive.dart';
-import 'package:mobile/pages/AREAS/gmail.dart';
+import 'package:mobile/pages/AREAS/instagram/instagram.dart';
+import 'package:mobile/pages/AREAS/facebook/facebook.dart';
+import 'package:mobile/pages/AREAS/discord/discord.dart';
+import 'package:mobile/pages/AREAS/spotify/spotify.dart';
+import 'package:mobile/pages/AREAS/gdrive/gdrive.dart';
+import 'package:mobile/pages/AREAS/gmail/gmail.dart';
 
 class ExplorePage extends StatelessWidget {
   ExplorePage({Key? key}) : super(key: key);
@@ -24,7 +24,6 @@ class ExplorePage extends StatelessWidget {
         title: const Text('AREAS',
           style: TextStyle(fontWeight: FontWeight.bold),),
         centerTitle: true,
-
       ),
 
       body: GridView.builder(
