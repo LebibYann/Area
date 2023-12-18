@@ -7,7 +7,7 @@ class TriggerDetails extends StatelessWidget {
   final String actionText;
   final VoidCallback onActionTap;
   final String logoPath;
-
+  final int color;
   const TriggerDetails({
     Key? key,
     required this.service,
@@ -16,6 +16,7 @@ class TriggerDetails extends StatelessWidget {
     required this.actionText,
     required this.onActionTap,
     required this.logoPath,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -31,7 +32,7 @@ class TriggerDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
-            color: Color(0xFFE1306C),
+            color: Color(color),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -43,7 +44,7 @@ class TriggerDetails extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  height: 75,
+                  height: 55,
                   width: double.infinity,
                 ),
                 Text(
@@ -54,6 +55,7 @@ class TriggerDetails extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
+                  overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
               ],
@@ -64,7 +66,7 @@ class TriggerDetails extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'About this trigger',
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
@@ -75,12 +77,12 @@ class TriggerDetails extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32.0),
-          Center(
-            child: ElevatedButton(
+
+            ElevatedButton(
               onPressed: () => onActionTap(),
-              child: Text(actionText),
+              child: Text(actionText, style: TextStyle(color: Color(color)),),
+
             ),
-          ),
         ],
       ),
     );
