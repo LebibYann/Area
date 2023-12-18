@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:mobile/pages/AREAS/instagram/triggers.dart';
+import 'package:mobile/pages/AREAS/triggers.dart';
 
 class InstagramAREA extends StatelessWidget {
   const InstagramAREA({Key? key}) : super(key: key);
@@ -77,6 +77,7 @@ class InstagramAREA extends StatelessWidget {
     );
   }
 
+
   List<Widget> _buildTriggerButtons(BuildContext context) {
     return [
       ElevatedButton(
@@ -85,6 +86,7 @@ class InstagramAREA extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => TriggerDetails(
+                      color: 0xFFE1306C,
                       service: 'Instagram',
                       triggerName: 'Any new photo by you',
                       description: 'This Trigger fires every time you share any new photo on Instagram',
@@ -105,6 +107,7 @@ class InstagramAREA extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => TriggerDetails(
+                      color: 0xFFE1306C,
                       service: 'Instagram',
                       triggerName: 'New photo by you with specific hashtag',
                       description: 'This Trigger fires every time you share a photo on Instagram with a hashtag you specify',
@@ -113,7 +116,8 @@ class InstagramAREA extends StatelessWidget {
                         // Your action code here
                       },
                       logoPath: 'assets/AREA/instagram.png',
-                    )),
+                    )
+                  ),
           );
         },
         child: const Text('New photo by you with specific hashtag'),
@@ -125,6 +129,7 @@ class InstagramAREA extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => TriggerDetails(
+                      color: 0xFFE1306C,
                       service: 'Instagram',
                       triggerName: 'Any video by you',
                       description: 'This Trigger fires every time you share any new video on Instagram',
