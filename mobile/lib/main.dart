@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/pages/login/login.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile/json.dart';
+// import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await JsonDataSingleton().fetchData();
+  await dotenv.load();
 
   runApp(const MyApp());
 }
