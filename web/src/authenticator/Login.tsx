@@ -11,18 +11,18 @@ const Login = (): JSX.Element => {
 
     const domain = "https://accounts.google.com/o/oauth2/v2/auth";
     const redirectUri = "http://localhost:8081/login/auth/google";
-    const responseType = "authorization_codde";
+    const responseType = "code";
+    const accessType = "offline";
     const scope = "https://www.googleapis.com/auth/drive.metadata.readonly";
     const includeGrantedScopes = "true";
-    const state = "pass-through value";
 
     const googleUrl = domain + 
     `?client_id=` + import.meta.env.VITE_GOOGLE_CLIENT_ID +
     `&redirect_uri=${redirectUri}` +
+    `&access_type=${accessType}` +
     `&response_type=${responseType}` +
     `&scope=${scope}` +
-    `&include_granted_scopes=${includeGrantedScopes}` +
-    `&state=${state}`
+    `&include_granted_scopes=${includeGrantedScopes}`
 
     const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify"
 
