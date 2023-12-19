@@ -14,11 +14,29 @@ export class AboutService {
     const clientDto = new ClientDto();
     clientDto.host = this.clientIp;
 
+    const searcAction = new ActionDto();
+    searcAction.name = 'search';
+    searcAction.description = 'Search for something on Google';
+
+    const googleService = new ServiceDto();
+    googleService.name = 'google';
+    googleService.actions = [
+      searcAction,
+    ];
+    googleService.reactions = [
+      {
+        name: 'send_email',
+        description: 'Send an email to someone',
+      },
+    ];
+
     const aboutDto = new AboutDto();
     aboutDto.client = clientDto;
     aboutDto.server = {
       current_time: current_time,
-      services: [],
+      services: [
+        googleService,
+      ],
     };
 
     return aboutDto;
