@@ -8,19 +8,18 @@ import { AuthService } from './services/auth.service';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './controllers/auth.controller';
 import { CredentialService } from './services/credential.service';
-import { TokenService } from './services/token.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Credential } from './entities/credential.entity';
-import { Token } from './entities/token.entity';
 import { OAuth2Controller } from './controllers/oauth2.controller';
 import { OAuth2Service } from './services/oauth2.service';
 import { GoogleOAuth2Service } from './services/google.service';
 import { HttpModule } from '@nestjs/axios';
+import { IdentificationService } from './services/identification.service';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
-    TypeOrmModule.forFeature([Credential, Token]),
+    TypeOrmModule.forFeature([Credential]),
     PassportModule,
     HttpModule,
     JwtModule.registerAsync({
@@ -36,12 +35,12 @@ import { HttpModule } from '@nestjs/axios';
   providers: [
     AuthService,
     CredentialService,
-    TokenService,
     OAuth2Service,
     GoogleOAuth2Service,
     LocalStrategy,
     JwtStrategy,
+    IdentificationService,
   ],
-  exports: [AuthService, CredentialService, TokenService],
+  exports: [AuthService, CredentialService],
 })
 export class AuthModule { }
