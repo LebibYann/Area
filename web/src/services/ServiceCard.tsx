@@ -1,7 +1,7 @@
 import { Service } from "../types";
 import google from "../assets/images/GoogleIcon.png";
 import discord from "../assets/images/DiscordIcon.png";
-
+import "./ServiceCard.css";
 
 const useServiceIcon = (name: string) : string => {
     if (name === "google")
@@ -17,7 +17,7 @@ const ServiceCard = (service: Service): JSX.Element => {
 
 
   return (
-    <li key={service.name}>
+    <li key={service.name} className="card">
       <img src={useServiceIcon(service.name)} alt={service.name} />
       <h1>{service.name}</h1>
     </li>

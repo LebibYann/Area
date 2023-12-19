@@ -12,9 +12,8 @@ header.unified-header {
     align-items: center;
     justify-content: space-between;
     font-weight: 700;
-    line-height: 1;
-    z-index: 1000;
-    padding: 1em;
+    height: 5em;
+    margin: 1em;
 }
 
 header {
@@ -25,12 +24,14 @@ section.links-section {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    gap: 2em;
+    align-items: center;
+    gap: 1.5em;
 }
 
 section.title-section {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    gap: 2em;
+    font-weight: 900;
+    font-size: 2em;
 }

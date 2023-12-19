@@ -10,7 +10,7 @@ import Applets from './services/Applets';
 
 const App = (): JSX.Element => {
   return (
-    <div>
+    <section>
       <NavigationHeader/>
       <main>
         <Routes>
@@ -23,7 +23,7 @@ const App = (): JSX.Element => {
           <Route path='/client.apk' element={<DownloadApk/>}/>
         </Routes>
       </main>
-    </div>
+    </section>
   );
 };
 export default App;
