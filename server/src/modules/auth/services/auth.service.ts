@@ -19,7 +19,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersService.findOneByEmail(email);
     if (user) {
-      const credential = await this.credentialService.findOneByUserId(user.id);
+      const credential = await this.credentialService.findOneByUserAndService(user, 'local');
       if (!credential) {
         this.logger.warn('Cannot find credential associated with this user.', { email });
         return null;
@@ -42,7 +42,7 @@ export class AuthService {
 
   async register(registerDto: RegisterDto): Promise<User> {
     const user = await this.usersService.create(registerDto.email);
-    await this.credentialService.create(user.id, registerDto.password);
+    await this.credentialService.create(user.id, 'local', registerDto.password);
     return user;
   }
 }
