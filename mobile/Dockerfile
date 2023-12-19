@@ -26,6 +26,8 @@ ENV PATH $PATH:$PWD/flutter/bin:$PWD/flutter/bin/cache/dart-sdk
 
 RUN flutter doctor
 
+RUN git config --global --add safe.directory /flutter
+
 # Copy the app
 COPY . /app
 WORKDIR /app

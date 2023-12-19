@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/pages/AREAS/triggers.dart';
 
 class InstagramAREA extends StatelessWidget {
   const InstagramAREA({Key? key}) : super(key: key);
 
-  // void _launchURL(String url) async {
-  //   if (await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +48,13 @@ class InstagramAREA extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // _launchURL('https://instagram.com');
+                            _launchURL('https://instagram.com');
                           },
                           child: const Text('Connect'),
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            // _launchURL('https://instagram.com');
+                            _launchURL('https://instagram.com');
                           },
                           child: const Text('Visit'),
                         ),
