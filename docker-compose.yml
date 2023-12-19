@@ -1,17 +1,38 @@
 version: '3.8'
 
+networks:
+  mysql-phpmyadmin:
+    driver: bridge
+
 services:
   db:
     image: mysql:latest
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: db
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+    networks:
+      - mysql-phpmyadmin
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "8082:80"
+    depends_on:
+      - db
+    networks:
+      - mysql-phpmyadmin
 
   server:
     build: ./server
@@ -22,11 +43,15 @@ services:
       - ./server:/usr/src/app
     depends_on:
       - db
+    networks:
+      - mysql-phpmyadmin
 
   client_mobile:
     build: ./mobile
     volumes:
       - shared-volume:/usr/src/app/shared
+    networks:
+      - mysql-phpmyadmin
 
   client_web:
     build: ./web
@@ -37,8 +62,8 @@ services:
     depends_on:
       - server
       - client_mobile
-    
-
+    networks:
+      - mysql-phpmyadmin
 
 volumes:
   shared-volume:
