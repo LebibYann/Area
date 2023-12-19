@@ -23,14 +23,14 @@ services:
   client_mobile:
     build: ./mobile
     volumes:
-      - shared-volume:/app/shared
+      - shared-volume:/usr/src/app/shared
 
   client_web:
     build: ./web
     ports:
       - "8081:8081"
     volumes:
-      - shared-volume:/app/shared
+      - shared-volume:/usr/src/app/shared
     depends_on:
       - server
       - client_mobile

@@ -9,7 +9,7 @@ const DownloadApk = (): JSX.Element => {
             display: 'flex',
             flexDirection: 'column',
         }}>
-            <a href={"/app-release.apk"} download>Download</a>
+            <a href={"/shared/app-release.apk"} download>Download</a>
         </div>
     );
 }
