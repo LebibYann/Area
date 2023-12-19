@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength } from '@nestjs/class-validator';
+import { IsEmail, IsOptional, IsString, MinLength } from '@nestjs/class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
