@@ -1,0 +1,32 @@
+import { useEffect, useState } from "react";
+import { useLogin, useServices } from "../utils";
+import ServiceCard from "./ServiceCard";
+import { Service } from "types";
+
+const ServicesList = (): JSX.Element => {
+  const services = useServices();
+  const [searchedServices, setSearchedServices] = useState<Service[]>(services);
+  const [searchKey, setSearchKey] = useState<string>("");
+
+  const updateSearch = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearchKey(event.target.value);
+    setSearchedServices(services.filter((service) => {
+      return service.name.toLowerCase().indexOf(event.target.value.toLowerCase()) !== -1;
+    }));
+  };
+
+  return (
+    <section>
+      <input type="text" onChange={(e) => updateSearch(e)} value={searchKey} />
+      <ul>
+        {searchedServices.map((searchedServices) =>
+          ServiceCard(searchedServices)
+        )}
+      </ul>
+    </section>
+  );
+};
+
+export default ServicesList;

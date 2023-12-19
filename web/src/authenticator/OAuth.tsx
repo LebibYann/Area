@@ -19,10 +19,10 @@ const OAuth = (): JSX.Element => {
     })
       .then((res) => res.json())
       .then((data) => {
-        login();
       })
       .catch((err) => console.log(err));
-    window.location.replace(url.origin)
+      login();
+      window.location.replace(url.origin)
   }, []);
 
   return (

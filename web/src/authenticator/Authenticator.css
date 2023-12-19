@@ -1,13 +1,11 @@
 .login-container {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
+    margin: 2em auto 4em;
     align-items: center;
-    margin-top: 200px;
     background-color: #fff;
     padding-bottom: 30px;
     max-width: 36em;
-    margin: 2em auto 4em;
 }
 
 .form-container {
