@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
 import { User } from '../../users/users.entity';
 import * as bcrypt from 'bcrypt';
 
@@ -10,13 +10,25 @@ export class Credential {
     @Column({ unique: true })
     userId: number;
 
+    @Column()
+    service: string;
+
     @Column({ nullable: true })
     password: string;
 
-    @Column({ default: false })
-    google: boolean;
+    @Column({ nullable: true })
+    accessToken: string;
 
-    @OneToOne(() => User)
+    @Column({ nullable: true })
+    refreshToken: string;
+
+    @Column({ nullable: true, type: 'text' })
+    idToken: string;
+
+    @Column({ nullable: true })
+    expiresAt: Date;
+
+    @ManyToOne(() => User)
     @JoinColumn({ name: 'userId' })
     user: User;
 
