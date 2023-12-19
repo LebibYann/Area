@@ -13,7 +13,7 @@ const Login = (): JSX.Element => {
     const redirectUri = "http://localhost:8081/login/auth/google";
     const responseType = "code";
     const accessType = "offline";
-    const scope = "https://www.googleapis.com/auth/drive.metadata.readonly";
+    const scope = "openid%20profile%20email";
     const includeGrantedScopes = "true";
 
     const googleUrl = domain + 
@@ -22,7 +22,7 @@ const Login = (): JSX.Element => {
     `&access_type=${accessType}` +
     `&response_type=${responseType}` +
     `&scope=${scope}` +
-    `&include_granted_scopes=${includeGrantedScopes}`
+    `&include_granted_scopes=${includeGrantedScopes}`;
 
     const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify"
 
