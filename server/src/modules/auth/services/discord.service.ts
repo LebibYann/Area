@@ -11,7 +11,7 @@ import { TokenService } from './token.service';
 import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
 
 @Injectable()
-export class GoogleOAuth2Service extends OAuth2Service {
+export class DiscordOAuth2Service extends OAuth2Service {
     constructor(
         protected httpService: HttpService,
         protected userService: UsersService,
@@ -22,19 +22,19 @@ export class GoogleOAuth2Service extends OAuth2Service {
         super(httpService, userService, credentialService, tokenService);
     }
 
-    private readonly googleTokenEndpoint = 'https://oauth2.googleapis.com/token';
-    private readonly googleUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
+    private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token';
+    private readonly discordUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
 
     async exchangeCodeForToken(code: string): Promise<AccessTokenResponse> {
-        const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
-        const clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
-        const redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
+        const clientId = this.configService.get<string>('DISCORD_CLIENT_ID');
+        const clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET');
+        const redirectUri = this.configService.get<string>('DISCORD_REDIRECT_URI');
 
         console.log(code);
 
         return super.exchangeCodeForToken(
-            'google',
-            this.googleTokenEndpoint,
+            'discord',
+            this.discordTokenEndpoint,
             code,
             clientId,
             clientSecret,
@@ -43,11 +43,11 @@ export class GoogleOAuth2Service extends OAuth2Service {
     }
 
     async refreshToken(refreshToken: string): Promise<TokenResponse> {
-        const clientId = 'your-google-client-id';
-        const clientSecret = 'your-google-client-secret';
+        const clientId = 'TODO';
+        const clientSecret = 'TODO';
 
         return super.refreshToken(
-            this.googleTokenEndpoint,
+            this.discordTokenEndpoint,
             refreshToken,
             clientId,
             clientSecret
@@ -55,6 +55,6 @@ export class GoogleOAuth2Service extends OAuth2Service {
     }
 
     async getUserInfo(accessToken: string): Promise<UserInfoResponse> {
-        return super.getUserInfo(accessToken, this.googleUserInfoEndpoint);
+        return super.getUserInfo(accessToken, this.discordUserInfoEndpoint);
     }
 }

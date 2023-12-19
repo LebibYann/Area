@@ -14,6 +14,10 @@ export class TokenService {
         return this.tokenRepository.save(token);
     }
 
+    async findOneByCredentialsId(authenticationId: number): Promise<Token> {
+        return this.tokenRepository.findOneBy({ authenticationId });
+    }
+
     async update(id: number, tokenData: Partial<Token>): Promise<void> {
         await this.tokenRepository.update(id, tokenData);
     }

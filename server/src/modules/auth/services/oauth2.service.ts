@@ -9,6 +9,8 @@ import { UserInfoResponse } from '../interfaces/userInfo.interface';
 import { UsersService } from 'src/modules/users/users.service';
 import { Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
+import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
+
 
 @Injectable()
 export class OAuth2Service {
@@ -28,7 +30,7 @@ export class OAuth2Service {
     clientId: string,
     clientSecret: string,
     redirectUri: string
-  ): Promise<Token> {
+  ): Promise<AccessTokenResponse> {
     try {
       // Request token from service
       const response = await firstValueFrom(this.httpService.post(
@@ -39,17 +41,19 @@ export class OAuth2Service {
           client_secret: clientSecret,
           redirect_uri: redirectUri,
           grant_type: 'authorization_code',
+        },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept-Encoding': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + Buffer.from(`${clientId}:${clientSecret}`).toString('base64'),
+          },
         }
       ));
 
-      // Create token entity
-      const token = await this.tokenService.create({
-        service,
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
-      });
+      this.logger.debug(response.data);
 
-      return token;
+      return response.data;
 
     } catch (error) {
       if ( error instanceof AxiosError )
