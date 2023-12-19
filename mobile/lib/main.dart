@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:mobile/pages/login/login.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile/json.dart';
-// import 'package:provider/provider.dart';
+import 'package:mobile/provider.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await JsonDataSingleton().fetchData();
   await dotenv.load();
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthState(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +29,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: Consumer<AuthState>(
+        builder: (context, authState, _) {
+          return const LoginPage();
+        },
+      ),
     );
   }
 }

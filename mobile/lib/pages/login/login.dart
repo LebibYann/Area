@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:mobile/pages/home/home.dart';
+import 'package:mobile/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,11 +24,14 @@ final TextEditingController _passwordTEC = TextEditingController();
 
 postAuth2(String token, String url) async {
   try{
-    var responce = await http.post(Uri.parse(url),
+    var response = await http.post(Uri.parse(url),
     body: {
       "code": token,
     });
-    print("responce.body= ${responce.body}");
+    print("responce.body= ${response.body}");
+    // AuthState state = Provider.of<AuthState>(context, listen: false);
+    // state.accessToken = responce.body;
+    // print(Provider.of<AuthState>(context, listen: false).accessToken);
     nav();
   }catch(e){
     print(e);
@@ -43,7 +48,7 @@ void handleCallback(String auth) {
       } else if (auth == "Discord") {
         await postAuth2(authorizationCode, "http://localhost:8080/oauth2/discord");
       }
-      // print('Authorization Code: $authorizationCode');
+      print('Authorization Code: $authorizationCode');
     });
   });
 }
@@ -80,13 +85,21 @@ nav() {
 
 postAuth(String mail, String password, String url)async{
   try{
-    var responce = await http.post(Uri.parse(url),
+    var response = await http.post(Uri.parse(url),
     body: {
       "email": mail,
       "password": password
     });
-    print(responce.body);
-    nav();
+    // print(response.body);
+    if (url == "http://localhost:8080/auth/login") {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      AuthState state = Provider.of<AuthState>(context, listen: false);
+      state.accessToken = jsonResponse['access_token'];
+      // print(Provider.of<AuthState>(context, listen: false).accessToken);
+      nav();
+    } else {
+      print("register");
+    }
   }catch(e){
     print(e);
   }  
