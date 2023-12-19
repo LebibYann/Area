@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+// import 'package:provider/provider.dart';
 import 'dart:io';
 
 import 'package:mobile/pages/home/home.dart';
@@ -16,28 +18,32 @@ class _LoginPage extends State<LoginPage> {
 
 final TextEditingController _emailTEC = TextEditingController();
 final TextEditingController _passwordTEC = TextEditingController();
-final Uri DiscordUrl = Uri.parse('https://discord.com/api/oauth2/authorize?client_id=1183869804822671380&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8083%2Fdiscord%2Fcallback&scope=identify');
+
 
 postAuth2(String token, String url) async {
   try{
     var responce = await http.post(Uri.parse(url),
     body: {
-      "token": token,
+      "code": token,
     });
-    print(responce.body);
+    print("responce.body= ${responce.body}");
     nav();
   }catch(e){
     print(e);
   }  
 }
 
-void handleCallback() {
-  HttpServer.bind('127.0.0.1', 8083).then((server) {
+void handleCallback(String auth) {
+  HttpServer.bind('127.0.0.1', 8081).then((server) {
     server.listen((HttpRequest request) async {
       String authorizationCode = request.uri.queryParameters['code'] ?? '';
       await server.close(force: true);
-      await postAuth2(authorizationCode, "http://localhost:8080/auth/discord");
-      print('Authorization Code: $authorizationCode');
+      if (auth == "Google") {
+        await postAuth2(authorizationCode, "http://localhost:8080/oauth2/google");
+      } else if (auth == "Discord") {
+        await postAuth2(authorizationCode, "http://localhost:8080/oauth2/discord");
+      }
+      // print('Authorization Code: $authorizationCode');
     });
   });
 }
@@ -50,9 +56,19 @@ launchURL(Uri url) async {
   }
 }
 
-oauth2(Uri url) async {
-  launchURL(url);
-  handleCallback();
+oauth2(String auth) async {
+  if (auth == "Google") {
+    final clientId = dotenv.env['VITE_GOOGLE_CLIENT_ID'];
+    final Uri GoogleUrl = Uri.parse('https://accounts.google.com/o/oauth2/v2/auth?client_id=$clientId&redirect_uri=http://localhost:8081/login/auth/google&access_type=offline&response_type=code&scope=openid%20profile%20email&include_granted_scopes=true');
+    launchURL(GoogleUrl);
+    handleCallback(auth);
+  } else if ( auth == "Discord") {
+    final Uri DiscordUrl = Uri.parse('https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify');
+    launchURL(DiscordUrl);
+    handleCallback(auth);
+  } else {
+    print("Error oauth not existing !");
+  }
 }
 
 nav() {
@@ -141,7 +157,7 @@ postAuth(String mail, String password, String url)async{
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => nav(), //oauth2(GoogleUrl)
+              onPressed: () => oauth2("Google"),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
@@ -165,7 +181,7 @@ postAuth(String mail, String password, String url)async{
               ),
             ),
             ElevatedButton(
-              onPressed: () => oauth2(DiscordUrl),
+              onPressed: () => oauth2("Discord"),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
