@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'AvenirNext';
     src: local("AvenirNext"),
-    url("../fonts/AvenirNext-Regular.ttf") format("truetype");
+    url("./assets/fonts/AvenirNext.ttf") format("truetype");
 }
 
 body {

@@ -1,11 +1,14 @@
 import React, { MutableRefObject, useEffect, useRef } from 'react';
 import './Authenticator.css';
 import { login, useLogin } from '../utils';
+import queryString from 'query-string';
+
 
 export interface LoginFormData {
     email: string;
     password: string;
 }
+
 
 const Login = (): JSX.Element => {
 
@@ -25,6 +28,13 @@ const Login = (): JSX.Element => {
     `&include_granted_scopes=${includeGrantedScopes}`;
 
     const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify"
+
+    const spotifyUrl = "https://accounts.spotify.com/authorize?" + queryString.stringify({
+        response_type: "code",
+        client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+        scope: "user-read-private user-read-email",
+        redirect_uri: "http://localhost:8081/login/auth/spotify"
+    })
 
     const [form, setForm] = React.useState<LoginFormData>({
         email: '',
@@ -83,6 +93,9 @@ const Login = (): JSX.Element => {
                 </div>
                 <div>
                     <a href={discordUrl}>Connect with Discord</a>
+                </div>
+                <div>
+                    <a href={spotifyUrl}>Connect with Spotify</a>
                 </div>
                 <div className='form-submit'>
                     <input type='button' value={"Log in"} onClick={handleConnection}/>
