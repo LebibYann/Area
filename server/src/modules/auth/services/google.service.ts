@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { OAuth2Service } from './oauth2.service';
-import { Token } from '../entities/token.entity';
 import { TokenResponse } from '../interfaces/token.interface';
-import { UserInfoResponse } from '../interfaces/userInfo.interface';
+import { IDTokenInfo } from '../interfaces/userInfo.interface';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { UsersService } from '../../users/users.service';
 import { CredentialService } from './credential.service';
-import { TokenService } from './token.service';
 import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
 
 @Injectable()
@@ -16,10 +14,9 @@ export class GoogleOAuth2Service extends OAuth2Service {
         protected httpService: HttpService,
         protected userService: UsersService,
         protected credentialService: CredentialService,
-        protected tokenService: TokenService,
         private configService: ConfigService,
     ) {
-        super(httpService, userService, credentialService, tokenService);
+        super(httpService, userService, credentialService);
     }
 
     private readonly googleTokenEndpoint = 'https://oauth2.googleapis.com/token';
@@ -29,8 +26,6 @@ export class GoogleOAuth2Service extends OAuth2Service {
         const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
         const clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
         const redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
-
-        console.log(code);
 
         return super.exchangeCodeForToken(
             'google',
@@ -54,7 +49,10 @@ export class GoogleOAuth2Service extends OAuth2Service {
         );
     }
 
-    async getUserInfo(accessToken: string): Promise<UserInfoResponse> {
-        return super.getUserInfo(accessToken, this.googleUserInfoEndpoint);
+    async getUserInfo(id_token: string): Promise<IDTokenInfo> {
+        const parts = id_token.split('.');
+        const idPayload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
+
+        return idPayload;
     }
 }

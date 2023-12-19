@@ -4,12 +4,10 @@ import { OAuth2Dto } from "../dtos/oauth2.dto";
 import { GoogleOAuth2Service } from '../services/google.service';
 import { UsersService } from 'src/modules/users/users.service';
 import { CredentialService } from '../services/credential.service';
-import { TokenService } from '../services/token.service';
-import { User } from '../../users/users.entity';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../interfaces/jwt.interface';
-import { log } from 'console';
-
+import { IdentificationService } from '../services/identification.service';
+import { Logger } from '@nestjs/common';
 
 @ApiTags('oauth2')
 @Controller('oauth2')
@@ -18,9 +16,11 @@ export class OAuth2Controller {
     private readonly goolgleService: GoogleOAuth2Service,
     private readonly userService: UsersService,
     private readonly credentialService: CredentialService,
-    private readonly tokenService: TokenService,
+    private readonly identificationService: IdentificationService,
     private readonly jwtService: JwtService,
   ) { }
+
+  logger = new Logger(OAuth2Controller.name);
 
   @Post('google')
   @ApiOperation({ summary: 'Google OAuth2' })
@@ -39,120 +39,31 @@ export class OAuth2Controller {
   @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiBody({ type: OAuth2Dto })
   async google(@Body() oauth2Dto: OAuth2Dto): Promise<{ access_token: string }> {
+    this.logger.debug("Google OAuth2", { code: oauth2Dto.code });
     const token = await this.goolgleService.exchangeCodeForToken(oauth2Dto.code);
-    //const userInfo = await this.goolgleService.getUserInfo(token.access_token);
+    const userInfo = await this.goolgleService.getUserInfo(token.id_token);
 
-    // Decode the ID token
-    const parts = token.id_token.split('.');
-    const idPayload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
-    console.log(idPayload);
+    this.logger.debug("User Info", userInfo);
 
-    // Check if user exists in database
-    let user = await this.userService.findOneByEmail(idPayload.email);
-    if (!user) {
-      console.log('User not found');
-      // Create new user if not exists
-      user = await this.userService.create(idPayload.email);
-      // Create new credential
-      const newCred = await this.credentialService.create(user.id, null, true);
+    const user = await this.identificationService.identifyUser(
+      userInfo.email,
+      'google',
+      token
+    );
 
-      console.log(newCred);
-
-      // Create new token
-      const tokenEntity = await this.tokenService.create({
-        authenticationId: newCred.id,
-        service: 'google',
-        accessToken: token.access_token,
-        refreshToken: token.refresh_token,
-      });
-
-      console.log(tokenEntity);
-
-      // Sign the user in
-      const payload: JwtPayload = {
-        email: user.email,
-        sub: tokenEntity.id.toString(),
-        token_type: 'oauth2',
-      };
-
-      console.log(payload);
-
-      return {
-        access_token: this.jwtService.sign(payload),
-      };
-    }
-
-    console.log('User found');
-
-    // Check if user has credential
-    const credential = await this.credentialService.findOneByUserId(user.id);
-
-    if (!credential) {
-
-      console.log('Credential not found');
-      // Create new credential
-      const newCred = await this.credentialService.create(user.id, null, true);
-
-      // Create new token
-      const tokenEntity = await this.tokenService.create({
-        authenticationId: newCred.id,
-        service: 'google',
-        accessToken: token.access_token,
-        refreshToken: token.refresh_token,
-      });
-
-      // Sign the user in
-      const payload: JwtPayload = {
-        email: user.email,
-        sub: tokenEntity.id.toString(),
-        token_type: 'oauth2',
-      };
-      return {
-        access_token: this.jwtService.sign(payload),
-      };
-    }
-
-    console.log('Credential found');
-
-    // Check if user has token
-    const tokenEntity = await this.tokenService.findOneByCredentialsId(credential.id);
-
-    if (!tokenEntity) {
-      console.log('Token not found');
-
-      // Create new token
-      const newToken = await this.tokenService.create({
-        authenticationId: credential.id,
-        service: 'google',
-        accessToken: token.access_token,
-        refreshToken: token.refresh_token,
-      });
-
-      // Sign the user in
-      const payload: JwtPayload = {
-        email: user.email,
-        sub: newToken.id.toString(),
-        token_type: 'oauth2',
-      };
-      return {
-        access_token: this.jwtService.sign(payload),
-      };
-    }
-
-    console.log('Token found');
-
-    // Update token
-    await this.tokenService.update(tokenEntity.id, {
-      accessToken: token.access_token,
-      refreshToken: token.refresh_token,
-    });
-
-    // Sign the user in
     const payload: JwtPayload = {
       email: user.email,
-      sub: tokenEntity.id.toString(),
+      sub: user.id.toString(),
       token_type: 'oauth2',
     };
+
+    const response = {
+      access_token: this.jwtService.sign(payload),
+    };
+
+    this.logger.debug("Access Token (local)", response);
+
+    return response;
   }
 
   @Post('discord')
@@ -181,19 +92,20 @@ export class OAuth2Controller {
       // Create new user if not exists
       user = await this.userService.create(userInfo.email);
       // Create new credential
-      await this.credentialService.create(user.id, null, true);
-
-      // Create new token
-      const tokenEntity = await this.tokenService.create({
-        service: 'discord',
-        accessToken: token.access_token,
-        refreshToken: token.refresh_token,
-      });
+      await this.credentialService.create(
+        user.id,
+        'discord',
+        null,
+        token.access_token,
+        token.refresh_token,
+        token.id_token ? token.id_token : null,
+        new Date(),
+      );
 
       // Sign the user in
       const payload: JwtPayload = {
         email: user.email,
-        sub: tokenEntity.id.toString(),
+        sub: user.id.toString(),
         token_type: 'oauth2',
       };
       return {
