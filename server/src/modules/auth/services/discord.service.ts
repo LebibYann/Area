@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { OAuth2Service } from './oauth2.service';
-import { Token } from '../entities/token.entity';
 import { TokenResponse } from '../interfaces/token.interface';
-import { UserInfoResponse } from '../interfaces/userInfo.interface';
+import { IDTokenInfo } from '../interfaces/userInfo.interface';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { UsersService } from '../../users/users.service';
 import { CredentialService } from './credential.service';
-import { TokenService } from './token.service';
 import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
 
 @Injectable()
@@ -16,10 +14,9 @@ export class DiscordOAuth2Service extends OAuth2Service {
         protected httpService: HttpService,
         protected userService: UsersService,
         protected credentialService: CredentialService,
-        protected tokenService: TokenService,
         private configService: ConfigService,
     ) {
-        super(httpService, userService, credentialService, tokenService);
+        super(httpService, userService, credentialService);
     }
 
     private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token';
@@ -54,7 +51,7 @@ export class DiscordOAuth2Service extends OAuth2Service {
         );
     }
 
-    async getUserInfo(accessToken: string): Promise<UserInfoResponse> {
+    async getUserInfo(accessToken: string): Promise<IDTokenInfo> {
         return super.getUserInfo(accessToken, this.discordUserInfoEndpoint);
     }
 }

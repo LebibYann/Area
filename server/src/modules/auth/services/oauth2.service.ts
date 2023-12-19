@@ -2,10 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { CredentialService } from './credential.service';
-import { TokenService } from './token.service';
-import { Token } from '../entities/token.entity';
 import { TokenResponse } from '../interfaces/token.interface';
-import { UserInfoResponse } from '../interfaces/userInfo.interface';
+import { IDTokenInfo } from '../interfaces/userInfo.interface';
 import { UsersService } from 'src/modules/users/users.service';
 import { Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
@@ -18,7 +16,6 @@ export class OAuth2Service {
     protected httpService: HttpService,
     protected userService: UsersService,
     protected credentialService: CredentialService,
-    protected tokenService: TokenService,
   ) { }
 
   private readonly logger = new Logger(OAuth2Service.name);
@@ -98,7 +95,7 @@ export class OAuth2Service {
   async getUserInfo(
     accessToken: string,
     userInfoEndpoint: string
-  ): Promise<UserInfoResponse> {
+  ): Promise<IDTokenInfo> {
     try {
       // Request user info from service
       const response = await firstValueFrom(this.httpService.get(userInfoEndpoint, {
@@ -107,7 +104,7 @@ export class OAuth2Service {
         }
       }));
 
-      return { id: response.data.sub, email: response.data.email }
+      return { ...response.data, accessToken };
     } catch (error) {
       if ( error instanceof AxiosError ) {
         this.logger.error("Error validating user:", error.response.data);
