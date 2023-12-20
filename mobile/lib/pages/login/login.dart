@@ -24,15 +24,13 @@ class _LoginPage extends State<LoginPage> {
     try {
       var response = await http.post(
         Uri.parse(url),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode({"code": token}),
+        body: ({"code": token}),
       );
 
       if (response.statusCode == 201) {
-        Map<String, dynamic> body = json.decode(response.body);
-        String accessToken = body['access_token'];
-
-        if (accessToken != null) {
+        String accessToken = response.body;
+        print("accessToken= $accessToken");
+        if (accessToken.isNotEmpty) {
           var state = Provider.of<AuthState>(context, listen: false);
           state.accessToken = accessToken;
           nav();
@@ -59,7 +57,7 @@ class _LoginPage extends State<LoginPage> {
           await postAuth2(
               authorizationCode, "http://localhost:8080/oauth2/discord");
         }
-        print('Authorization Code: $authorizationCode');
+        // print('Authorization Code: $authorizationCode');
       });
     });
   }
