@@ -10,48 +10,50 @@ import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
 
 @Injectable()
 export class DiscordOAuth2Service extends OAuth2Service {
-    constructor(
-        protected httpService: HttpService,
-        protected userService: UsersService,
-        protected credentialService: CredentialService,
-        private configService: ConfigService,
-    ) {
-        super(httpService, userService, credentialService);
-    }
+  constructor(
+    protected httpService: HttpService,
+    protected userService: UsersService,
+    protected credentialService: CredentialService,
+    private configService: ConfigService,
+  ) {
+    super(httpService, userService, credentialService);
+  }
 
-    private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token';
-    private readonly discordUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
+  private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token';
+  private readonly discordUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
 
-    async exchangeCodeForToken(code: string): Promise<AccessTokenResponse> {
-        const clientId = this.configService.get<string>('DISCORD_CLIENT_ID');
-        const clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET');
-        const redirectUri = this.configService.get<string>('DISCORD_REDIRECT_URI');
+  async exchangeCodeForToken(
+    code: string,
+    redirectUri: string
+  ): Promise<AccessTokenResponse> {
+    const clientId = this.configService.get<string>('DISCORD_CLIENT_ID');
+    const clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET');
 
-        console.log(code);
+    console.log(code);
 
-        return super.exchangeCodeForToken(
-            'discord',
-            this.discordTokenEndpoint,
-            code,
-            clientId,
-            clientSecret,
-            redirectUri
-        );
-    }
+    return super.exchangeCodeForToken(
+      'discord',
+      this.discordTokenEndpoint,
+      code,
+      clientId,
+      clientSecret,
+      redirectUri
+    );
+  }
 
-    async refreshToken(refreshToken: string): Promise<TokenResponse> {
-        const clientId = 'TODO';
-        const clientSecret = 'TODO';
+  async refreshToken(refreshToken: string): Promise<TokenResponse> {
+    const clientId = 'TODO';
+    const clientSecret = 'TODO';
 
-        return super.refreshToken(
-            this.discordTokenEndpoint,
-            refreshToken,
-            clientId,
-            clientSecret
-        );
-    }
+    return super.refreshToken(
+      this.discordTokenEndpoint,
+      refreshToken,
+      clientId,
+      clientSecret
+    );
+  }
 
-    async getUserInfo(accessToken: string): Promise<IDTokenInfo> {
-        return super.getUserInfo(accessToken, this.discordUserInfoEndpoint);
-    }
+  async getUserInfo(accessToken: string): Promise<IDTokenInfo> {
+    return super.getUserInfo(accessToken, this.discordUserInfoEndpoint);
+  }
 }

@@ -40,7 +40,10 @@ export class OAuth2Controller {
   @ApiBody({ type: OAuth2Dto })
   async google(@Body() oauth2Dto: OAuth2Dto): Promise<{ access_token: string }> {
     this.logger.debug("Google OAuth2", { code: oauth2Dto.code });
-    const token = await this.goolgleService.exchangeCodeForToken(oauth2Dto.code);
+    const token = await this.goolgleService.exchangeCodeForToken(
+      oauth2Dto.code,
+      oauth2Dto.redirectUri
+    );
     const userInfo = await this.goolgleService.getUserInfo(token.id_token);
 
     this.logger.debug("User Info", userInfo);
@@ -83,7 +86,10 @@ export class OAuth2Controller {
   @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiBody({ type: OAuth2Dto })
   async discord(@Body() oauth2Dto: OAuth2Dto): Promise<{ access_token: string }> {
-    const token = await this.goolgleService.exchangeCodeForToken(oauth2Dto.code);
+    const token = await this.goolgleService.exchangeCodeForToken(
+      oauth2Dto.code,
+      oauth2Dto.redirectUri
+    );
     const userInfo = await this.goolgleService.getUserInfo(token.access_token);
 
     // Check if user exists in database
