@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLogin} from "../utils";
 import ServicesList from "./ServicesList";
+import "./Create.css"
+import '../components/Button.css';
+
 
 const Create = (): JSX.Element => {
   const isLogged = useLogin();
@@ -17,22 +20,24 @@ const Create = (): JSX.Element => {
   };
 
   return (
-    <section>
+    <section className="create-container">
       {!display ? (
-        <section>
-          <section onClick={() => updateDisplay()}>
+        <section className="menu-container">
+          <h1 className="title">Create</h1>
+          <section onClick={() => updateDisplay()} className="area-container">
             <span>If this</span>
-            <button>Add</button>
           </section>
-          <div></div>
-          <div></div>
-          <section onClick={() => updateDisplay()}>
+          <div className="separator"></div>
+          <div className="separator"></div>
+          <section onClick={() => updateDisplay()} className="area-container">
             <span>Then that</span>
-            <button>Add</button>
           </section>
         </section>
       ) : (
-        <ServicesList />
+        <section className="services-container">
+          <button onClick={() => updateDisplay()} className="button white-button border">Back</button>
+          <ServicesList />
+        </section>
       )}
     </section>
   );
