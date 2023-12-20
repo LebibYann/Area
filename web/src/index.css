@@ -10,3 +10,9 @@ body {
     font-family: "AvenirNext", sans-serif;
     height: 100vh;
 }
+
+img {
+    width:100%;
+    max-width: 400px;
+    height: auto;
+}

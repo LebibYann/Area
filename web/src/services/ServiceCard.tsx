@@ -18,7 +18,7 @@ const ServiceCard = (service: Service): JSX.Element => {
 
   return (
     <li key={service.name} className="card">
-      <img src={useServiceIcon(service.name)} alt={service.name} />
+      <img src={useServiceIcon(service.name)} alt={service.name} className="service-icon"/>
       <h1>{service.name}</h1>
     </li>
   );
