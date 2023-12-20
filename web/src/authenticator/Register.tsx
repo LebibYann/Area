@@ -8,6 +8,8 @@ const Register = (): JSX.Element => {
     password: "",
   });
 
+  const [error, setError] = React.useState<string>("");
+
   const handleChange = (
     key: string,
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -15,8 +17,8 @@ const Register = (): JSX.Element => {
     setForm({ ...form, [key]: event.target.value });
   };
 
-  const handleInscription = (): void => {
-    fetch("http://localhost:8080/auth/register", {
+  const handleInscription = async (): Promise<void> => {
+    const response = await fetch("http://localhost:8080/auth/register", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -27,14 +29,13 @@ const Register = (): JSX.Element => {
         password: form.password,
       }),
     })
-      .then((response) => {
-        console.log(response.status);
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => console.log(error));
+    const responsejson = await response.json();
+    if (response.status !== 201){
+        console.error(responsejson.message);
+        setError(responsejson.message)  
+    }else {
+      window.location.replace(window.location.origin);
+    }
   };
 
   return (
@@ -57,6 +58,7 @@ const Register = (): JSX.Element => {
             placeholder="Password"
           />
         </div>
+        {error && <p className='error'>{error}</p>}
         <div className="form-submit">
           <input
             type="button"

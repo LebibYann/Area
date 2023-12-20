@@ -1,0 +1,34 @@
+.join-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.oauth-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    justify-content: center;
+    align-items: center;
+}
+
+.oauth-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 450px;
+    height: 80px;
+    text-decoration: none;
+    outline: none;
+    border-radius: 5rem;
+    font-weight: 700;
+    font-size: 1.5em;
+    border: 1px solid black;
+    img {
+        width: 2em;
+        height: auto;
+        margin-right: 1em;
+    }
+}

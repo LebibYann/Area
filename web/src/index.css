@@ -16,3 +16,39 @@ img {
     max-width: 400px;
     height: auto;
 }
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.link {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+}
+
+.title {
+    font-size: 5em;
+    font-weight: 900;
+    margin: 0;
+    margin-bottom: 0.5em;
+}
+
+.google {
+    background-color: white;
+    color: black;
+}
+
+.discord {
+    background-color: #7289DA;
+    color: white;
+}
+
+.spotify {
+    background-color: black;
+    color: white;
+}

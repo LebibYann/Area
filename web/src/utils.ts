@@ -2,14 +2,12 @@ import { LocalStorageKeysEnum, Service } from "./types";
 import google from "./assets/images/GoogleIcon.png";
 import discord from "./assets/images/DiscordIcon.png";
 
-export function useLogin(): boolean {
-  const login = localStorage.getItem("login");
-  if (localStorage.getItem(LocalStorageKeysEnum.LOGIN) === "true") return true;
-  return false;
+export function useLogin(): string | null {
+  return localStorage.getItem("login");
 }
 
-export function login(): void {
-  localStorage.setItem(LocalStorageKeysEnum.LOGIN, "true");
+export function login(access_token: string): void {
+  localStorage.setItem(LocalStorageKeysEnum.LOGIN, access_token);
 }
 
 export function logout(): void {

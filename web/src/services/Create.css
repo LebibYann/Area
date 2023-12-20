@@ -1,0 +1,39 @@
+.create-container {
+    display: flex;
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.services-container {
+    display: flex;
+    margin: auto;
+}
+
+.area-container {
+    display: flex;
+    background-color: black;
+    color: white;
+    font-weight: 900;
+    font-size: 5em;
+    width: 9em;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.area-container:hover {
+    opacity: 90%;
+    cursor: pointer;
+}
+
+.separator {
+    height: 2em;
+    width: 5px;
+    background-color: gainsboro;
+}
