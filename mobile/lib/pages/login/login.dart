@@ -20,12 +20,13 @@ class _LoginPage extends State<LoginPage> {
   final TextEditingController _emailTEC = TextEditingController();
   final TextEditingController _passwordTEC = TextEditingController();
 
-  postAuth2(String token, String url) async {
+  postAuth2(String token, String url, String redirectUri) async {
+    print('postAuth2 func: $token');
     try {
         var response = await http.post(
         Uri.parse(url),
         headers: {"Content-Type": "application/json"},
-        body: json.encode({"code": token}),
+        body: json.encode({"code": token, "uri": redirectUri}),
       );
 
       if (response.statusCode == 201) {
@@ -39,6 +40,19 @@ class _LoginPage extends State<LoginPage> {
           print('Access token not found in the response');
         }
       } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: Text(
+                "Request failed !",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
         print('Request failed: Status ${response.statusCode}');
       }
     } catch (e) {
@@ -46,19 +60,19 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
-  void handleCallback(String auth) {
-    HttpServer.bind('127.0.0.1', 8081).then((server) {
+  void handleCallback(String auth, String redirectUri) {
+    HttpServer.bind('127.0.0.1', 8082).then((server) {
       server.listen((HttpRequest request) async {
         String authorizationCode = request.uri.queryParameters['code'] ?? '';
         await server.close(force: true);
         if (auth == "Google") {
           await postAuth2(
-              authorizationCode, "http://localhost:8080/oauth2/google");
+              authorizationCode, "http://localhost:8080/oauth2/google", redirectUri);
         } else if (auth == "Discord") {
           await postAuth2(
-              authorizationCode, "http://localhost:8080/oauth2/discord");
+              authorizationCode, "http://localhost:8080/oauth2/discord", redirectUri);
         }
-        // print('Authorization Code: $authorizationCode');
+        print('HandleCallBack func: $authorizationCode');
       });
     });
   }
@@ -74,15 +88,17 @@ class _LoginPage extends State<LoginPage> {
   oauth2(String auth) async {
     if (auth == "Google") {
       final clientId = dotenv.env['VITE_GOOGLE_CLIENT_ID'];
+      String redirectUri = "http://localhost:8082/login/auth/google";
       final Uri GoogleUrl = Uri.parse(
-          'https://accounts.google.com/o/oauth2/v2/auth?client_id=$clientId&redirect_uri=http://localhost:8081/login/auth/google&access_type=offline&response_type=code&scope=openid%20profile%20email&include_granted_scopes=true');
+          'https://accounts.google.com/o/oauth2/v2/auth?client_id=$clientId&redirect_uri=$redirectUri&access_type=offline&response_type=code&scope=openid%20profile%20email&include_granted_scopes=true');
       launchURL(GoogleUrl);
-      handleCallback(auth);
+      handleCallback(auth, redirectUri);
     } else if (auth == "Discord") {
+      String redirectUri = "http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord";
       final Uri DiscordUrl = Uri.parse(
-          'https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify');
+          'https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=$redirectUri&scope=identify');
       launchURL(DiscordUrl);
-      handleCallback(auth);
+      handleCallback(auth, redirectUri);
     } else {
       print("Error oauth not existing !");
     }
@@ -99,7 +115,7 @@ class _LoginPage extends State<LoginPage> {
     try {
       var response = await http
           .post(Uri.parse(url), body: {"email": mail, "password": password});
-      //print(response.body);
+      print(response.body);
       if (response.statusCode == 201) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         var authState = Provider.of<AuthState>(context, listen: false);
@@ -110,7 +126,19 @@ class _LoginPage extends State<LoginPage> {
             '\n Email: ${authState.email} \n Access token: ${authState.accessToken}');
         nav();
       } else {
-        // Mauvais identifiants
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: Text(
+                "Email or password are wrong !",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
         print("Email or password are wrong !");
       }
     } catch (e) {
