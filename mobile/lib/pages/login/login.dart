@@ -22,9 +22,10 @@ class _LoginPage extends State<LoginPage> {
 
   postAuth2(String token, String url) async {
     try {
-      var response = await http.post(
+        var response = await http.post(
         Uri.parse(url),
-        body: ({"code": token}),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({"code": token}),
       );
 
       if (response.statusCode == 201) {
