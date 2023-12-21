@@ -7,7 +7,7 @@ export class Credential {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true })
+    @Column()
     userId: number;
 
     @Column()
