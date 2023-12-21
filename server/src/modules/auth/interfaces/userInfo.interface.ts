@@ -12,3 +12,53 @@ export interface IDTokenInfo {
   email: string;
   picture: string;
 }
+
+export interface SpotifyUserInfo {
+  country: string;
+  display_name: string;
+  email: string;
+  explicit_content: {
+    filter_enabled: boolean;
+    filter_locked: boolean;
+  };
+  external_urls: {
+    spotify: string;
+  };
+  followers: {
+    href: null;
+    total: number;
+  };
+  href: string;
+  id: string;
+  images: {
+    height: null;
+    url: string;
+    width: null;
+  }[];
+  product: string;
+  type: string;
+  uri: string;
+}
+
+export interface DiscordUserInfo {
+  application: {
+    id: string;
+    name: string;
+    icon: string;
+    description: string;
+    hooks: boolean;
+    bot_public: boolean;
+    bot_require_code_grant: boolean;
+    verify_key: string;
+  };
+  scopes: string[];
+  expires: string;
+  user: {
+    id: string;
+    username: string;
+    avatar: string;
+    discriminator: string;
+    global_name: string;
+    public_flags: number;
+  };
+}
