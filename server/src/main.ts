@@ -11,11 +11,11 @@ async function bootstrap() {
   expressApp.set('trust proxy', true);
   app.use(requestIp.mw());
 
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+  // app.useGlobalPipes(new ValidationPipe({
+  //   whitelist: true,
+  //   forbidNonWhitelisted: true,
+  //   transform: true,
+  // }));
 
   const options = new DocumentBuilder()
     .setTitle('AREA API')

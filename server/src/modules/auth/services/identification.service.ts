@@ -19,8 +19,10 @@ export class IdentificationService {
     token: AccessTokenResponse,
     user: User,
   ): Promise<Credential> {
-    this.logger.debug("Identify Credentials", { service, token, user });
-    const credential = await this.credentialService.findOneByUserAndService(user, service);
+    const credential = await this.credentialService.findOneByUserAndService(
+      user,
+      service
+    );
     if (credential) {
       this.logger.debug("Credentials found");
       await this.credentialService.update(credential.id, {
