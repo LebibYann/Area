@@ -13,7 +13,8 @@ const Callback = (): JSX.Element => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        code
+        code,
+        redirectUri: "http://localhost:8081/login/auth/" + service,
       }),
     });
     const responsejson = await response.json();
