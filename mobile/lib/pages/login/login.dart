@@ -26,7 +26,7 @@ class _LoginPage extends State<LoginPage> {
         var response = await http.post(
         Uri.parse(url),
         headers: {"Content-Type": "application/json"},
-        body: json.encode({"code": token, "uri": redirectUri}),
+        body: json.encode({"code": token, "redirectUri": redirectUri}),
       );
 
       if (response.statusCode == 201) {
