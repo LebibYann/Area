@@ -26,7 +26,7 @@ const Join = (): JSX.Element => {
     `&scope=${scope}` +
     `&include_granted_scopes=${includeGrantedScopes}`;
 
-    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify"
+    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=email"
 
     const spotifyUrl = "https://accounts.spotify.com/authorize?" + queryString.stringify({
         response_type: "code",
