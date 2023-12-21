@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OAuth2Service } from './oauth2.service';
 import { TokenResponse } from '../interfaces/token.interface';
-import { IDTokenInfo } from '../interfaces/userInfo.interface';
+import { DiscordUserInfo, IDTokenInfo } from '../interfaces/userInfo.interface';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { UsersService } from '../../users/users.service';
@@ -20,40 +20,35 @@ export class DiscordOAuth2Service extends OAuth2Service {
   }
 
   private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token';
-  private readonly discordUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
+  private readonly discordUserInfoEndpoint = 'https://discord.com/api/oauth2/@me';
+
+  private readonly discordClientId = this.configService.get<string>('DISCORD_CLIENT_ID');
+  private readonly discordClientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET');
 
   async exchangeCodeForToken(
     code: string,
     redirectUri: string
   ): Promise<AccessTokenResponse> {
-    const clientId = this.configService.get<string>('DISCORD_CLIENT_ID');
-    const clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET');
-
-    console.log(code);
-
     return super.exchangeCodeForToken(
       'discord',
       this.discordTokenEndpoint,
       code,
-      clientId,
-      clientSecret,
+      this.discordClientId,
+      this.discordClientSecret,
       redirectUri
     );
   }
 
   async refreshToken(refreshToken: string): Promise<TokenResponse> {
-    const clientId = 'TODO';
-    const clientSecret = 'TODO';
-
     return super.refreshToken(
       this.discordTokenEndpoint,
       refreshToken,
-      clientId,
-      clientSecret
+      this.discordClientId,
+      this.discordClientSecret
     );
   }
 
-  async getUserInfo(accessToken: string): Promise<IDTokenInfo> {
+  async getUserInfo(accessToken: string): Promise<DiscordUserInfo> {
     return super.getUserInfo(accessToken, this.discordUserInfoEndpoint);
   }
 }

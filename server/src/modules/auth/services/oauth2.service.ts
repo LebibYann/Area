@@ -9,7 +9,6 @@ import { Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
 
-
 @Injectable()
 export class OAuth2Service {
   constructor(
@@ -29,7 +28,6 @@ export class OAuth2Service {
     redirectUri: string
   ): Promise<AccessTokenResponse> {
     try {
-      // Request token from service
       const response = await firstValueFrom(this.httpService.post(
         tokenEndpoint,
         {
@@ -48,19 +46,17 @@ export class OAuth2Service {
         }
       ));
 
-      this.logger.debug(response.data);
+      this.logger.debug("Exchanged auth code for access token (" + service + ")");
 
       return response.data;
 
     } catch (error) {
+      const error_message = 'Failed to exchange code for token'
       if ( error instanceof AxiosError )
-        this.logger.error("Error exchanging code for token:", error.response.data);
+        this.logger.error(error_message, error.response.data);
       else
-        this.logger.error("Error exchanging code for token:", error);
-      throw new HttpException(
-        'Failed to exchange code for token',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+        this.logger.error(error_message, error);
+      throw new HttpException(error_message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -71,7 +67,6 @@ export class OAuth2Service {
     clientSecret: string
   ): Promise<TokenResponse> {
     try {
-      // Refresh token from service
       const response = await firstValueFrom(this.httpService.post(tokenEndpoint, {
         refresh_token: refreshToken,
         client_id: clientId,
@@ -81,21 +76,16 @@ export class OAuth2Service {
 
       return response.data;
     } catch (error) {
+      const error_message = 'Failed to refresh token'
       if ( error instanceof AxiosError )
-        this.logger.error("Error refreshing token:", error.response.data);
+        this.logger.error(error_message, error.response.data);
       else
-        this.logger.error("Error refreshing token:", error);
-      throw new HttpException(
-        'Failed to refresh token',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
+        this.logger.error(error_message, error);
+      throw new HttpException(error_message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async getUserInfo(
-    accessToken: string,
-    userInfoEndpoint: string
-  ): Promise<IDTokenInfo> {
+  async getUserInfo(accessToken: string, userInfoEndpoint: string) {
     try {
       // Request user info from service
       const response = await firstValueFrom(this.httpService.get(userInfoEndpoint, {
@@ -104,22 +94,15 @@ export class OAuth2Service {
         }
       }));
 
-      return { ...response.data, accessToken };
+      return { ...response.data };
     } catch (error) {
+      const error_message = 'Failed to get user info'
       if ( error instanceof AxiosError ) {
-        this.logger.error("Error validating user:", error.response.data);
+        this.logger.error(error_message, error.response.data);
       } else {
         this.logger.error(error);
       }
-      throw new HttpException(
-        'Failed to validate user',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
+      throw new HttpException(error_message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  async validateUser(email: string): Promise<boolean> {
-    const user = await this.userService.findOneByEmail(email);
-    return !!user;
   }
 }
