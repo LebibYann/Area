@@ -84,10 +84,12 @@ class ProfilePage extends StatelessWidget {
                 fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black),
           ),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginPage()),
-            );
+            if (options[index] == 'Sign out') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
           },
         );
       },
