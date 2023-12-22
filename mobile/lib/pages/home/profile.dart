@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../login/login.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -9,8 +10,7 @@ class ProfilePage extends StatelessWidget {
       body: ListView(
         children: [
           _buildProfileHeader(context),
-          SizedBox(
-              height: 24),
+          SizedBox(height: 24),
           _buildOptionsList(context),
         ],
       ),
@@ -39,8 +39,7 @@ class ProfilePage extends StatelessWidget {
             'MODIFY',
             style: TextStyle(
               fontSize: 13,
-              fontWeight:
-                  FontWeight.bold,
+              fontWeight: FontWeight.bold,
             ),
           ),
           style: ElevatedButton.styleFrom(
@@ -55,9 +54,7 @@ class ProfilePage extends StatelessWidget {
         SizedBox(height: 12),
         Text(
           'user@outlook.fr',
-          style: TextStyle(
-              fontSize: 26,
-              color: Colors.black),
+          style: TextStyle(fontSize: 26, color: Colors.black),
         ),
         SizedBox(height: 16),
       ],
@@ -84,12 +81,13 @@ class ProfilePage extends StatelessWidget {
           title: Text(
             options[index],
             style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: Colors.black),
+                fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black),
           ),
           onTap: () {
-            // Logique de chaque option
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
           },
         );
       },
