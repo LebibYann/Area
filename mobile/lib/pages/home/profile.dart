@@ -1,46 +1,51 @@
 import 'package:flutter/material.dart';
 import '../login/login.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:provider/provider.dart';
+import 'package:mobile/provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: [
-          _buildProfileHeader(context),
-          SizedBox(height: 24),
-          _buildOptionsList(context),
-        ],
-      ),
-    );
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  XFile? _image;
+
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (image != null) {
+        _image = image;
+      }
+    });
   }
 
   Widget _buildProfileHeader(BuildContext context) {
+    final authState = Provider.of<AuthState>(context);
     return Column(
       children: [
         SizedBox(height: 32),
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.grey,
-          child: Icon(
-            Icons.person,
-            size: 50,
-            color: Colors.white,
-          ),
+          backgroundImage:
+              _image != null ? FileImage(File(_image!.path)) : null,
+          child: _image == null
+              ? Icon(Icons.person, size: 50, color: Colors.white)
+              : null,
         ),
         SizedBox(height: 5),
         ElevatedButton(
-          onPressed: () {
-            // Gestion du boutton pour modif le profil
-          },
+          onPressed: _pickImage,
           child: Text(
             'MODIFY',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
           ),
           style: ElevatedButton.styleFrom(
             primary: Colors.white,
@@ -53,11 +58,24 @@ class ProfilePage extends StatelessWidget {
         ),
         SizedBox(height: 12),
         Text(
-          'user@outlook.fr',
+          authState.email,
           style: TextStyle(fontSize: 26, color: Colors.black),
         ),
         SizedBox(height: 16),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView(
+        children: [
+          _buildProfileHeader(context),
+          SizedBox(height: 24),
+          _buildOptionsList(context),
+        ],
+      ),
     );
   }
 
