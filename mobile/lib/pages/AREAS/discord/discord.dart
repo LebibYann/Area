@@ -5,29 +5,24 @@ import 'package:mobile/pages/AREAS/actions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:mobile/provider.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 const Color discordBlue = Color(0xFF7289DA);
 
 class DiscordAREA extends StatelessWidget {
   const DiscordAREA({Key? key}) : super(key: key);
 
-  // Called when we got the auth code to make a api request
-  Future<void> authenticateWithDiscord(
-      String authorizationCode, BuildContext context) async {
+  Future<void> postAuth2(String authorizationCode, String url,
+      String redirectUri, BuildContext context) async {
     final String clientId =
         dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
     final String clientSecret =
         dotenv.env['DISCORD_CLIENT_SECRET'] ?? 'fallbackClientSecret';
 
-    //Todo
-    final String redirectUri = dotenv.env['DISCORD_REDIRECT_URI'] ??
-        'http://localhost:3000/auth/discord/callback';
-
     final response = await http.post(
-      Uri.parse('https://discord.com/api/oauth2/token'),
+      Uri.parse(url),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -47,26 +42,33 @@ class DiscordAREA extends StatelessWidget {
       var authState = Provider.of<AuthState>(context, listen: false);
       authState.accessToken = accessToken;
     } else {
-      // Gestion des erreurs lors de l'échange de code
-      print(
-          'Erreur lors de l\'authentification avec Discord: ${response.body}');
+      print('Error during authentication with Discord: ${response.body}');
     }
   }
 
-  // Called when we click on "Connect", we build the oauthURL and redirect the user to the appropriate page
-  void _launchDiscordOAuth() async {
+  void handleCallback(BuildContext context, String redirectUri) async {
+    HttpServer.bind('127.0.0.1', 8082).then((server) {
+      server.listen((HttpRequest request) async {
+        String authorizationCode = request.uri.queryParameters['code'] ?? '';
+        await server.close(force: true);
+        await postAuth2(authorizationCode,
+            "http://localhost:8080/oauth2/discord", redirectUri, context);
+        print('Authorization Code: $authorizationCode');
+      });
+    });
+  }
+
+  void _launchDiscordOAuth(BuildContext context) async {
     final String clientId =
         dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
     final String scopes = 'identify%20email';
-    final String redirectUri = dotenv.env['DISCORD_REDIRECT_URI'] ??
-        'http://localhost:3000/auth/discord/callback';
-    final String responseType = 'code';
-
+    String redirectUri = "http://localhost:8082/login/auth/discord";
     final Uri oauthUrl = Uri.parse(
-        'https://discord.com/api/oauth2/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=$responseType&scope=$scopes');
+        'https://discord.com/api/oauth2/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=$scopes');
 
     if (await canLaunch(oauthUrl.toString())) {
       await launch(oauthUrl.toString());
+      handleCallback(context, redirectUri);
     } else {
       print("Could not launch the OAuth URL");
     }
@@ -82,125 +84,90 @@ class DiscordAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: initUniLinks(context),
-      builder: (context, snapshot) {
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Discord',
-              style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                  color: discordBlue,
-                  elevation: 10.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Discord',
+          style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              color: discordBlue,
+              elevation: 10.0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      child: Image.asset(
+                        'assets/AREA/discord.png',
+                        height: 100.0,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    const Text(
+                      'Join the community, chat with friends, voice chat, and more with Discord integrations.',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          child: Image.asset(
-                            'assets/AREA/discord.png',
-                            height: 100.0,
+                        ElevatedButton(
+                          onPressed: () => _launchDiscordOAuth(context),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            onPrimary: discordBlue,
                           ),
+                          child: const Text('Connect'),
                         ),
-                        const SizedBox(height: 8.0),
-                        const Text(
-                          'Join the community, chat with friends, voice chat, and more with Discord integrations.',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.white,
+                        ElevatedButton(
+                          onPressed: () {
+                            _launchURL('https://discord.com/');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            onPrimary: discordBlue,
                           ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () => _launchDiscordOAuth(),
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                onPrimary: discordBlue,
-                              ),
-                              child: const Text('Connect'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                _launchURL('https://discord.com/');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                onPrimary: discordBlue,
-                              ),
-                              child: const Text('Visit'),
-                            ),
-                          ],
+                          child: const Text('Visit'),
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(height: 32.0),
-                const Text(
-                  'Triggers',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8.0),
-                ..._buildTriggerButtons(context),
-                const SizedBox(height: 16.0),
-                const Text(
-                  'Actions',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16.0),
-                ..._buildActionsButtons(context),
-              ],
+              ),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 32.0),
+            const Text(
+              'Triggers',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8.0),
+            ..._buildTriggerButtons(context),
+            const SizedBox(height: 16.0),
+            const Text(
+              'Actions',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16.0),
+            ..._buildActionsButtons(context),
+          ],
+        ),
+      ),
     );
   }
 
   // Called as soon as the class is called thanks to the FutureBuilder widget
-  Future<void> initUniLinks(BuildContext context) async {
-    try {
-      final initialLink = await getInitialLink();
-      if (initialLink != null) {
-        final Uri uri = Uri.parse(initialLink);
-        if (uri.queryParameters.containsKey('code')) {
-          final authorizationCode = uri.queryParameters['code'];
-          if (authorizationCode != null) {
-            authenticateWithDiscord(authorizationCode, context);
-          }
-        }
-      }
-
-      getLinksStream().listen((String? link) {
-        if (link != null) {
-          final Uri uri = Uri.parse(link);
-          if (uri.queryParameters.containsKey('code')) {
-            final authorizationCode = uri.queryParameters['code'];
-            if (authorizationCode != null) {
-              authenticateWithDiscord(authorizationCode, context);
-            }
-          }
-        }
-      }, onError: (err) {
-        // Gestion des erreurs de deep link
-      });
-    } catch (e) {
-      print("Error during deep links initialization: $e");
-    }
-  }
 
   List<Widget> _buildTriggerButtons(BuildContext context) {
     return [
