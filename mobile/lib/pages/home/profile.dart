@@ -19,24 +19,27 @@ class _ProfilePageState extends State<ProfilePage> {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (image != null) {
-        _image = image;
-      }
-    });
+    if (image != null) {
+      // Mettez à jour AuthState avec le nouveau chemin d'image
+      Provider.of<AuthState>(context, listen: false).profileImagePath =
+          image.path;
+    }
   }
 
   Widget _buildProfileHeader(BuildContext context) {
     final authState = Provider.of<AuthState>(context);
+    FileImage? profileImage;
+    if (authState.profileImagePath != null) {
+      profileImage = FileImage(File(authState.profileImagePath!));
+    }
     return Column(
       children: [
         SizedBox(height: 32),
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.grey,
-          backgroundImage:
-              _image != null ? FileImage(File(_image!.path)) : null,
-          child: _image == null
+          backgroundImage: profileImage,
+          child: profileImage == null
               ? Icon(Icons.person, size: 50, color: Colors.white)
               : null,
         ),
