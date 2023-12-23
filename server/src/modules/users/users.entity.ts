@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { ApiProperty } from '@nestjs/swagger';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { ApiProperty } from '@nestjs/swagger'
 
 @Entity()
 export class User {
@@ -9,26 +8,26 @@ export class User {
     example: 1,
     description: 'The unique identifier of the User'
   })
-  id: number;
+    id: number
 
   @Column({ unique: true })
   @ApiProperty({
     example: 'user@example.com',
     description: 'The email of the User'
   })
-  email: string;
+    email: string
 
   @CreateDateColumn()
   @ApiProperty({
     example: '2020-01-01T00:00:00.000Z',
     description: 'The date of creation of the User'
   })
-  created: Date;
+    created: Date
 
   @UpdateDateColumn()
   @ApiProperty({
     example: '2020-01-01T00:00:00.000Z',
     description: 'The date of the last update of the User'
   })
-  updated: Date;
+    updated: Date
 }

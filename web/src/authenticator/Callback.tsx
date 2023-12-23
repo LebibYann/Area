@@ -7,23 +7,28 @@ const Callback = (): JSX.Element => {
 
   const handleOauth2 = async (service: string, code: string): Promise<void> => {
     console.log(`http://localhost:8080/oauth2/${service}`)
-    const response = await fetch(`http://localhost:8080/oauth2/${service}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code
-      }),
-    });
-    const responsejson = await response.json();
-    if (response.status !== 201){
-      console.error(responsejson.message);
-      window.location.replace(window.location.origin + "/login");
-    }else {
-      console.log(responsejson.access_token);
-      login(responsejson.access_token);
-      window.location.replace(window.location.origin);
+    try {
+      const response = await fetch(`http://localhost:8080/oauth2/${service}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code,
+          redirectUri: "http://localhost:8081/login/auth/" + service,
+        }),
+      });
+      const responsejson = await response.json();
+      if (response.status !== 201) {
+        console.error(responsejson.message);
+        window.location.replace(window.location.origin + "/login");
+      } else {
+        console.log(responsejson.access_token);
+        login(responsejson.access_token);
+        window.location.replace(window.location.origin);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

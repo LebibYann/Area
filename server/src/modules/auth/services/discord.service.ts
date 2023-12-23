@@ -1,59 +1,54 @@
-import { Injectable } from '@nestjs/common';
-import { OAuth2Service } from './oauth2.service';
-import { TokenResponse } from '../interfaces/token.interface';
-import { IDTokenInfo } from '../interfaces/userInfo.interface';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
-import { UsersService } from '../../users/users.service';
-import { CredentialService } from './credential.service';
-import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
+import { Injectable } from '@nestjs/common'
+import { OAuth2Service } from './oauth2.service'
+import { type TokenResponse } from '../interfaces/token.interface'
+import { type DiscordUserInfo } from '../interfaces/userInfo.interface'
+import { ConfigService } from '@nestjs/config'
+import { HttpService } from '@nestjs/axios'
+import { UsersService } from '../../users/users.service'
+import { CredentialService } from './credential.service'
+import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
 
 @Injectable()
 export class DiscordOAuth2Service extends OAuth2Service {
-  constructor(
+  constructor (
     protected httpService: HttpService,
     protected userService: UsersService,
     protected credentialService: CredentialService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService
   ) {
-    super(httpService, userService, credentialService);
+    super(httpService, userService, credentialService)
   }
 
-  private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token';
-  private readonly discordUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
+  private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token'
+  private readonly discordUserInfoEndpoint = 'https://discord.com/api/oauth2/@me'
 
-  async exchangeCodeForToken(
+  private readonly discordClientId = this.configService.get<string>('DISCORD_CLIENT_ID')
+  private readonly discordClientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET')
+
+  async exchangeCodeForToken (
     code: string,
     redirectUri: string
   ): Promise<AccessTokenResponse> {
-    const clientId = this.configService.get<string>('DISCORD_CLIENT_ID');
-    const clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET');
-
-    console.log(code);
-
-    return super.exchangeCodeForToken(
+    return await super.exchangeCodeForToken(
       'discord',
       this.discordTokenEndpoint,
       code,
-      clientId,
-      clientSecret,
+      this.discordClientId ?? '',
+      this.discordClientSecret ?? '',
       redirectUri
-    );
+    )
   }
 
-  async refreshToken(refreshToken: string): Promise<TokenResponse> {
-    const clientId = 'TODO';
-    const clientSecret = 'TODO';
-
-    return super.refreshToken(
+  async refreshToken (refreshToken: string): Promise<TokenResponse> {
+    return await super.refreshToken(
       this.discordTokenEndpoint,
       refreshToken,
-      clientId,
-      clientSecret
-    );
+      this.discordClientId ?? '',
+      this.discordClientSecret ?? ''
+    )
   }
 
-  async getUserInfo(accessToken: string): Promise<IDTokenInfo> {
-    return super.getUserInfo(accessToken, this.discordUserInfoEndpoint);
+  async getUserInfo (accessToken: string): Promise<DiscordUserInfo> {
+    return await super.getUserInfo(accessToken, this.discordUserInfoEndpoint)
   }
 }
