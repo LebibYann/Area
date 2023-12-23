@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios'
 import { UsersService } from '../../users/users.service'
 import { CredentialService } from './credential.service'
 import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
+import { googleConfig } from 'config'
 
 @Injectable()
 export class GoogleOAuth2Service extends OAuth2Service {
@@ -19,41 +20,36 @@ export class GoogleOAuth2Service extends OAuth2Service {
     super(httpService, userService, credentialService)
   }
 
-  private readonly googleTokenEndpoint = 'https://oauth2.googleapis.com/token'
-  private readonly googleUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo'
+  private readonly clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET')
 
   async exchangeCodeForToken (
     code: string,
     redirectUri: string
   ): Promise<AccessTokenResponse> {
-    const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID')
-    const clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET')
-
     return await super.exchangeCodeForToken(
       'google',
-      this.googleTokenEndpoint,
+      googleConfig.GOOGLE_TOKEN_ENDPOINT,
       code,
-      clientId ?? '',
-      clientSecret ?? '',
+      googleConfig.GOOGLE_CLIENT_ID,
+      this.clientSecret ?? '',
       redirectUri
     )
   }
 
   async refreshToken (refreshToken: string): Promise<TokenResponse> {
-    const clientId = 'your-google-client-id'
-    const clientSecret = 'your-google-client-secret'
-
     return await super.refreshToken(
-      this.googleTokenEndpoint,
+      googleConfig.GOOGLE_TOKEN_ENDPOINT,
       refreshToken,
-      clientId,
-      clientSecret
+      googleConfig.GOOGLE_CLIENT_ID,
+      this.clientSecret ?? ''
     )
   }
 
   async getUserInfo (idToken: string): Promise<IDTokenInfo> {
     const parts = idToken.split('.')
-    const idPayload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'))
+    const idPayload = JSON.parse(
+      Buffer.from(parts[1], 'base64').toString('utf8')
+    )
 
     return idPayload
   }

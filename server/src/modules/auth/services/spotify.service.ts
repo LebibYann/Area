@@ -6,7 +6,7 @@ import { CredentialService } from './credential.service'
 import { ConfigService } from '@nestjs/config'
 import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
 import { type SpotifyUserInfo } from '../interfaces/userInfo.interface'
-
+import { spotifyConfig } from 'config'
 @Injectable()
 export class SpotifyOAuth2Service extends OAuth2Service {
   constructor (
@@ -18,12 +18,6 @@ export class SpotifyOAuth2Service extends OAuth2Service {
     super(httpService, userService, credentialService)
   }
 
-  private readonly spotifyTokenEndpoint = 'https://accounts.spotify.com/api/token'
-  private readonly spotifyUserInfoEndpoint = 'https://api.spotify.com/v1/me'
-
-  private readonly spotifyClientId = this.configService.get<string>(
-    'SPOTIFY_CLIENT_ID') ?? ''
-
   private readonly spotifyClientSecret = this.configService.get<string>(
     'SPOTIFY_CLIENT_SECRET') ?? ''
 
@@ -33,9 +27,9 @@ export class SpotifyOAuth2Service extends OAuth2Service {
   ): Promise<AccessTokenResponse> {
     return await super.exchangeCodeForToken(
       'spotify',
-      this.spotifyTokenEndpoint,
+      spotifyConfig.SPOTIFY_TOKEN_ENDPOINT,
       code,
-      this.spotifyClientId,
+      spotifyConfig.SPOTIFY_CLIENT_ID,
       this.spotifyClientSecret,
       redirectUri
     )
@@ -48,6 +42,6 @@ export class SpotifyOAuth2Service extends OAuth2Service {
   }
 
   async getUserInfo (accessToken: string): Promise<SpotifyUserInfo> {
-    return await super.getUserInfo(accessToken, this.spotifyUserInfoEndpoint)
+    return await super.getUserInfo(accessToken, spotifyConfig.SPOTIFY_USER_INFO_ENDPOINT)
   }
 }
