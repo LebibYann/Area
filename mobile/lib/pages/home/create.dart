@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/json.dart';
 
 class CreatePage extends StatelessWidget {
 
@@ -27,7 +28,7 @@ class CreatePage extends StatelessWidget {
   Widget _buildRoundedButton(BuildContext context, String text, bool isFilled) {
     return TextButton(
       onPressed: () {
-        // Il manque l'ajout des area quand on clique sur le boutton
+        _showOptionsDialog(context, isFilled);
       },
       style: TextButton.styleFrom(
         primary: Colors.black,
@@ -48,6 +49,42 @@ class CreatePage extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _showOptionsDialog(BuildContext context, bool isAction) async {
+  List<Map<String, dynamic>> options = isAction
+      ? JsonDataSingleton().getAllActions()
+      : JsonDataSingleton().getAllReactions();
+
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(isAction ? 'Choose an Action' : 'Choose a Reaction'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: options.map((option) {
+              return ListTile(
+                title: Text(option['name']),
+                subtitle: Text(option['description']),
+                onTap: () {
+                  // Gérer la sélection de l'action ou réaction ici
+                  if (isAction) {
+                    String selectedAction = option['name'];
+                    print(selectedAction);
+                  } else {
+                    String selectedReaction = option['name'];
+                    print(selectedReaction);
+                  }
+                  Navigator.of(context).pop();
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildConnectingBar() {
     return Container(
