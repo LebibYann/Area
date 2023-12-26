@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios'
 import { UsersService } from '../../users/users.service'
 import { CredentialService } from './credential.service'
 import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
+import { discordConfig } from 'config'
 
 @Injectable()
 export class DiscordOAuth2Service extends OAuth2Service {
@@ -19,11 +20,7 @@ export class DiscordOAuth2Service extends OAuth2Service {
     super(httpService, userService, credentialService)
   }
 
-  private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token'
-  private readonly discordUserInfoEndpoint = 'https://discord.com/api/oauth2/@me'
-
-  private readonly discordClientId = this.configService.get<string>('DISCORD_CLIENT_ID')
-  private readonly discordClientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET')
+  private readonly clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET')
 
   async exchangeCodeForToken (
     code: string,
@@ -31,24 +28,27 @@ export class DiscordOAuth2Service extends OAuth2Service {
   ): Promise<AccessTokenResponse> {
     return await super.exchangeCodeForToken(
       'discord',
-      this.discordTokenEndpoint,
+      discordConfig.DISCORD_TOKEN_ENDPOINT,
       code,
-      this.discordClientId ?? '',
-      this.discordClientSecret ?? '',
+      discordConfig.DISCORD_CLIENT_ID,
+      this.clientSecret ?? '',
       redirectUri
     )
   }
 
   async refreshToken (refreshToken: string): Promise<TokenResponse> {
     return await super.refreshToken(
-      this.discordTokenEndpoint,
+      discordConfig.DISCORD_TOKEN_ENDPOINT,
       refreshToken,
-      this.discordClientId ?? '',
-      this.discordClientSecret ?? ''
+      discordConfig.DISCORD_CLIENT_ID,
+      this.clientSecret ?? ''
     )
   }
 
   async getUserInfo (accessToken: string): Promise<DiscordUserInfo> {
-    return await super.getUserInfo(accessToken, this.discordUserInfoEndpoint)
+    return await super.getUserInfo(
+      accessToken,
+      discordConfig.DISCORD_USER_INFO_ENDPOINT
+    )
   }
 }
