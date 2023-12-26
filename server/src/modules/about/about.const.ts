@@ -44,17 +44,11 @@ export const services: ServiceDto[] = [
   {
     name: 'twitter',
     image: 'assets/logo/twitter.png',
-    actions: [],
-    reactions: []
-  },
-  {
-    name: 'linkedin',
-    image: 'assets/logo/linkedin.png',
     actions: [
-      { name: 'FriendsRequest', description: 'Friends request on LinkedIn' },
+      { name: 'Retweet', description: 'Trigger when your get retweet' },
     ],
     reactions: [
-      { name: 'SendCV', description: 'Send CV to a contact on LinkedIn' },
+      { name: 'Like', description: 'Like a post' },
     ]
   },
   {
