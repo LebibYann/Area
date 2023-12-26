@@ -34,16 +34,16 @@ class _ProfilePageState extends State<ProfilePage> {
     }
     return Column(
       children: [
-        SizedBox(height: 32),
+        const SizedBox(height: 32),
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.grey,
           backgroundImage: profileImage,
           child: profileImage == null
-              ? Icon(Icons.person, size: 50, color: Colors.white)
+              ? const Icon(Icons.person, size: 50, color: Colors.white)
               : null,
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         ElevatedButton(
           onPressed: _pickImage,
           child: Text(
@@ -56,15 +56,15 @@ class _ProfilePageState extends State<ProfilePage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(
           authState.email,
-          style: TextStyle(fontSize: 26, color: Colors.black),
+          style: const TextStyle(fontSize: 26, color: Colors.black),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -75,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: ListView(
         children: [
           _buildProfileHeader(context),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           _buildOptionsList(context),
         ],
       ),
@@ -95,13 +95,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: options.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           title: Text(
             options[index],
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black),
           ),
           onTap: () {

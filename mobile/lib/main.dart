@@ -10,6 +10,7 @@ void main() async {
 
   try {
     await JsonDataSingleton().fetchData();
+    print(JsonDataSingleton().jsonData);
   } catch (e) {
     runApp(const Error());
     return;

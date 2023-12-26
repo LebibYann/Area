@@ -17,6 +17,9 @@ export class ServiceDto {
   @ApiProperty({ example: 'google', description: 'The name of the service' })
     name: string
 
+  @ApiProperty({ example: 'src/assets/logo/googgle.png'})
+    image: string
+
   @ApiProperty({ description: 'The actions of the service', type: [AReaDto] })
     actions: AReaDto[]
 
