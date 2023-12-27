@@ -11,6 +11,15 @@ export class AReaDto {
 
   @ApiProperty({ example: 'Send an email/When a email is received', description: 'The description of the action' })
     description: string
+  
+    @ApiProperty({ example: 'mail: lol@gmail.com', description: 'First param of the request' })
+    param1?: string
+
+    @ApiProperty({ example: 'header: Wake up for the meeting at 9h30', description: 'Second param of the request' })
+    param2?: string
+
+    @ApiProperty({ example: 'body: Guys if you say 9h30, you have to wake up !', description: 'Third param of the request' })
+    param3?: string
 }
 
 export class ServiceDto {
