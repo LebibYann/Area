@@ -6,13 +6,23 @@ import {
 
 export const services: ServiceDto[] = [
   {
-    name: 'google',
-    image: 'assets/logo/google.png',
+    name: 'gmail',
+    image: 'assets/logo/gmail.png',
     actions: [
       { name: 'receiveEmail', description: 'Trigger receiving an email via Gmail' },
     ],
     reactions: [
-      {name: 'uploadImageToDrive',description: 'Upload an image to Google Drive',},
+      {name: 'sendMail',description: 'Send email to someone',},
+    ]
+  },
+  {
+    name: 'gdrive',
+    image: 'assets/logo/gdrive.png',
+    actions: [
+      { name: 'newFile', description: 'Trigger when a new file is uploaded' },
+    ],
+    reactions: [
+      {name: 'saveFile',description: 'Save a file in the drive',},
     ]
   },
   {
