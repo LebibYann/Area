@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:mobile/pages/AREAS/triggers.dart';
 import 'package:mobile/pages/AREAS/actions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -8,6 +7,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile/provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
+
+import 'package:mobile/json.dart';
 
 const Color discordBlue = Color(0xFF7289DA);
 
@@ -84,6 +85,8 @@ class DiscordAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> actions = JsonDataSingleton().getServiceActions('discord');
+    final List<Map<String, dynamic>> reactions = JsonDataSingleton().getServiceReactions('discord');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -153,165 +156,49 @@ class DiscordAREA extends StatelessWidget {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            ..._buildTriggerButtons(context),
+            ..._buildActionsButtons(context, actions),
             const SizedBox(height: 16.0),
             const Text(
               'Actions',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16.0),
-            ..._buildActionsButtons(context),
+            ..._buildActionsButtons(context, reactions),
           ],
         ),
       ),
     );
   }
 
-  // Called as soon as the class is called thanks to the FutureBuilder widget
-
-  List<Widget> _buildTriggerButtons(BuildContext context) {
-    return [
-      ElevatedButton(
+  List<Widget> _buildActionsButtons(
+      BuildContext context, List<Map<String, dynamic>> actions) {
+    return actions.map((action) {
+      return ElevatedButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => TriggerDetails(
-                      color: 0xFF7289DA,
-                      service: 'Discord',
-                      triggerName: 'New pinned message in a channel',
-                      description:
-                          'This Trigger fires when a new message is pinned in a channel you select',
-                      actionText: 'Add this trigger',
-                      onActionTap: () {
-                        // Your action code here
-                      },
-                      logoPath: 'assets/AREA/discord.png',
-                    )),
+              builder: (context) => ActionsDetails(
+                color: 0xFF7289DA,
+                service: 'Discord',
+                triggerName: action['name'],
+                description: action['description'],
+                actionText: 'Add this action',
+                onActionTap: () {
+                  // Your action code here
+                },
+                logoPath: 'assets/AREA/discord.png',
+              ),
+            ),
           );
         },
         style: ElevatedButton.styleFrom(
           primary: discordBlue,
           onPrimary: Colors.white,
         ),
-        child: const Text('New pinned message in a channel'),
-      ),
-      const SizedBox(height: 15.0),
-      ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TriggerDetails(
-                      color: 0xFF7289DA,
-                      service: 'Discord',
-                      triggerName: 'New message in a channel',
-                      description:
-                          'This Trigger fires when a new message is posted in a channel you select',
-                      actionText: 'Add this trigger',
-                      onActionTap: () {
-                        // Your action code here
-                      },
-                      logoPath: 'assets/AREA/discord.png',
-                    )),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          primary: discordBlue,
-          onPrimary: Colors.white,
-        ),
-        child: const Text('New message in a channel'),
-      ),
-      const SizedBox(height: 15.0),
-      ElevatedButton(
-        onPressed: () {
-          // todo
-        },
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                color: Colors.black,
-                width: 2.0,
-              )),
-          primary: Colors.white,
-          onPrimary: Colors.black,
-        ),
-        child: const Text('Suggest a new trigger',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-    ];
-  }
-
-  List<Widget> _buildActionsButtons(BuildContext context) {
-    return [
-      ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ActionsDetails(
-                      color: 0xFF7289DA,
-                      service: 'Discord',
-                      triggerName: 'Post a message to a channel',
-                      description:
-                          'This action will send a message from the IFTTT Bot to the channel you specify',
-                      actionText: 'Add this action',
-                      onActionTap: () {
-                        // Your action code here
-                      },
-                      logoPath: 'assets/AREA/discord.png',
-                    )),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          primary: discordBlue,
-          onPrimary: Colors.white,
-        ),
-        child: const Text('Post a message to a channel'),
-      ),
-      const SizedBox(height: 15.0),
-      ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ActionsDetails(
-                      color: 0xFF7289DA,
-                      service: 'Discord',
-                      triggerName: 'Post a rich message to a channel',
-                      description:
-                          'This action will send a rich message from the IFTTT Bot to the channel you specify',
-                      actionText: 'Add this action',
-                      onActionTap: () {
-                        // Your action code here
-                      },
-                      logoPath: 'assets/AREA/discord.png',
-                    )),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          primary: discordBlue,
-          onPrimary: Colors.white,
-        ),
-        child: const Text('Post a rich message to a channel'),
-      ),
-      const SizedBox(height: 15.0),
-      ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                color: Colors.black,
-                width: 2.0,
-              )),
-          primary: Colors.white,
-          onPrimary: Colors.black,
-        ),
-        child: const Text('Suggest a new action',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-    ];
+        child: Text(action['name']),
+      );
+    }).toList();
   }
 }
+
