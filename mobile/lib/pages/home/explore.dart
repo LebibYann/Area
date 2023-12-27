@@ -6,16 +6,20 @@ import 'package:mobile/pages/AREAS/spotify/spotify.dart';
 import 'package:mobile/pages/AREAS/gdrive/gdrive.dart';
 import 'package:mobile/pages/AREAS/gmail/gmail.dart';
 
+import 'package:mobile/json.dart';
+
 class ExplorePage extends StatelessWidget {
   ExplorePage({Key? key}) : super(key: key);
-  final List<String> areaNames = [
-    'instagram',
-    'facebook',
-    'discord',
-    'spotify',
-    'gdrive',
-    'gmail'
-  ];
+  final List<String> areaNames = JsonDataSingleton().getAllServices();
+  final Map<String, Widget> servicePages = {
+    'instagram': const InstagramAREA(),
+    'facebook': const FacebookAREA(),
+    'discord': const DiscordAREA(),
+    'spotify': const SpotifyAREA(),
+    'gdrive': const GdriveAREA(),
+    'gmail': const GmailAREA(),
+  };
+
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +38,12 @@ class ExplorePage extends StatelessWidget {
         ),
         itemCount: areaNames.length,
         itemBuilder: (context, index) {
+          final page = servicePages[areaNames[index]];
           return Column(
 
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-
               Text(
                 areaNames[index],
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -47,38 +51,13 @@ class ExplorePage extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    if (areaNames[index] == 'instagram') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const InstagramAREA()),
-                );
-              } else if (areaNames[index] == 'facebook') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FacebookAREA()),
-                );
-              } else if (areaNames[index] == 'discord') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DiscordAREA()),
-                );
-              } else if (areaNames[index] == 'spotify') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SpotifyAREA()),
-                );
-              } else if (areaNames[index] == 'gdrive') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const GdriveAREA()),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const GmailAREA()),
-                );
-              }
+                    if (page != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => page),
+                      );
+                    } 
                   },
                   child: Card(
                     elevation: 5,

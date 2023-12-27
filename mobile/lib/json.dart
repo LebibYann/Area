@@ -78,4 +78,21 @@ class JsonDataSingleton {
   }
 }
 
+  List<String> getAllServices() {
+    if (jsonData != null) {
+      final List<dynamic> services = jsonData!['server']['services'];
+      List<String> allServices = [];
+
+      for (var service in services) {
+        if (service.containsKey('name')) {
+          allServices.add(service['name']);
+        }
+      }
+
+      return allServices;
+    } else {
+      return [];
+    }
+  }
+
 }
