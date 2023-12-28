@@ -95,4 +95,60 @@ class JsonDataSingleton {
     }
   }
 
+  int countParametersInAction(String actionName) {
+    if (jsonData != null) {
+      final List<dynamic> services = jsonData!['server']['services'];
+      int parameterCount = 0;
+
+      for (var service in services) {
+        final List<dynamic> actions = service['actions'] ?? [];
+        final List<dynamic> reactions = service['reactions'] ?? [];
+        final List<dynamic> allActions = [...actions, ...reactions];
+
+        for (var action in allActions) {
+          if (action['name'] == actionName) {
+            for (int i = 1; i <= 3; i++) {
+              final paramName = 'param$i';
+              if (action.containsKey(paramName)) {
+                parameterCount++;
+              }
+            }
+          }
+        }
+      }
+
+      return parameterCount;
+    } else {
+      return 0;
+    }
+  }
+
+  List<String> getParameterNamesInAction(String actionName) {
+  if (jsonData != null) {
+    final List<dynamic> services = jsonData!['server']['services'];
+    List<String> parameterNames = [];
+
+    for (var service in services) {
+      final List<dynamic> actions = service['actions'] ?? [];
+      final List<dynamic> reactions = service['reactions'] ?? [];
+      final List<dynamic> allActions = [...actions, ...reactions];
+
+      for (var action in allActions) {
+        if (action['name'] == actionName) {
+          for (int i = 1; i <= 3; i++) {
+            final paramName = 'param$i';
+            if (action.containsKey(paramName)) {
+              parameterNames.add(action[paramName]);
+            }
+          }
+        }
+      }
+    }
+
+    return parameterNames;
+  } else {
+    return [];
+  }
+}
+
 }

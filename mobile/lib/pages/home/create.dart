@@ -3,7 +3,11 @@ import 'package:mobile/json.dart';
 
 class CreatePage extends StatelessWidget {
 
-  const CreatePage({Key? key}) : super(key: key);
+  String selectedAction = "";
+  int numberOfParametersAction = -1;
+  String selectedReaction = "";
+  int numberOfParametersReaction = -1;
+  List<String> params = [];
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +54,47 @@ class CreatePage extends StatelessWidget {
     );
   }
 
+  Widget _buildForm(String name, List<String>fileds) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          name,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        _buildFormFields(fileds),
+        ElevatedButton(
+        onPressed: () {
+          // Fonction appelée lorsque le bouton est pressé
+        },
+        child: const Text('create'),
+      ),
+      ],
+    );
+  }
+
+  Widget _buildFormFields(List<String>fileds) {
+  List<Widget> formFields = [];
+
+  for (var field in fileds) {
+    TextEditingController controller = TextEditingController();
+
+    formFields.add(
+      TextFormField(
+        controller: controller,
+        decoration: InputDecoration(labelText: field),
+      ),
+    );
+
+    formFields.add(SizedBox(height: 8));
+  }
+
+  return Column(
+    children: formFields,
+  );
+}
+
   Future<void> _showOptionsDialog(BuildContext context, bool isAction) async {
   List<Map<String, dynamic>> options = isAction
       ? JsonDataSingleton().getAllActions()
@@ -67,15 +112,60 @@ class CreatePage extends StatelessWidget {
                 title: Text(option['name']),
                 subtitle: Text(option['description']),
                 onTap: () {
-                  // Gérer la sélection de l'action ou réaction ici
                   if (isAction) {
-                    String selectedAction = option['name'];
-                    print(selectedAction);
+                    selectedAction = option['name'];
+                    numberOfParametersAction = JsonDataSingleton().countParametersInAction(selectedAction);
+                    params += JsonDataSingleton().getParameterNamesInAction(selectedAction);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Center(
+                          child: Text(
+                            "$selectedAction choosen!",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
                   } else {
-                    String selectedReaction = option['name'];
-                    print(selectedReaction);
+                    selectedReaction = option['name'];
+                    numberOfParametersReaction = JsonDataSingleton().countParametersInAction(selectedReaction);
+                    params += JsonDataSingleton().getParameterNamesInAction(selectedReaction);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Center(
+                          child: Text(
+                            "$selectedReaction choosen!",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        backgroundColor: Colors.green,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
                   }
                   Navigator.of(context).pop();
+                  if (numberOfParametersReaction != -1 && numberOfParametersAction != -1)
+                  {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                          appBar: AppBar(
+                            title: const Text('Finish your creation by filling informations!'),
+                          ),
+                          body: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [_buildForm('$selectedAction with $selectedReaction', params)],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
                 },
               );
             }).toList(),
