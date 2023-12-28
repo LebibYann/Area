@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return ExplorePage();
       case 2:
-        return const CreatePage();
+        return CreatePage();
       case 3:
         return const ActivityPage();
       case 4:

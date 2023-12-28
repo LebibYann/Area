@@ -9,7 +9,7 @@ export const services: ServiceDto[] = [
     name: 'gmail',
     image: 'assets/logo/gmail.png',
     actions: [
-      { name: 'receiveEmail', description: 'Trigger receiving an email via Gmail' },
+      { name: 'receiveEmail', description: 'Trigger receiving an email via Gmail', param1: 'test', param2: 'test2' },
     ],
     reactions: [
       {name: 'sendMail',description: 'Send email to someone',},
