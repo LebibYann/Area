@@ -5,7 +5,8 @@ import 'package:mobile/pages/AREAS/discord/discord.dart';
 import 'package:mobile/pages/AREAS/spotify/spotify.dart';
 import 'package:mobile/pages/AREAS/gdrive/gdrive.dart';
 import 'package:mobile/pages/AREAS/gmail/gmail.dart';
-
+import 'package:mobile/pages/AREAS/twitter/twitter.dart';
+import 'package:mobile/pages/AREAS/github/github.dart';
 import 'package:mobile/json.dart';
 
 class ExplorePage extends StatelessWidget {
@@ -18,6 +19,8 @@ class ExplorePage extends StatelessWidget {
     'spotify': const SpotifyAREA(),
     'gdrive': const GdriveAREA(),
     'gmail': const GmailAREA(),
+    'twitter': const TwitterAREA(),
+    'github': const GithubAREA(),
   };
 
 
@@ -57,7 +60,7 @@ class ExplorePage extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => page),
                       );
-                    } 
+                    }
                   },
                   child: Card(
                     elevation: 5,
