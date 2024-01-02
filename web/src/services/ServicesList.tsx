@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
-import { useLogin, useServices } from "../utils";
+import { useState } from "react";
+import { useServices } from "../utils";
 import ServiceCard from "./ServiceCard";
 import { Service } from "types";
+import "./ServicesList.css";
+import SearchBar from "../components/SearchBar";
 
 const ServicesList = (): JSX.Element => {
   const services = useServices();
@@ -18,9 +20,9 @@ const ServicesList = (): JSX.Element => {
   };
 
   return (
-    <section>
-      <input type="text" onChange={(e) => updateSearch(e)} value={searchKey} />
-      <ul>
+    <section className="services-list">
+      <SearchBar onChange={(e) => updateSearch(e)} value={searchKey} placeholder="Search Services"/>
+      <ul className="list">
         {searchedServices.map((searchedServices) =>
           ServiceCard(searchedServices)
         )}

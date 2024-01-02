@@ -20,4 +20,135 @@ class JsonDataSingleton {
       throw Exception('Failed to load data');
     }
   }
+
+  List<Map<String, dynamic>> getServiceActions(String serviceName) {
+    if (jsonData != null) {
+      final service = jsonData!['server']['services']
+          .firstWhere((service) => service['name'] == serviceName, orElse: () => {});
+
+      return service.containsKey('actions') ? List.from(service['actions']) : [];
+    } else {
+      return [];
+    }
+  }
+
+  List<Map<String, dynamic>> getAllActions() {
+  if (jsonData != null) {
+    final List<dynamic> services = jsonData!['server']['services'];
+    List<Map<String, dynamic>> allActions = [];
+
+    for (var service in services) {
+      if (service.containsKey('actions')) {
+        allActions.addAll(List.from(service['actions']));
+      }
+    }
+
+    return allActions;
+  } else {
+    return [];
+  }
+}
+
+
+  List<Map<String, dynamic>> getServiceReactions(String serviceName) {
+    if (jsonData != null) {
+      final service = jsonData!['server']['services']
+          .firstWhere((service) => service['name'] == serviceName, orElse: () => {});
+
+      return service.containsKey('reactions') ? List.from(service['reactions']) : [];
+    } else {
+      return [];
+    }
+  }
+
+  List<Map<String, dynamic>> getAllReactions() {
+  if (jsonData != null) {
+    final List<dynamic> services = jsonData!['server']['services'];
+    List<Map<String, dynamic>> allActions = [];
+
+    for (var service in services) {
+      if (service.containsKey('reactions')) {
+        allActions.addAll(List.from(service['reactions']));
+      }
+    }
+
+    return allActions;
+  } else {
+    return [];
+  }
+}
+
+  List<String> getAllServices() {
+    if (jsonData != null) {
+      final List<dynamic> services = jsonData!['server']['services'];
+      List<String> allServices = [];
+
+      for (var service in services) {
+        if (service.containsKey('name')) {
+          allServices.add(service['name']);
+        }
+      }
+
+      return allServices;
+    } else {
+      return [];
+    }
+  }
+
+  int countParametersInAction(String actionName) {
+    if (jsonData != null) {
+      final List<dynamic> services = jsonData!['server']['services'];
+      int parameterCount = 0;
+
+      for (var service in services) {
+        final List<dynamic> actions = service['actions'] ?? [];
+        final List<dynamic> reactions = service['reactions'] ?? [];
+        final List<dynamic> allActions = [...actions, ...reactions];
+
+        for (var action in allActions) {
+          if (action['name'] == actionName) {
+            for (int i = 1; i <= 3; i++) {
+              final paramName = 'param$i';
+              if (action.containsKey(paramName)) {
+                parameterCount++;
+              }
+            }
+          }
+        }
+      }
+
+      return parameterCount;
+    } else {
+      return 0;
+    }
+  }
+
+  List<String> getParameterNamesInAction(String actionName) {
+  if (jsonData != null) {
+    final List<dynamic> services = jsonData!['server']['services'];
+    List<String> parameterNames = [];
+
+    for (var service in services) {
+      final List<dynamic> actions = service['actions'] ?? [];
+      final List<dynamic> reactions = service['reactions'] ?? [];
+      final List<dynamic> allActions = [...actions, ...reactions];
+
+      for (var action in allActions) {
+        if (action['name'] == actionName) {
+          for (int i = 1; i <= 3; i++) {
+            final paramName = 'param$i';
+            if (action.containsKey(paramName)) {
+              parameterNames.add(action[paramName]);
+            }
+          }
+        }
+      }
+    }
+
+    return parameterNames;
+  } else {
+    return [];
+  }
+}
+
 }

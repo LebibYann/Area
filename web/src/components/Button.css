@@ -1,0 +1,40 @@
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    padding: 0.2rem 1rem;
+    width: 100px;
+    height: 40px;
+    border-radius: 5em;
+    text-decoration: none;
+}
+
+.button:hover {
+    opacity: 0.95;
+    cursor: pointer;
+}
+
+.button:active {
+    opacity: 0.90;
+}
+
+.black-button {
+    color: white;
+    background-color: black;
+}
+
+.white-button {
+    color: black;
+    background-color: white;
+}
+
+.border {
+    border: 0.25em solid black;
+}
+
+.text {
+    color: black;
+    font-size: 1.2em;
+    text-decoration: none;
+}

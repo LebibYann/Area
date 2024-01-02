@@ -1,35 +1,25 @@
 import React, { MutableRefObject, useEffect, useRef } from 'react';
 import './Authenticator.css';
 import { login, useLogin } from '../utils';
+import queryString from 'query-string';
+
 
 export interface LoginFormData {
     email: string;
     password: string;
 }
 
+
 const Login = (): JSX.Element => {
 
-    const domain = "https://accounts.google.com/o/oauth2/v2/auth";
-    const redirectUri = "http://localhost:8081/login/auth/google";
-    const responseType = "code";
-    const accessType = "offline";
-    const scope = "openid%20profile%20email";
-    const includeGrantedScopes = "true";
-
-    const googleUrl = domain + 
-    `?client_id=` + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-    `&redirect_uri=${redirectUri}` +
-    `&access_type=${accessType}` +
-    `&response_type=${responseType}` +
-    `&scope=${scope}` +
-    `&include_granted_scopes=${includeGrantedScopes}`;
-
-    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify"
+    
 
     const [form, setForm] = React.useState<LoginFormData>({
         email: '',
         password: ''
     });
+
+    const [error, setError] = React.useState<string>("");
 
     useEffect(() => {
         const isLogged = useLogin();
@@ -46,9 +36,9 @@ const Login = (): JSX.Element => {
         setForm({...form, [key]: event.target.value});
     }
 
-    const handleConnection = (): void => {
-        fetch("http://localhost:8080/auth/login", {
-        method: "GET",
+    const handleConnection = async (): Promise<void> => {
+        const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -58,12 +48,16 @@ const Login = (): JSX.Element => {
               "email": form.email,
               "password": form.password
             }),
-        }).then((response) => {
-            console.log(response.status);
-            return (response.json());
-        }).then((data) => {
-            login();
-        }).catch((error) => console.log(error));
+        })
+        const responsejson = await response.json();
+        if (response.status !== 201){
+            console.error(responsejson.message);
+            setError(responsejson.message)
+        }else {
+            console.log(responsejson.access_token);
+            login(responsejson.access_token);
+            window.location.replace(window.location.origin);
+        }
     };
 
     return (
@@ -78,12 +72,7 @@ const Login = (): JSX.Element => {
                 <div className='form-input'>
                     <input onChange={(e): void => handleChange("password", e)} value={form.password} type="Password" placeholder='Password'/>
                 </div>
-                <div>
-                    <a href={googleUrl}>Connect with Google</a>
-                </div>
-                <div>
-                    <a href={discordUrl}>Connect with Discord</a>
-                </div>
+                {error && <p className='error'>{error}</p>}
                 <div className='form-submit'>
                     <input type='button' value={"Log in"} onClick={handleConnection}/>
                 </div>

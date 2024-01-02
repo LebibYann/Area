@@ -36,5 +36,5 @@ WORKDIR /app
 RUN flutter build apk --release
 
 # Place the app in the shared volume
-RUN mkdir -p /app/shared
-RUN cp build/app/outputs/flutter-apk/app-release.apk /app/shared/app-release.apk
+RUN mkdir -p /usr/src/app/shared
+RUN cp build/app/outputs/flutter-apk/app-release.apk /usr/src/app/shared/app-release.apk

@@ -1,0 +1,17 @@
+li.card {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20;
+    box-shadow: 0 1.5px 6px 0 rgba(0,0,0,.24);
+    border-radius: 0.5em;
+    width: 200px;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.service-icon {
+    width: 50px;
+    border-radius: 2em;
+}

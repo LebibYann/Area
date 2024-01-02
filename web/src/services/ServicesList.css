@@ -1,0 +1,13 @@
+ul.list {
+    display: flex;
+    gap: 1em;
+    padding: 0;
+}
+
+section.services-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2em;
+    gap: 2em;
+}

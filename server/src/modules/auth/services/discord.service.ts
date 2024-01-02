@@ -1,60 +1,54 @@
-import { Injectable } from '@nestjs/common';
-import { OAuth2Service } from './oauth2.service';
-import { Token } from '../entities/token.entity';
-import { TokenResponse } from '../interfaces/token.interface';
-import { UserInfoResponse } from '../interfaces/userInfo.interface';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
-import { UsersService } from '../../users/users.service';
-import { CredentialService } from './credential.service';
-import { TokenService } from './token.service';
-import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
+import { Injectable } from '@nestjs/common'
+import { OAuth2Service } from './oauth2.service'
+import { type TokenResponse } from '../interfaces/token.interface'
+import { type DiscordUserInfo } from '../interfaces/userInfo.interface'
+import { ConfigService } from '@nestjs/config'
+import { HttpService } from '@nestjs/axios'
+import { UsersService } from '../../users/users.service'
+import { CredentialService } from './credential.service'
+import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
+import { discordConfig } from 'config'
 
 @Injectable()
 export class DiscordOAuth2Service extends OAuth2Service {
-    constructor(
-        protected httpService: HttpService,
-        protected userService: UsersService,
-        protected credentialService: CredentialService,
-        protected tokenService: TokenService,
-        private configService: ConfigService,
-    ) {
-        super(httpService, userService, credentialService, tokenService);
-    }
+  constructor (
+    protected httpService: HttpService,
+    protected userService: UsersService,
+    protected credentialService: CredentialService,
+    private readonly configService: ConfigService
+  ) {
+    super(httpService, userService, credentialService)
+  }
 
-    private readonly discordTokenEndpoint = 'https://discord.com/api/oauth2/token';
-    private readonly discordUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
+  private readonly clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET')
 
-    async exchangeCodeForToken(code: string): Promise<AccessTokenResponse> {
-        const clientId = this.configService.get<string>('DISCORD_CLIENT_ID');
-        const clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET');
-        const redirectUri = this.configService.get<string>('DISCORD_REDIRECT_URI');
+  async exchangeCodeForToken (
+    code: string,
+    redirectUri: string
+  ): Promise<AccessTokenResponse> {
+    return await super.exchangeCodeForToken(
+      'discord',
+      discordConfig.DISCORD_TOKEN_ENDPOINT,
+      code,
+      discordConfig.DISCORD_CLIENT_ID,
+      this.clientSecret ?? '',
+      redirectUri
+    )
+  }
 
-        console.log(code);
+  async refreshToken (refreshToken: string): Promise<TokenResponse> {
+    return await super.refreshToken(
+      discordConfig.DISCORD_TOKEN_ENDPOINT,
+      refreshToken,
+      discordConfig.DISCORD_CLIENT_ID,
+      this.clientSecret ?? ''
+    )
+  }
 
-        return super.exchangeCodeForToken(
-            'discord',
-            this.discordTokenEndpoint,
-            code,
-            clientId,
-            clientSecret,
-            redirectUri
-        );
-    }
-
-    async refreshToken(refreshToken: string): Promise<TokenResponse> {
-        const clientId = 'TODO';
-        const clientSecret = 'TODO';
-
-        return super.refreshToken(
-            this.discordTokenEndpoint,
-            refreshToken,
-            clientId,
-            clientSecret
-        );
-    }
-
-    async getUserInfo(accessToken: string): Promise<UserInfoResponse> {
-        return super.getUserInfo(accessToken, this.discordUserInfoEndpoint);
-    }
+  async getUserInfo (accessToken: string): Promise<DiscordUserInfo> {
+    return await super.getUserInfo(
+      accessToken,
+      discordConfig.DISCORD_USER_INFO_ENDPOINT
+    )
+  }
 }

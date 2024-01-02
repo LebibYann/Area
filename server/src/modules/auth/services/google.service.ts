@@ -1,60 +1,56 @@
-import { Injectable } from '@nestjs/common';
-import { OAuth2Service } from './oauth2.service';
-import { Token } from '../entities/token.entity';
-import { TokenResponse } from '../interfaces/token.interface';
-import { UserInfoResponse } from '../interfaces/userInfo.interface';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
-import { UsersService } from '../../users/users.service';
-import { CredentialService } from './credential.service';
-import { TokenService } from './token.service';
-import { AccessTokenResponse } from '../interfaces/accessTokenRes.interface';
+import { Injectable } from '@nestjs/common'
+import { OAuth2Service } from './oauth2.service'
+import { type TokenResponse } from '../interfaces/token.interface'
+import { type IDTokenInfo } from '../interfaces/userInfo.interface'
+import { ConfigService } from '@nestjs/config'
+import { HttpService } from '@nestjs/axios'
+import { UsersService } from '../../users/users.service'
+import { CredentialService } from './credential.service'
+import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
+import { googleConfig } from 'config'
 
 @Injectable()
 export class GoogleOAuth2Service extends OAuth2Service {
-    constructor(
-        protected httpService: HttpService,
-        protected userService: UsersService,
-        protected credentialService: CredentialService,
-        protected tokenService: TokenService,
-        private configService: ConfigService,
-    ) {
-        super(httpService, userService, credentialService, tokenService);
-    }
+  constructor (
+    protected httpService: HttpService,
+    protected userService: UsersService,
+    protected credentialService: CredentialService,
+    private readonly configService: ConfigService
+  ) {
+    super(httpService, userService, credentialService)
+  }
 
-    private readonly googleTokenEndpoint = 'https://oauth2.googleapis.com/token';
-    private readonly googleUserInfoEndpoint = 'https://openidconnect.googleapis.com/v1/userinfo';
+  private readonly clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET')
 
-    async exchangeCodeForToken(code: string): Promise<AccessTokenResponse> {
-        const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
-        const clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET');
-        const redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
+  async exchangeCodeForToken (
+    code: string,
+    redirectUri: string
+  ): Promise<AccessTokenResponse> {
+    return await super.exchangeCodeForToken(
+      'google',
+      googleConfig.GOOGLE_TOKEN_ENDPOINT,
+      code,
+      googleConfig.GOOGLE_CLIENT_ID,
+      this.clientSecret ?? '',
+      redirectUri
+    )
+  }
 
-        console.log(code);
+  async refreshToken (refreshToken: string): Promise<TokenResponse> {
+    return await super.refreshToken(
+      googleConfig.GOOGLE_TOKEN_ENDPOINT,
+      refreshToken,
+      googleConfig.GOOGLE_CLIENT_ID,
+      this.clientSecret ?? ''
+    )
+  }
 
-        return super.exchangeCodeForToken(
-            'google',
-            this.googleTokenEndpoint,
-            code,
-            clientId,
-            clientSecret,
-            redirectUri
-        );
-    }
+  async getUserInfo (idToken: string): Promise<IDTokenInfo> {
+    const parts = idToken.split('.')
+    const idPayload = JSON.parse(
+      Buffer.from(parts[1], 'base64').toString('utf8')
+    )
 
-    async refreshToken(refreshToken: string): Promise<TokenResponse> {
-        const clientId = 'your-google-client-id';
-        const clientSecret = 'your-google-client-secret';
-
-        return super.refreshToken(
-            this.googleTokenEndpoint,
-            refreshToken,
-            clientId,
-            clientSecret
-        );
-    }
-
-    async getUserInfo(accessToken: string): Promise<UserInfoResponse> {
-        return super.getUserInfo(accessToken, this.googleUserInfoEndpoint);
-    }
+    return idPayload
+  }
 }
