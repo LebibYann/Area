@@ -21,11 +21,11 @@ const Callback = (): JSX.Element => {
       const responsejson = await response.json();
       if (response.status !== 201) {
         console.error(responsejson.message);
-        window.location.replace(window.location.origin + "/login");
+        //window.location.replace(window.location.origin + "/join");
       } else {
         console.log(responsejson.access_token);
         login(responsejson.access_token);
-        window.location.replace(window.location.origin);
+        //window.location.replace(window.location.origin);
       }
     } catch (error) {
       console.error(error);
@@ -38,7 +38,7 @@ const Callback = (): JSX.Element => {
 
     if (query.code !== null)
       handleOauth2(service, query.code as string);
-    window.location.replace(window.location.origin + "/login");
+    //window.location.replace(window.location.origin + "/join");
   }, []);
 
   return (

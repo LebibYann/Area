@@ -9,10 +9,7 @@ export interface LoginFormData {
     password: string;
 }
 
-
 const Login = (): JSX.Element => {
-
-    
 
     const [form, setForm] = React.useState<LoginFormData>({
         email: '',
