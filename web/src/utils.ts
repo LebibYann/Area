@@ -14,10 +14,31 @@ export function logout(): void {
   localStorage.removeItem(LocalStorageKeysEnum.LOGIN);
 }
 
-export function useServices(): Service[] {
-  return [
-    { name: "google", actions: [], reactions: [] },
-    { name: "discord", actions: [], reactions: [] },
-  ];
+export async function useServices(): Promise<Service[]> {
+  try {
+    const response = await fetch("http://localhost:8080/about.json", {
+      method: "GET",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data.server.services);
+    return data.server.services;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
 }
 
+export async function useService(serviceName: string): Promise<Service | undefined> {
+  const services = await useServices();
+
+  return services.find((service) => service.name === serviceName);
+}

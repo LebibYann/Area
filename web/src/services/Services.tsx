@@ -3,7 +3,7 @@ import ServicesList from "./ServicesList";
 const Services = (): JSX.Element => {
 
     return (
-        <ServicesList />
+        <ServicesList/>
     );
 }
 

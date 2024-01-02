@@ -20,6 +20,7 @@ const App = (): JSX.Element => {
           <Route path="/login" element={<Login />}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/my_applets" element={<Applets/>}/>
+          <Route path="/my_applets/:id/*" element={<Applets/>}/>
           <Route path="/create" element={<Create/>}/>
           <Route path="/login/auth/:id/*" element={<Callback/>}/>
           <Route path='/client.apk' element={<DownloadApk/>}/>

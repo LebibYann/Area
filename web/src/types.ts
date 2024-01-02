@@ -3,18 +3,18 @@ export enum LocalStorageKeysEnum {
     FULLSCREEN = 'fullscreen',
 }
 
-export interface ServiceAction {
-    name: string;
-    description: string;
-}
-
-export interface ServiceReaction {
+export interface Area {
     name: string;
     description: string;
 }
 
 export interface Service {
     name: string;
-    actions: ServiceAction[];
-    reactions: ServiceReaction[];
+    actions: Area[];
+    reactions: Area[];
+}
+
+export interface AppletArea {
+    service: string;
+    area: Area;
 }
