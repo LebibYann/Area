@@ -1,47 +1,54 @@
 import 'package:flutter/material.dart';
+import '../login/login.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:provider/provider.dart';
+import 'package:mobile/provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: [
-          _buildProfileHeader(context),
-          SizedBox(
-              height: 24),
-          _buildOptionsList(context),
-        ],
-      ),
-    );
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  XFile? _image;
+
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      // Mettez à jour AuthState avec le nouveau chemin d'image
+      Provider.of<AuthState>(context, listen: false).profileImagePath =
+          image.path;
+    }
   }
 
   Widget _buildProfileHeader(BuildContext context) {
+    final authState = Provider.of<AuthState>(context);
+    FileImage? profileImage;
+    if (authState.profileImagePath != null) {
+      profileImage = FileImage(File(authState.profileImagePath!));
+    }
     return Column(
       children: [
-        SizedBox(height: 32),
+        const SizedBox(height: 32),
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.grey,
-          child: Icon(
-            Icons.person,
-            size: 50,
-            color: Colors.white,
-          ),
+          backgroundImage: profileImage,
+          child: profileImage == null
+              ? const Icon(Icons.person, size: 50, color: Colors.white)
+              : null,
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         ElevatedButton(
-          onPressed: () {
-            // Gestion du boutton pour modif le profil
-          },
+          onPressed: _pickImage,
           child: Text(
             'MODIFY',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight:
-                  FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
           ),
           style: ElevatedButton.styleFrom(
             primary: Colors.white,
@@ -49,18 +56,29 @@ class ProfilePage extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(
-          'user@outlook.fr',
-          style: TextStyle(
-              fontSize: 26,
-              color: Colors.black),
+          authState.email,
+          style: const TextStyle(fontSize: 26, color: Colors.black),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView(
+        children: [
+          _buildProfileHeader(context),
+          const SizedBox(height: 24),
+          _buildOptionsList(context),
+        ],
+      ),
     );
   }
 
@@ -77,19 +95,22 @@ class ProfilePage extends StatelessWidget {
 
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: options.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           title: Text(
             options[index],
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: Colors.black),
+            style: const TextStyle(
+                fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black),
           ),
           onTap: () {
-            // Logique de chaque option
+            if (options[index] == 'Sign out') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            }
           },
         );
       },

@@ -7,7 +7,14 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await JsonDataSingleton().fetchData();
+
+  try {
+    await JsonDataSingleton().fetchData();
+    print(JsonDataSingleton().jsonData);
+  } catch (e) {
+    runApp(const Error());
+    return;
+  }
   await dotenv.load();
 
   runApp(
@@ -16,6 +23,27 @@ void main() async {
       child: const MyApp(),
     ),
   );
+}
+
+class Error extends StatelessWidget {
+  const Error({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            color: Colors.red,
+            child: const Text(
+              'Server Error',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
