@@ -44,15 +44,15 @@ const Join = (): JSX.Element => {
             <h1 className="title">Get Started</h1>
             <section className="oauth-container">
                 <a href={googleUrl} className='oauth-button google'>
-                    <img src={Google}/>
+                    <img src={Google} className="service-icon"/>
                     Connect with Google
                 </a>
                 <a href={discordUrl} className='oauth-button discord'>
-                    <img src={Discord}/>
+                    <img src={Discord} className="service-icon"/>
                     Connect with Discord
                 </a>
                 <a href={spotifyUrl} className='oauth-button spotify'>
-                    <img src={Spotify}/>
+                    <img src={Spotify} className="service-icon"/>
                     Connect with Spotify
                 </a>
             </section>
