@@ -5,6 +5,10 @@ import { type Credential } from '../entities/credential.entity'
 import { type User } from 'src/modules/users/users.entity'
 import { UsersService } from 'src/modules/users/users.service'
 
+/**
+ * IdentificationService
+ * Service responsible for identificate Users and Credentials.
+ */
 @Injectable()
 export class IdentificationService {
   constructor (
@@ -14,6 +18,13 @@ export class IdentificationService {
 
   logger = new Logger(IdentificationService.name)
 
+  /**
+   * Identify or create credentials for a user and a specific service.
+   * @param service - The name of the service for which credentials are being identified.
+   * @param token - The access token response obtained from the service.
+   * @param user - The user for whom credentials are being identified.
+   * @returns Identified or created credentials.
+   */
   async identifyCredentials (
     service: string,
     token: AccessTokenResponse,
@@ -46,6 +57,13 @@ export class IdentificationService {
     return credential
   }
 
+  /**
+   * Identify or create a user based on the provided email.
+   * @param email - The email of the user to be identified.
+   * @param service - The name of the service for which credentials are being identified.
+   * @param token - The access token response obtained from the service.
+   * @returns Identified or created user.
+   */
   async identifyUser (
     email: string,
     service?: string,

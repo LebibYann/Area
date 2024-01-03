@@ -6,6 +6,10 @@ import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
 import * as path from 'path'
 
+/**
+ * AppModule
+ * Root module of the application, importing other modules and setting up configurations.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot({

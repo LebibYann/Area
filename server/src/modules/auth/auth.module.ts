@@ -18,6 +18,10 @@ import { IdentificationService } from './services/identification.service'
 import { DiscordOAuth2Service } from './services/discord.service'
 import { SpotifyOAuth2Service } from './services/spotify.service'
 
+/**
+ * AuthModule
+ * Module responsible for handling authentication-related functionalities.
+ */
 @Module({
   imports: [
     forwardRef(() => UsersModule),

@@ -13,6 +13,10 @@ import { type User } from 'src/modules/users/users.entity'
 import { type JwtPayload } from '../interfaces/jwt.interface'
 import { CredentialService } from '../services/credential.service'
 
+/**
+ * JwtStrategy
+ * Strategy for validating JWT tokens.
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor (
@@ -29,6 +33,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   private readonly logger = new Logger(JwtStrategy.name)
 
+  /**
+   * Validate the payload of the JWT token.
+   * @param payload - The payload of the JWT token.
+   * @returns User object if the token is valid.
+   */
   async validate (payload: JwtPayload): Promise<User> {
     if (payload.token_type === 'local') {
       const user = await this.usersService.findOneByEmail(payload.email)

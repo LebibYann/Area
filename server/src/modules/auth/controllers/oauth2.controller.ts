@@ -15,6 +15,9 @@ import { LocalTokenDto } from '../dtos/localTokenResponse'
 import { DiscordOAuth2Service } from '../services/discord.service'
 import { SpotifyOAuth2Service } from '../services/spotify.service'
 
+/**
+ * Controller for OAuth2 authentication.
+ */
 @ApiTags('oauth2')
 @Controller('oauth2')
 export class OAuth2Controller {
@@ -28,6 +31,10 @@ export class OAuth2Controller {
 
   logger = new Logger(OAuth2Controller.name)
 
+  /**
+   * Login with Google OAuth2.
+   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   */
   @Post('google')
   @ApiOperation({ summary: 'Google OAuth2' })
   @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
@@ -65,6 +72,10 @@ export class OAuth2Controller {
     return response
   }
 
+  /**
+   * Login with Discord OAuth2.
+   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   */
   @Post('discord')
   @ApiOperation({ summary: 'Discord OAuth2' })
   @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
@@ -101,6 +112,10 @@ export class OAuth2Controller {
     }
   }
 
+  /**
+   * Login with Spotify OAuth2.
+   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   */
   @Post('spotify')
   @ApiOperation({ summary: 'Spotify OAuth2' })
   @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })

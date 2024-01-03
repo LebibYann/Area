@@ -6,11 +6,18 @@ import { RegisterDto } from '../dtos/register.dto'
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger'
 import { User } from 'src/modules/users/users.entity'
 
+/**
+ * Controller for user authentication.
+ */
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor (private readonly authService: AuthService) {}
 
+  /**
+   * Authenticate and login.
+   * @returns {Promise<{ access_token: string }>} Access token.
+   */
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @ApiOperation({ summary: 'Login' })
@@ -32,6 +39,10 @@ export class AuthController {
     return await this.authService.login(loginDto)
   }
 
+  /**
+   * Register a new user.
+   * @returns {Promise<User>} Registered user.
+   */
   @Post('register')
   @ApiOperation({ summary: 'Register' })
   @ApiCreatedResponse({

@@ -2,8 +2,10 @@ import {
   type ServiceDto
 } from './about.dto'
 
-// 12 minimum
-
+/**
+ * About.json
+ * Format of the about.json
+ */
 export const services: ServiceDto[] = [
   {
     name: 'gmail',
