@@ -5,6 +5,8 @@ import { AboutModule } from './modules/about/about.module'
 import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
 import * as path from 'path'
+import { ActionModule } from './modules/actionsTriggers/action.module'
+import { AreaModule } from './modules/area/area.module'
 
 @Module({
   imports: [
@@ -24,7 +26,9 @@ import * as path from 'path'
     }),
     AboutModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    ActionModule,
+    AreaModule
   ],
   controllers: [],
   providers: []
