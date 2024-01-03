@@ -21,13 +21,13 @@ import {
 import {
   RequestWithUser
 } from "src/common/interfaces/requestwithUser.interface";
-import { ActionTriggerService } from "./actionTrigger.service";
+import { EventService } from "./event.service";
 import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("actions")
 @Controller(["actions", "triggers"])
-export class ActionController {
-  constructor (private readonly actionTriggerService: ActionTriggerService) {}
+export class EventController {
+  constructor (private readonly eventService: EventService) {}
 
   @Post(':service/:event')
   @UseGuards(AuthGuard('jwt'))
@@ -35,7 +35,7 @@ export class ActionController {
   @ApiOperation({ summary: 'Create an action' })
   @ApiOkResponse({ description: 'The action has been created' })
   @ApiUnauthorizedResponse({ description: 'Invalid access token' })
-  @ApiBadRequestResponse({ description: 'Invalid service, action or parameters' })
+  @ApiBadRequestResponse({ description: 'Invalid service, event or parameters' })
   async create(
     @Param('service') service: number,
     @Param('event') event: number,
@@ -46,7 +46,7 @@ export class ActionController {
     if (req.user == null) {
       throw new InternalServerErrorException('Error with JWT strategy.')
     }
-    return await this.actionTriggerService.create(
+    return await this.eventService.create(
       req.user.id,
       req.url.includes('actions'),
       service,
@@ -68,18 +68,17 @@ export class ActionController {
     @Param('id') id: number,
     @Body() parameters: any,
     @Request() req: RequestWithUser
-  )
-  : Promise<any> {
+  ) : Promise<any> {
     if (req.user == null) {
       throw new InternalServerErrorException('Error with JWT strategy.')
     }
 
-    const events = await this.actionTriggerService.findByUser(req.user.id);
+    const events = await this.eventService.findByUser(req.user.id);
     if (!events || events.filter(e => e.id === id).length === 0) {
       throw new BadRequestException('Invalid event id.');
     }
 
-    return await this.actionTriggerService.update(
+    return await this.eventService.update(
       id,
       {
         userId: req.user.id,
@@ -106,11 +105,11 @@ export class ActionController {
       throw new InternalServerErrorException('Error with JWT strategy.')
     }
 
-    const events = await this.actionTriggerService.findByUser(req.user.id);
+    const events = await this.eventService.findByUser(req.user.id);
     if (!events || events.filter(e => e.id === id).length === 0) {
       throw new BadRequestException('Invalid event id.');
     }
 
-    return await this.actionTriggerService.delete(id);
+    return await this.eventService.delete(id);
   }
 }

@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ActionTrigger } from "../actionsTriggers/actionTrigger.entity";
+import { Event } from "../events/event.entity";
 import { User } from "../users/users.entity";
 
 @Entity()
@@ -23,11 +23,11 @@ export class Area {
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @ManyToOne(() => ActionTrigger)
+  @ManyToOne(() => Event)
   @JoinColumn({ name: "actionId" })
-  action: ActionTrigger;
+  action: Event;
 
-  @ManyToOne(() => ActionTrigger)
+  @ManyToOne(() => Event)
   @JoinColumn({ name: "triggerId" })
-  trigger: ActionTrigger;
+  trigger: Event;
 }

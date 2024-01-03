@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { User } from "../users/users.entity";
 
 @Entity()
-export class ActionTrigger {
+export class Event {
   @PrimaryGeneratedColumn()
   @ApiProperty({
     example: 1,
