@@ -76,13 +76,6 @@ class TriggerDetails extends StatelessWidget {
               style: const TextStyle(fontSize: 16.0),
             ),
           ),
-          const SizedBox(height: 32.0),
-
-            ElevatedButton(
-              onPressed: () => onActionTap(),
-              child: Text(actionText, style: TextStyle(color: Color(color)),),
-
-            ),
         ],
       ),
     );

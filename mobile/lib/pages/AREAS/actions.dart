@@ -23,7 +23,6 @@ class ActionsDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(service),
         centerTitle: true,
         titleTextStyle: TextStyle(
             fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold),
@@ -76,13 +75,6 @@ class ActionsDetails extends StatelessWidget {
               style: const TextStyle(fontSize: 16.0),
             ),
           ),
-          const SizedBox(height: 32.0),
-
-            ElevatedButton(
-              onPressed: () => onActionTap(),
-              child: Text(actionText, style: TextStyle(color: Color(color)),),
-
-            ),
         ],
       ),
     );
