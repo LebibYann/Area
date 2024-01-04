@@ -36,12 +36,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         this.logger.warn('Cannot find user associated with this token.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
-      const credential = await this.credentialService.findOneByUserAndService(user, 'local')
+      const credential = await this.credentialService.findOneByUserAndService(
+        user.id,
+        'local'
+      )
       if (credential == null) {
         this.logger.warn('Cannot find credential associated with this token.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
-      if (await credential.validatePassword(payload.sub)) {
+      if (!await credential.validatePassword(payload.sub)) {
         this.logger.warn('Invalid password.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
@@ -56,7 +59,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         this.logger.warn('Invalid user ID.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
+      return user
     }
-    throw new BadRequestException('Invalid token type. The token type must be either "local" or "oauth2".')
+    throw new BadRequestException('Invalid token type. The token type must be either "local" or "oauth2": ' + payload.token_type)
   }
 }

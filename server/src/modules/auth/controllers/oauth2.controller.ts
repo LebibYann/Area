@@ -4,7 +4,8 @@ import {
   ApiOperation,
   ApiBody,
   ApiOkResponse,
-  ApiBadRequestResponse
+  ApiBadRequestResponse,
+  ApiCreatedResponse
 } from '@nestjs/swagger'
 import { OAuth2Dto } from '../dtos/oauth2.dto'
 import { GoogleOAuth2Service } from '../services/google.service'
@@ -31,6 +32,7 @@ export class OAuth2Controller {
   @Post('google')
   @ApiOperation({ summary: 'Google OAuth2' })
   @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
+  @ApiCreatedResponse({ description: 'User created. Login successful', type: LocalTokenDto })
   @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiBody({ type: OAuth2Dto })
   async google (@Body() oauth2Dto: OAuth2Dto): Promise<LocalTokenDto> {
