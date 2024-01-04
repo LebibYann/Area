@@ -48,7 +48,9 @@ export const services: ServiceDto[] = [
   {
     name: 'instagram',
     image: 'assets/logo/instagram.png',
-    actions: [],
+    actions: [
+        { name: 'New photo by you', description: 'Trigger every time you share any new photo on Instagram'},
+    ],
     reactions: []
   },
   {
