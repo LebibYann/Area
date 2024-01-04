@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   InternalServerErrorException,
   Param,
   Patch,
@@ -13,6 +14,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -24,16 +26,31 @@ import {
 import { EventService } from "./event.service";
 import { AuthGuard } from "@nestjs/passport";
 
-@ApiTags("actions")
+@ApiTags("events")
 @Controller(["actions", "triggers"])
 export class EventController {
   constructor (private readonly eventService: EventService) {}
 
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'Get all events' })
+  @ApiOkResponse({ description: 'The events have been fetched' })
+  @ApiUnauthorizedResponse({ description: 'Invalid access token' })
+  async findAll(@Request() req: RequestWithUser): Promise<any> {
+    if (req.user == null) {
+      throw new InternalServerErrorException('Error with JWT strategy.')
+    }
+    const isAction = req.url.includes('actions');
+    return (await this.eventService.findByUser(req.user.id)).filter(e => e.isAction === isAction);
+  }
+
   @Post(':service/:event')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'Create an action' })
-  @ApiOkResponse({ description: 'The action has been created' })
+  @ApiBody({ type: Object })
+  @ApiOperation({ summary: 'Create an event' })
+  @ApiOkResponse({ description: 'The event has been created' })
   @ApiUnauthorizedResponse({ description: 'Invalid access token' })
   @ApiBadRequestResponse({ description: 'Invalid service, event or parameters' })
   async create(
@@ -57,6 +74,7 @@ export class EventController {
 
   @Patch(':service/:event/:id')
   @UseGuards(AuthGuard('jwt'))
+  @ApiBody({ type: Object })
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Update an event' })
   @ApiOkResponse({ description: 'The event has been updated' })
@@ -84,7 +102,7 @@ export class EventController {
         userId: req.user.id,
         isAction: req.url.includes('actions'),
         serviceId: service,
-        actionId: event,
+        eventId: event,
         parameters
       }
     );

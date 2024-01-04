@@ -7,42 +7,42 @@ export class Event {
   @PrimaryGeneratedColumn()
   @ApiProperty({
     example: 1,
-    description: "The unique identifier of the Action/Trigger",
+    description: "The unique identifier of the event",
   })
   id: number;
 
   @Column()
   @ApiProperty({
-    example: "true",
-    description: "Action or Trigger",
+    example: true,
+    description: "Is the event a trigger (Action) or an action (Reaction)",
   })
   isAction: boolean;
 
   @Column()
   @ApiProperty({
-    example: "1",
+    example: 1,
     description: "The unique identifier of the User",
   })
   userId: number;
 
   @Column()
   @ApiProperty({
-    example: "1",
+    example: 1,
     description: "The unique identifier of the service",
   })
   serviceId: number;
 
   @Column()
   @ApiProperty({
-    example: "1",
-    description: "The unique identifier of the action/trigger",
+    example: 1,
+    description: "The unique identifier of the event",
   })
-  actionId: number;
+  eventId: number;
 
   @Column({ type: "json", nullable: true })
   @ApiProperty({
     example: "{ \"key\": \"value\" }",
-    description: "The parameters of the action/trigger",
+    description: "The parameters of the event",
   })
   parameters: any;
 
