@@ -4,7 +4,6 @@ class ActionsDetails extends StatelessWidget {
   final String service;
   final String triggerName;
   final String description;
-  final String actionText;
   final VoidCallback onActionTap;
   final String logoPath;
   final int color;
@@ -13,7 +12,6 @@ class ActionsDetails extends StatelessWidget {
     required this.service,
     required this.triggerName,
     required this.description,
-    required this.actionText,
     required this.onActionTap,
     required this.logoPath,
     required this.color,
@@ -23,6 +21,7 @@ class ActionsDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(service),
         centerTitle: true,
         titleTextStyle: TextStyle(
             fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold),

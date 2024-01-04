@@ -4,7 +4,6 @@ class TriggerDetails extends StatelessWidget {
   final String service;
   final String triggerName;
   final String description;
-  final String actionText;
   final VoidCallback onActionTap;
   final String logoPath;
   final int color;
@@ -13,7 +12,6 @@ class TriggerDetails extends StatelessWidget {
     required this.service,
     required this.triggerName,
     required this.description,
-    required this.actionText,
     required this.onActionTap,
     required this.logoPath,
     required this.color,
