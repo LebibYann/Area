@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/pages/AREAS/actions.dart';
+import 'package:mobile/pages/AREAS/triggers.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -85,8 +86,11 @@ class DiscordAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> actions = JsonDataSingleton().getServiceActions('discord');
-    final List<Map<String, dynamic>> reactions = JsonDataSingleton().getServiceReactions('discord');
+    final List<Map<String, dynamic>> actions =
+        JsonDataSingleton().getServiceActions('discord');
+    final List<Map<String, dynamic>> reactions =
+        JsonDataSingleton().getServiceReactions('discord');
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -156,39 +160,46 @@ class DiscordAREA extends StatelessWidget {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            ..._buildActionsButtons(context, actions),
+            ..._buildButtons(context, actions, true),
             const SizedBox(height: 16.0),
             const Text(
               'Actions',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16.0),
-            ..._buildActionsButtons(context, reactions),
+            ..._buildButtons(context, reactions, false),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildActionsButtons(
-      BuildContext context, List<Map<String, dynamic>> actions) {
-    return actions.map((action) {
+  List<Widget> _buildButtons(
+      BuildContext context, List<Map<String, dynamic>> items, bool isTrigger) {
+    return items.map((item) {
       return ElevatedButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ActionsDetails(
-                color: 0xFF7289DA,
-                service: 'Discord',
-                triggerName: action['name'],
-                description: action['description'],
-                actionText: 'Add this action',
-                onActionTap: () {
-                  // Your action code here
-                },
-                logoPath: 'assets/AREA/discord.png',
-              ),
+              builder: (context) => isTrigger
+                  ? TriggerDetails(
+                      color: 0xFF7289DA,
+                      service: 'Discord',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {},
+                      logoPath: 'assets/AREA/discord.png',
+                    )
+                  : ActionsDetails(
+                      color: 0xFF7289DA,
+                      service: 'Discord',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {
+                      },
+                      logoPath: 'assets/AREA/discord.png',
+                    ),
             ),
           );
         },
@@ -196,9 +207,8 @@ class DiscordAREA extends StatelessWidget {
           primary: discordBlue,
           onPrimary: Colors.white,
         ),
-        child: Text(action['name']),
+        child: Text(item['name']),
       );
     }).toList();
   }
 }
-

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile/json.dart';
+import 'package:mobile/pages/AREAS/actions.dart';
+import 'package:mobile/pages/AREAS/triggers.dart';
+import 'dart:core';
 
 const Color gdriveBlue = Color(0xFF3D6EC9);
 
@@ -16,6 +20,11 @@ class GdriveAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> actions =
+        JsonDataSingleton().getServiceActions('gdrive');
+    final List<Map<String, dynamic>> reactions =
+        JsonDataSingleton().getServiceReactions('gdrive');
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -31,18 +40,10 @@ class GdriveAREA extends StatelessWidget {
               _buildCard(),
               const SizedBox(height: 32.0),
               _buildSectionTitle('Triggers'),
-              ..._buildButtons([
-                'New file in your folder',
-                'New photo in your folder',
-                'New video in your folder',
-              ], gdriveBlue),
-              _buildSuggestionButton(),
-              const SizedBox(height: 32.0),
+              ..._buildButtons(context, actions, true),
+              const SizedBox(height: 16.0),
               _buildSectionTitle('Actions'),
-              ..._buildButtons([
-                'Upload file from URL',
-              ], gdriveBlue),
-              _buildSuggestionButton(),
+              ..._buildButtons(context, reactions, false),
             ],
           ),
         ),
@@ -94,18 +95,42 @@ class GdriveAREA extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildButtons(List<String> texts, Color color) {
-    return texts
-        .map((text) => Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    primary: color, onPrimary: Colors.white),
-                child: Text(text),
-              ),
-            ))
-        .toList();
+  List<Widget> _buildButtons(
+      BuildContext context, List<Map<String, dynamic>> items, bool isTrigger) {
+    return items.map((item) {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => isTrigger
+                  ? TriggerDetails(
+                      color: 0xFF3D6EC9,
+                      service: 'Google Drive',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {},
+                      logoPath: 'assets/AREA/gdrive.png',
+                    )
+                  : ActionsDetails(
+                      color: 0xFF3D6EC9,
+                      service: 'Google Drive',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {
+                      },
+                      logoPath: 'assets/AREA/gdrive.png',
+                    ),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          primary: gdriveBlue,
+          onPrimary: Colors.white,
+        ),
+        child: Text(item['name']),
+      );
+    }).toList();
   }
 
   Widget _buildSectionTitle(String title) {
@@ -115,22 +140,4 @@ class GdriveAREA extends StatelessWidget {
           style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
     );
   }
-}
-
-Widget _buildSuggestionButton() {
-  return ElevatedButton(
-    onPressed: () {},
-    style: ElevatedButton.styleFrom(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(
-            color: Colors.black,
-            width: 2.0,
-          )),
-      primary: Colors.white,
-      onPrimary: Colors.black,
-    ),
-    child: const Text('Suggest a new trigger',
-        style: TextStyle(fontWeight: FontWeight.bold)),
-  );
 }

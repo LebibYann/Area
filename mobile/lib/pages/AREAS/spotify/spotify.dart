@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile/json.dart';
+import 'package:mobile/pages/AREAS/actions.dart';
+import 'package:mobile/pages/AREAS/triggers.dart';
 
 const Color spotifyGreen = Color(0xFF1DB954);
 
@@ -16,6 +19,10 @@ class SpotifyAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> actions =
+        JsonDataSingleton().getServiceActions('spotify');
+    final List<Map<String, dynamic>> reactions =
+        JsonDataSingleton().getServiceReactions('spotify');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -31,20 +38,10 @@ class SpotifyAREA extends StatelessWidget {
               _buildSpotifyCard(),
               const SizedBox(height: 32.0),
               _buildSectionTitle('Triggers'),
-              ..._buildButtons([
-                'New followed show',
-                'New saved album',
-                'New recently played track'
-              ], spotifyGreen),
-              _buildSuggestionButton(),
-              const SizedBox(height: 32.0),
+              ..._buildButtons(context, actions, true),
+              const SizedBox(height: 16.0),
               _buildSectionTitle('Actions'),
-              ..._buildButtons([
-                'Skip track',
-                'Pause playback',
-                'Follow a playlist',
-              ], spotifyGreen),
-              _buildSuggestionButton(),
+              ..._buildButtons(context, reactions, false),
             ],
           ),
         ),
@@ -97,18 +94,42 @@ class SpotifyAREA extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildButtons(List<String> texts, Color color) {
-    return texts
-        .map((text) => Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    primary: color, onPrimary: Colors.white),
-                child: Text(text),
-              ),
-            ))
-        .toList();
+  List<Widget> _buildButtons(
+      BuildContext context, List<Map<String, dynamic>> items, bool isTrigger) {
+    return items.map((item) {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => isTrigger
+                  ? TriggerDetails(
+                      color: 0xFF1DB954,
+                      service: 'Spotify',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {},
+                      logoPath: 'assets/AREA/spotify.png',
+                    )
+                  : ActionsDetails(
+                      color: 0xFF1DB954,
+                      service: 'Spotify',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {
+                      },
+                      logoPath: 'assets/AREA/spotify.png',
+                    ),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          primary: spotifyGreen,
+          onPrimary: Colors.white,
+        ),
+        child: Text(item['name']),
+      );
+    }).toList();
   }
 
   Widget _buildSectionTitle(String title) {
@@ -118,22 +139,4 @@ class SpotifyAREA extends StatelessWidget {
           style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
     );
   }
-}
-
-Widget _buildSuggestionButton() {
-  return ElevatedButton(
-    onPressed: () {},
-    style: ElevatedButton.styleFrom(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(
-            color: Colors.black,
-            width: 2.0,
-          )),
-      primary: Colors.white,
-      onPrimary: Colors.black,
-    ),
-    child: const Text('Suggest a new trigger',
-        style: TextStyle(fontWeight: FontWeight.bold)),
-  );
 }
