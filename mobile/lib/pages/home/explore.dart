@@ -7,7 +7,7 @@ import 'package:mobile/pages/AREAS/gdrive/gdrive.dart';
 import 'package:mobile/pages/AREAS/gmail/gmail.dart';
 import 'package:mobile/pages/AREAS/twitter/twitter.dart';
 import 'package:mobile/pages/AREAS/github/github.dart';
-import 'package:mobile/pages/AREAS/weather/meteo.dart';
+import 'package:mobile/pages/AREAS/meteo/meteo.dart';
 import 'package:mobile/pages/AREAS/timer/timer.dart';
 import 'package:mobile/json.dart';
 
