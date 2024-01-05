@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile/json.dart';
+import 'package:mobile/pages/AREAS/actions.dart';
+import 'package:mobile/pages/AREAS/triggers.dart';
 
 const Color theme_color = Color(0xFF24292E);
 
@@ -16,6 +19,10 @@ class GithubAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> actions =
+        JsonDataSingleton().getServiceActions('github');
+    final List<Map<String, dynamic>> reactions =
+        JsonDataSingleton().getServiceReactions('github');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -31,20 +38,10 @@ class GithubAREA extends StatelessWidget {
               _buildSpotifyCard(),
               const SizedBox(height: 32.0),
               _buildSectionTitle('Triggers'),
-              ..._buildButtons([
-                'Any new notification from a repository',
-                'Any new release',
-                'New issue assigned to you'
-              ], theme_color),
-              _buildSuggestionButton(),
-              const SizedBox(height: 32.0),
+              ..._buildButtons(context, actions, true),
+              const SizedBox(height: 16.0),
               _buildSectionTitle('Actions'),
-              ..._buildButtons([
-                'Create an issue',
-                'Create a pull request',
-                'Create a new Gist',
-              ], theme_color),
-              _buildSuggestionButton(),
+              ..._buildButtons(context, reactions, false),
             ],
           ),
         ),
@@ -97,18 +94,41 @@ class GithubAREA extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildButtons(List<String> texts, Color color) {
-    return texts
-        .map((text) => Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    primary: color, onPrimary: Colors.white),
-                child: Text(text),
-              ),
-            ))
-        .toList();
+  List<Widget> _buildButtons(
+      BuildContext context, List<Map<String, dynamic>> items, bool isTrigger) {
+    return items.map((item) {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => isTrigger
+                  ? TriggerDetails(
+                      color: 0xFF24292E,
+                      service: 'Github',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {},
+                      logoPath: 'assets/AREA/github.png',
+                    )
+                  : ActionsDetails(
+                      color: 0xFF24292E,
+                      service: 'Github',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {},
+                      logoPath: 'assets/AREA/github.png',
+                    ),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          primary: theme_color,
+          onPrimary: Colors.white,
+        ),
+        child: Text(item['name']),
+      );
+    }).toList();
   }
 
   Widget _buildSectionTitle(String title) {
@@ -118,22 +138,4 @@ class GithubAREA extends StatelessWidget {
           style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
     );
   }
-}
-
-Widget _buildSuggestionButton() {
-  return ElevatedButton(
-    onPressed: () {},
-    style: ElevatedButton.styleFrom(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(
-            color: Colors.black,
-            width: 2.0,
-          )),
-      primary: Colors.white,
-      onPrimary: Colors.black,
-    ),
-    child: const Text('Suggest a new trigger',
-        style: TextStyle(fontWeight: FontWeight.bold)),
-  );
 }
