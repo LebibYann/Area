@@ -47,6 +47,9 @@ const Join = (): JSX.Element => {
     //     code_challenge_method: "plain"
     // })
 
+    const githubUrl = "    https://github.com/login/oauth/authorize?client_id=fee6c82e9e3f4aa4c447&redirect_uri=http://localhost:8081/login/auth/github&response_type=code"
+
+
     const updateDisplay = () => {
       setDisplay(!display);
     };
@@ -70,6 +73,10 @@ const Join = (): JSX.Element => {
                 <a href={twitterUrl} className='oauth-button twitter'>
                     <img src={Spotify} className="service-icon"/>
                     Connect with Twitter
+                </a>
+                <a href={githubUrl} className='oauth-button github'>
+                    <img src={Spotify} className="service-icon"/>
+                    Connect with Github
                 </a>
             </section>
             <p className="text">Or use your email to <Link to={"/register"} className="link">sign up</Link> or <Link to={"login"} className="link">log in</Link></p>

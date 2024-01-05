@@ -18,6 +18,7 @@ import { IdentificationService } from './services/identification.service'
 import { DiscordOAuth2Service } from './services/discord.service'
 import { SpotifyOAuth2Service } from './services/spotify.service'
 import { TwitterOAuth2Service } from './services/twitter.service'
+import { GithubOAuth2Service } from './services/github.service'
 
 /**
  * AuthModule
@@ -47,6 +48,7 @@ import { TwitterOAuth2Service } from './services/twitter.service'
     DiscordOAuth2Service,
     SpotifyOAuth2Service,
     TwitterOAuth2Service,
+    GithubOAuth2Service,
     LocalStrategy,
     JwtStrategy,
     IdentificationService

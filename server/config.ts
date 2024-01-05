@@ -35,3 +35,12 @@ export const spotifyConfig = {
     TWITTER_TOKEN_ENDPOINT: 'https://api.twitter.com/2/oauth2/token',
     TWITTER_CLIENT_ID: 'RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ',
 } as const;
+
+/**
+ * GithubConfig
+ * Github keys.
+ */
+ export const githubConfig = {
+    GITHUB_TOKEN_ENDPOINT: 'https://github.com/login/oauth/access_token',
+    GITHUB_CLIENT_ID: 'fee6c82e9e3f4aa4c447',
+} as const;

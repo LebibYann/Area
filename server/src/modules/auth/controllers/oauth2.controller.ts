@@ -15,6 +15,7 @@ import { LocalTokenDto } from '../dtos/localTokenResponse'
 import { DiscordOAuth2Service } from '../services/discord.service'
 import { SpotifyOAuth2Service } from '../services/spotify.service'
 import { TwitterOAuth2Service } from '../services/twitter.service'
+import { GithubOAuth2Service } from '../services/github.service'
 
 /**
  * Controller for OAuth2 authentication.
@@ -27,6 +28,7 @@ export class OAuth2Controller {
     private readonly discordService: DiscordOAuth2Service,
     private readonly spotifyService: SpotifyOAuth2Service,
     private readonly twitterService: TwitterOAuth2Service,
+    private readonly githubService: GithubOAuth2Service,
     private readonly identificationService: IdentificationService,
     private readonly jwtService: JwtService
   ) { }
@@ -193,4 +195,45 @@ export class OAuth2Controller {
        access_token: this.jwtService.sign(payload)
      }
    }
+
+   /**
+   * Login with Github OAuth2.
+   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   */
+    @Post('Github')
+    @ApiOperation({ summary: 'Github OAuth2' })
+    @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
+    @ApiBadRequestResponse({ description: 'Bad request.' })
+    @ApiBody({ type: OAuth2Dto })
+    async github (@Body() oauth2Dto: OAuth2Dto): Promise<LocalTokenDto> {
+      this.logger.debug('Fetched Github Token', oauth2Dto.code)
+      const token = await this.twitterService.exchangeCodeForToken(
+        oauth2Dto.code,
+        oauth2Dto.redirectUri
+      )
+  
+      this.logger.debug('Fetched Github Token')
+  
+      const userInfo = await this.githubService.getUserInfo(token.access_token)
+  
+      this.logger.debug('Fetched Github User Info')
+  
+      const user = await this.identificationService.identifyUser(
+        userInfo.email,
+        'github',
+        token
+      )
+  
+      const payload: JwtPayload = {
+        email: user.email,
+        sub: user.id.toString(),
+        token_type: 'oauth2'
+      }
+  
+      this.logger.debug('Login Successful. Local JWT Generated')
+  
+      return {
+        access_token: this.jwtService.sign(payload)
+      }
+    }
 }
