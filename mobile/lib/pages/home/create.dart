@@ -40,11 +40,11 @@ class CreatePage extends StatelessWidget {
                 child: Text(
                   "Chose an action first !",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
+              duration: Duration(seconds: 3),
             ),
           );
         }
@@ -52,12 +52,12 @@ class CreatePage extends StatelessWidget {
       style: TextButton.styleFrom(
         primary: Colors.black,
         backgroundColor: isFilled ? Colors.black : Colors.transparent,
-        minimumSize: Size(double.infinity, 90),
+        minimumSize: const Size(double.infinity, 90),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
           side: isFilled ? BorderSide.none : BorderSide(color: Colors.black),
         ),
-        padding: EdgeInsets.symmetric(vertical: 0),
+        padding: const EdgeInsets.symmetric(vertical: 0),
       ),
       child: Text(
         text,
@@ -81,7 +81,7 @@ class CreatePage extends StatelessWidget {
         _buildFormFields(fileds),
         ElevatedButton(
           onPressed: () {
-            // Fonction appelée lorsque le bouton est pressé
+
           },
           child: const Text('create'),
         ),
@@ -111,15 +111,45 @@ class CreatePage extends StatelessWidget {
   }
 
   Future<void> _showOptionsDialog(BuildContext context, bool isAction) async {
-    List<Map<String, dynamic>> options = isAction
-        ? JsonDataSingleton().getAllActions()
-        : JsonDataSingleton().getAllReactions();
+    List<String> services = JsonDataSingleton().getAllServices();
 
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(isAction ? 'Choose an Action' : 'Choose a Reaction'),
+          backgroundColor: Colors.white,
+          title: const Text('Choose a service'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: services.map((serviceName) {
+                return ListTile(
+                  title:
+                      Text(serviceName, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25)),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _showServiceActionsOrReactionsDialog(
+                        context, serviceName, isAction);
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showServiceActionsOrReactionsDialog(
+      BuildContext context, String serviceName, bool isAction) async {
+    List<Map<String, dynamic>> options = isAction
+        ? JsonDataSingleton().getServiceActions(serviceName)
+        : JsonDataSingleton().getServiceReactions(serviceName);
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(isAction ? 'Select an Action' : 'Select a Reaction'),
           content: SingleChildScrollView(
             child: ListBody(
               children: options.map((option) {
@@ -127,6 +157,7 @@ class CreatePage extends StatelessWidget {
                   title: Text(option['name']),
                   subtitle: Text(option['description']),
                   onTap: () {
+
                     if (isAction) {
                       ifThisSelected = true;
                       selectedAction = option['name'];
@@ -167,7 +198,9 @@ class CreatePage extends StatelessWidget {
                         ),
                       );
                     }
+
                     Navigator.of(context).pop();
+
                     if (numberOfParametersReaction != -1 &&
                         numberOfParametersAction != -1) {
                       Navigator.of(context).push(
