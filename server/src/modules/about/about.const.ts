@@ -9,20 +9,20 @@ export const services: ServiceDto[] = [
     name: 'gmail',
     image: 'assets/logo/gmail.png',
     actions: [
-      { name: 'receiveEmail', description: 'Trigger receiving an email via Gmail', param1: 'test', param2: 'test2' },
+      { name: 'Receive an e-mail', description: 'Trigger receiving an email via Gmail', param1: 'test', param2: 'test2' },
     ],
     reactions: [
-      {name: 'sendMail',description: 'Send email to someone',},
+      {name: 'Send an e-mail',description: 'Send an email to someone',},
     ]
   },
   {
     name: 'gdrive',
     image: 'assets/logo/gdrive.png',
     actions: [
-      { name: 'newFile', description: 'Trigger when a new file is uploaded' },
+      { name: 'New file', description: 'Trigger when a new file is uploaded' },
     ],
     reactions: [
-      {name: 'saveFile',description: 'Save a file in the drive',},
+      {name: 'Save a file',description: 'Save a file in the drive',},
     ]
   },
   {
@@ -32,17 +32,17 @@ export const services: ServiceDto[] = [
       { name: 'Mention', description: 'Trigger when mentionned in a chanel' },
     ],
     reactions: [
-      { name: 'ReactToMessage', description: 'React to the last message' },
+      { name: 'React to a message', description: 'React to the last message' },
     ]
   },
   {
     name: 'spotify',
     image: 'assets/logo/spotify.png',
     actions: [
-      { name: 'playSong', description: 'Trigger playing a song on Spotify' },
+      { name: 'Play a song', description: 'Trigger playing a song on Spotify' },
     ],
     reactions: [
-      { name: 'addToPlaylist', description: 'Trigger adding a song to a Spotify playlist' },
+      { name: 'Add to the playlist', description: 'Trigger adding a song to a Spotify playlist' },
     ]
   },
   {
@@ -67,17 +67,17 @@ export const services: ServiceDto[] = [
     name: 'github',
     image: 'assets/logo/github.png',
     actions: [
-      { name: 'createRepository', description: 'Trigger creating a new repository on GitHub' },
+      { name: 'Create a repository', description: 'Trigger creating a new repository on GitHub' },
     ],
     reactions: [
-      { name: 'upoaldReadMe', description: 'Upload Readme on a repository' },
+      { name: 'Upload a Readme', description: 'Upload a Readme on a repository' },
     ]
   },
   {
     name: 'meteo',
     image: 'assets/logo/meteo.png',
     actions: [
-      { name: 'getWeather', description: 'Trigger getting the current weather information' },
+      { name: 'Get the weather', description: 'Trigger getting the current weather information' },
     ],
     reactions: []
   },
@@ -85,7 +85,7 @@ export const services: ServiceDto[] = [
     name: 'timer',
     image: 'assets/logo/timer.png',
     actions: [
-      { name: 'startTimer', description: 'Trigger starting a timer' },
+      { name: 'Start a timer', description: 'Trigger starting a timer' },
     ],
     reactions: []
   }
