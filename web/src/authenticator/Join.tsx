@@ -26,7 +26,7 @@ const Join = (): JSX.Element => {
     `&scope=${scope}` +
     `&include_granted_scopes=${includeGrantedScopes}`;
 
-    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=email"
+    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify%20email"
 
     const spotifyUrl = "https://accounts.spotify.com/authorize?" + queryString.stringify({
         response_type: "code",
@@ -34,6 +34,18 @@ const Join = (): JSX.Element => {
         scope: "user-read-private user-read-email",
         redirect_uri: "http://localhost:8081/login/auth/spotify"
     })
+
+
+    const twitterUrl = "https://twitter.com/i/oauth2/authorize?response_type=code&client_id=RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ&redirect_uri=http://localhost:8081/login/auth/twitter&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain"
+    // const twitterUrl = "https://twitter.com/i/oauth2/authorize" + queryString.stringify({
+    //     response_type: "code",
+    //     client_id: import.meta.env.TWITTER_CLIENT_ID,
+    //     scope: "tweet.read tweet.write users.read",
+    //     redirect_uri: "http://localhost:8081/login/auth/twitter",
+    //     state: "state",
+    //     code_challenge: "challenge",
+    //     code_challenge_method: "plain"
+    // })
 
     const updateDisplay = () => {
       setDisplay(!display);
@@ -54,6 +66,10 @@ const Join = (): JSX.Element => {
                 <a href={spotifyUrl} className='oauth-button spotify'>
                     <img src={Spotify} className="service-icon"/>
                     Connect with Spotify
+                </a>
+                <a href={twitterUrl} className='oauth-button twitter'>
+                    <img src={Spotify} className="service-icon"/>
+                    Connect with Twitter
                 </a>
             </section>
             <p className="text">Or use your email to <Link to={"/register"} className="link">sign up</Link> or <Link to={"login"} className="link">log in</Link></p>

@@ -14,6 +14,7 @@ import { IdentificationService } from '../services/identification.service'
 import { LocalTokenDto } from '../dtos/localTokenResponse'
 import { DiscordOAuth2Service } from '../services/discord.service'
 import { SpotifyOAuth2Service } from '../services/spotify.service'
+import { TwitterOAuth2Service } from '../services/twitter.service'
 
 /**
  * Controller for OAuth2 authentication.
@@ -25,6 +26,7 @@ export class OAuth2Controller {
     private readonly goolgleService: GoogleOAuth2Service,
     private readonly discordService: DiscordOAuth2Service,
     private readonly spotifyService: SpotifyOAuth2Service,
+    private readonly twitterService: TwitterOAuth2Service,
     private readonly identificationService: IdentificationService,
     private readonly jwtService: JwtService
   ) { }
@@ -151,4 +153,44 @@ export class OAuth2Controller {
       access_token: this.jwtService.sign(payload)
     }
   }
+
+  /**
+   * Login with Twitter OAuth2.
+   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   */
+   @Post('Twitter')
+   @ApiOperation({ summary: 'Twitter OAuth2' })
+   @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
+   @ApiBadRequestResponse({ description: 'Bad request.' })
+   @ApiBody({ type: OAuth2Dto })
+   async twitter (@Body() oauth2Dto: OAuth2Dto): Promise<LocalTokenDto> {
+     const token = await this.twitterService.exchangeCodeForToken(
+       oauth2Dto.code,
+       oauth2Dto.redirectUri
+     )
+ 
+     this.logger.debug('Fetched Twitter Token')
+ 
+     const userInfo = await this.twitterService.getUserInfo(token.access_token)
+ 
+     this.logger.debug('Fetched Twitter User Info')
+ 
+     const user = await this.identificationService.identifyUser(
+       userInfo.email,
+       'twitter',
+       token
+     )
+ 
+     const payload: JwtPayload = {
+       email: user.email,
+       sub: user.id.toString(),
+       token_type: 'oauth2'
+     }
+ 
+     this.logger.debug('Login Successful. Local JWT Generated')
+ 
+     return {
+       access_token: this.jwtService.sign(payload)
+     }
+   }
 }

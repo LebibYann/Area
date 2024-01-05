@@ -26,3 +26,12 @@ export const spotifyConfig = {
     SPOTIFY_USER_INFO_ENDPOINT: 'https://api.spotify.com/v1/me',
     SPOTIFY_CLIENT_ID: '540f0cb998124069aae6432d65cf9252',
 } as const;
+
+/**
+ * TwitterConfig
+ * Twitter keys.
+ */
+ export const twitterConfig = {
+    TWITTER_TOKEN_ENDPOINT: 'https://api.twitter.com/2/oauth2/token',
+    TWITTER_CLIENT_ID: 'RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ',
+} as const;
