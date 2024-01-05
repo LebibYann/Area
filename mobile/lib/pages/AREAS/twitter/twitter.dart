@@ -77,10 +77,10 @@ class TwitterAREA extends StatelessWidget {
       children: [
         _buildUrlButton(
             'Connect',
-            'https://accounts.spotify.com/fr/login?continue=https%3A%2F%2Fopen.spotify.com%2Fintl-fr',
+            'https://twitter.com/i/flow/login',
             theme_color),
         _buildUrlButton(
-            'Visit', 'https://open.spotify.com/intl-fr', theme_color),
+            'Visit', 'https://twitter.com/', theme_color),
       ],
     );
   }
