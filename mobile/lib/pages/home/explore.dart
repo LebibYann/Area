@@ -24,6 +24,7 @@ class ExplorePage extends StatelessWidget {
     'twitter': const TwitterAREA(),
     'github': const GithubAREA(),
     'meteo': const MeteoAREA(),
+    'timer': const TimerAREA(),
   };
 
 
