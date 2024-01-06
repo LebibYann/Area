@@ -28,9 +28,9 @@ export class DiscordOAuth2Service extends OAuth2Service {
   ): Promise<AccessTokenResponse> {
     return await super.exchangeCodeForToken(
       'discord',
-      discordConfig.DISCORD_TOKEN_ENDPOINT,
+      discordConfig.TOKEN_ENDPOINT,
       code,
-      discordConfig.DISCORD_CLIENT_ID,
+      discordConfig.CLIENT_ID,
       this.clientSecret ?? '',
       redirectUri
     )
@@ -38,9 +38,9 @@ export class DiscordOAuth2Service extends OAuth2Service {
 
   async refreshToken (refreshToken: string): Promise<TokenResponse> {
     return await super.refreshToken(
-      discordConfig.DISCORD_TOKEN_ENDPOINT,
+      discordConfig.TOKEN_ENDPOINT,
       refreshToken,
-      discordConfig.DISCORD_CLIENT_ID,
+      discordConfig.CLIENT_ID,
       this.clientSecret ?? ''
     )
   }
@@ -48,7 +48,7 @@ export class DiscordOAuth2Service extends OAuth2Service {
   async getUserInfo (accessToken: string): Promise<DiscordUserInfo> {
     return await super.getUserInfo(
       accessToken,
-      discordConfig.DISCORD_USER_INFO_ENDPOINT
+      discordConfig.USER_INFO_ENDPOINT
     )
   }
 }

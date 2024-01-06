@@ -28,9 +28,9 @@ export class GoogleOAuth2Service extends OAuth2Service {
   ): Promise<AccessTokenResponse> {
     return await super.exchangeCodeForToken(
       'google',
-      googleConfig.GOOGLE_TOKEN_ENDPOINT,
+      googleConfig.TOKEN_ENDPOINT,
       code,
-      googleConfig.GOOGLE_CLIENT_ID,
+      googleConfig.CLIENT_ID,
       this.clientSecret ?? '',
       redirectUri
     )
@@ -38,9 +38,9 @@ export class GoogleOAuth2Service extends OAuth2Service {
 
   async refreshToken (refreshToken: string): Promise<TokenResponse> {
     return await super.refreshToken(
-      googleConfig.GOOGLE_TOKEN_ENDPOINT,
+      googleConfig.TOKEN_ENDPOINT,
       refreshToken,
-      googleConfig.GOOGLE_CLIENT_ID,
+      googleConfig.CLIENT_ID,
       this.clientSecret ?? ''
     )
   }

@@ -12,10 +12,10 @@ export class CredentialService {
   ) { }
 
   async findOneByUserAndService (
-    user: User,
+    userId: number,
     service: string
   ): Promise<Credential | null> {
-    return await this.credentialRepository.findOneBy({ userId: user.id, service })
+    return await this.credentialRepository.findOneBy({ userId, service })
   }
 
   async create (

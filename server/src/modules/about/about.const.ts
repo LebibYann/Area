@@ -2,11 +2,21 @@ import {
   type ServiceDto
 } from './about.dto'
 
-// 12 minimum
+export enum ServiceName {
+  GMAIL = 'gmail',
+  GOOGLE = 'google',
+  DISCORD = 'discord',
+  SPOTIFY = 'spotify',
+  INSTAGRAM = 'instagram',
+  TWITTER = 'twitter',
+  GITHUB = 'github',
+  WHEATHER = 'weather',
+  TIMER = 'timer'
+}
 
 export const services: ServiceDto[] = [
   {
-    name: 'gmail',
+    name: ServiceName.GMAIL,
     image: 'assets/logo/gmail.png',
     actions: [
       { name: 'receiveEmail', description: 'Trigger receiving an email via Gmail', param1: 'test', param2: 'test2' },
@@ -16,7 +26,7 @@ export const services: ServiceDto[] = [
     ]
   },
   {
-    name: 'gdrive',
+    name: ServiceName.GOOGLE,
     image: 'assets/logo/gdrive.png',
     actions: [
       { name: 'newFile', description: 'Trigger when a new file is uploaded' },
@@ -26,7 +36,7 @@ export const services: ServiceDto[] = [
     ]
   },
   {
-    name: 'discord',
+    name: ServiceName.DISCORD,
     image: 'assets/logo/discord.png',
     actions: [
       { name: 'Mention', description: 'Trigger when mentionned in a chanel' },
@@ -36,7 +46,7 @@ export const services: ServiceDto[] = [
     ]
   },
   {
-    name: 'spotify',
+    name: ServiceName.SPOTIFY,
     image: 'assets/logo/spotify.png',
     actions: [
       { name: 'playSong', description: 'Trigger playing a song on Spotify' },
@@ -46,13 +56,13 @@ export const services: ServiceDto[] = [
     ]
   },
   {
-    name: 'instagram',
+    name: ServiceName.INSTAGRAM,
     image: 'assets/logo/instagram.png',
     actions: [],
     reactions: []
   },
   {
-    name: 'twitter',
+    name: ServiceName.TWITTER,
     image: 'assets/logo/twitter.png',
     actions: [
       { name: 'Retweet', description: 'Trigger when your get retweet' },
@@ -62,7 +72,7 @@ export const services: ServiceDto[] = [
     ]
   },
   {
-    name: 'github',
+    name: ServiceName.GITHUB,
     image: 'assets/logo/github.png',
     actions: [
       { name: 'createRepository', description: 'Trigger creating a new repository on GitHub' },
@@ -72,7 +82,7 @@ export const services: ServiceDto[] = [
     ]
   },
   {
-    name: 'meteo',
+    name: ServiceName.WHEATHER,
     image: 'assets/logo/meteo.png',
     actions: [
       { name: 'getWeather', description: 'Trigger getting the current weather information' },
@@ -80,7 +90,7 @@ export const services: ServiceDto[] = [
     reactions: []
   },
   {
-    name: 'timer',
+    name: ServiceName.TIMER,
     image: 'assets/logo/timer.png',
     actions: [
       { name: 'startTimer', description: 'Trigger starting a timer' },
