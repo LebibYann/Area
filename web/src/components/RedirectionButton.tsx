@@ -7,11 +7,11 @@ interface ButtonProps extends PropsWithChildren<React.HTMLProps<HTMLAnchorElemen
 }
 
 const RedirectionButton = ({children, ...props} : ButtonProps): JSX.Element => {
-    return (
-        <a {...props}>
-            {children}
-        </a>
-    );
+  return (
+    <a {...props}>
+      {children}
+    </a>
+  );
 };
 
 export default RedirectionButton;

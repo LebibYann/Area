@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { useService, useServices } from "../utils";
-import ServiceCard from "./ServiceCard";
-import { Service } from "types";
+import { type Service } from "types";
 import "./ServicesList.css";
-import SearchBar from "../components/SearchBar";
 
 const ServiceDetails = (): JSX.Element => {
-
   const [data, setData] = useState<Service>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -28,16 +25,13 @@ const ServiceDetails = (): JSX.Element => {
 
   return (
     <section>
-        {loading ? (
-            <p>Loading services...</p>
+      {loading ? (
+      <p>Loading services...</p>
         ) : (
-            <ul className="list">
-                {data?.name}
-            </ul>
+          <ul className="list">{data?.name}</ul>
         )}
     </section>
   );
-};
-
+}
 
 export default ServiceDetails;
