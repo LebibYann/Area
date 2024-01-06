@@ -1,11 +1,12 @@
-import { Controller, Post, Body, Logger } from '@nestjs/common'
+import { Controller, Post, Body, Logger, UseGuards, Request } from '@nestjs/common'
 import {
   ApiTags,
   ApiOperation,
   ApiBody,
   ApiOkResponse,
   ApiBadRequestResponse,
-  ApiCreatedResponse
+  ApiCreatedResponse,
+  ApiBearerAuth
 } from '@nestjs/swagger'
 import { OAuth2Dto } from '../dtos/oauth2.dto'
 import { GoogleOAuth2Service } from '../services/google.service'
@@ -17,6 +18,8 @@ import { DiscordOAuth2Service } from '../services/discord.service'
 import { SpotifyOAuth2Service } from '../services/spotify.service'
 import { TwitterOAuth2Service } from '../services/twitter.service'
 import { GithubOAuth2Service } from '../services/github.service'
+import { AuthGuard } from '@nestjs/passport'
+import { RequestWithUser } from 'src/common/interfaces/requestwithUser.interface'
 
 /**
  * Controller for OAuth2 authentication.
@@ -83,11 +86,16 @@ export class OAuth2Controller {
    * @returns {Promise<LocalTokenDto>} LocalTokenDto
    */
   @Post('discord')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Discord OAuth2' })
   @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
   @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiBody({ type: OAuth2Dto })
-  async discord (@Body() oauth2Dto: OAuth2Dto): Promise<LocalTokenDto> {
+  async discord (
+    @Request() req: RequestWithUser,
+    @Body() oauth2Dto: OAuth2Dto
+  ) : Promise<LocalTokenDto> {
     const token = await this.discordService.exchangeCodeForToken(
       oauth2Dto.code,
       oauth2Dto.redirectUri
@@ -95,12 +103,8 @@ export class OAuth2Controller {
 
     this.logger.debug('Fetched Discord Token', token)
 
-    const userInfo = await this.discordService.getUserInfo(token.access_token)
-
-    this.logger.debug('Fetched Discord User Info', userInfo)
-
     const user = await this.identificationService.identifyUser(
-      userInfo.user.username,
+      req.user.email,
       'discord',
       token
     )
@@ -208,8 +212,7 @@ export class OAuth2Controller {
     @ApiBadRequestResponse({ description: 'Bad request.' })
     @ApiBody({ type: OAuth2Dto })
     async github (@Body() oauth2Dto: OAuth2Dto): Promise<LocalTokenDto> {
-      this.logger.debug('Fetched Github Token', oauth2Dto.code)
-      const token = await this.twitterService.exchangeCodeForToken(
+      const token = await this.githubService.exchangeCodeForToken(
         oauth2Dto.code,
         oauth2Dto.redirectUri
       )

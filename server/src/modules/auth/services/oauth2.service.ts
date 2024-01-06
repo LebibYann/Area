@@ -37,7 +37,8 @@ export class OAuth2Service {
     code: string,
     clientId: string,
     clientSecret: string,
-    redirectUri: string
+    redirectUri: string,
+    code_verifier: string | undefined = undefined
   ): Promise<AccessTokenResponse> {
     try {
       const response = await firstValueFrom(this.httpService.post(
@@ -47,7 +48,8 @@ export class OAuth2Service {
           client_id: clientId,
           client_secret: clientSecret,
           redirect_uri: redirectUri,
-          grant_type: 'authorization_code'
+          grant_type: 'authorization_code',
+          code_verifier
         },
         {
           headers: {

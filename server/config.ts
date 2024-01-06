@@ -33,6 +33,7 @@ export const spotifyConfig = {
  */
  export const twitterConfig = {
     TWITTER_TOKEN_ENDPOINT: 'https://api.twitter.com/2/oauth2/token',
+    USER_INFO_ENDPOINT: 'https://api.twitter.com/1.1/account/verify_credentials.json',
     TWITTER_CLIENT_ID: 'RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ',
 } as const;
 

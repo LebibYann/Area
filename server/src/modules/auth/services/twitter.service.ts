@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { OAuth2Service } from './oauth2.service'
 import { type TokenResponse } from '../interfaces/token.interface'
 import { type IDTokenInfo } from '../interfaces/userInfo.interface'
@@ -8,6 +8,8 @@ import { UsersService } from '../../users/users.service'
 import { CredentialService } from './credential.service'
 import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
 import { twitterConfig } from 'config'
+import { firstValueFrom } from 'rxjs'
+import { AxiosError } from 'axios'
 
 /**
  * TwitterService
@@ -23,6 +25,8 @@ export class TwitterOAuth2Service extends OAuth2Service {
   ) {
     super(httpService, userService, credentialService)
   }
+
+  private readonly logger_nested = new Logger(TwitterOAuth2Service.name)
 
   private readonly clientSecret = this.configService.get<string>('TWITTER_CLIENT_SECRET')
 
@@ -42,8 +46,10 @@ export class TwitterOAuth2Service extends OAuth2Service {
       code,
       twitterConfig.TWITTER_CLIENT_ID,
       this.clientSecret ?? '',
-      redirectUri
+      redirectUri,
+      'challenge'
     )
+
   }
 
   /**
@@ -65,12 +71,26 @@ export class TwitterOAuth2Service extends OAuth2Service {
    * @param idToken - The ID token obtained during authentication.
    * @returns Information extracted from the ID token.
    */
-  async getUserInfo (idToken: string): Promise<IDTokenInfo> {
-    const parts = idToken.split('.')
-    const idPayload = JSON.parse(
-      Buffer.from(parts[1], 'base64').toString('utf8')
-    )
-
-    return idPayload
+  async getUserInfo (accessToken: string): Promise<IDTokenInfo> {
+    try {
+      const response = await firstValueFrom(this.httpService.post(
+        twitterConfig.USER_INFO_ENDPOINT,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+          include_email: true
+        }
+      ))
+      return response.data
+    } catch (error) {
+      const errorMessage = 'Failed to get user info'
+      if (error instanceof AxiosError) {
+        this.logger_nested.error(errorMessage, error.response?.data)
+      } else {
+        this.logger_nested.error(errorMessage, error)
+      }
+      throw new HttpException(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 }
