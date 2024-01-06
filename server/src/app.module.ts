@@ -5,7 +5,13 @@ import { AboutModule } from './modules/about/about.module'
 import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
 import * as path from 'path'
+import { EventModule } from './modules/events/event.module'
+import { AreaModule } from './modules/area/area.module'
 
+/**
+ * AppModule
+ * Root module of the application, importing other modules and setting up configurations.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,7 +30,9 @@ import * as path from 'path'
     }),
     AboutModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    EventModule,
+    AreaModule
   ],
   controllers: [],
   providers: []

@@ -17,7 +17,13 @@ import { HttpModule } from '@nestjs/axios'
 import { IdentificationService } from './services/identification.service'
 import { DiscordOAuth2Service } from './services/discord.service'
 import { SpotifyOAuth2Service } from './services/spotify.service'
+import { TwitterOAuth2Service } from './services/twitter.service'
+import { GithubOAuth2Service } from './services/github.service'
 
+/**
+ * AuthModule
+ * Module responsible for handling authentication-related functionalities.
+ */
 @Module({
   imports: [
     forwardRef(() => UsersModule),
@@ -41,6 +47,8 @@ import { SpotifyOAuth2Service } from './services/spotify.service'
     GoogleOAuth2Service,
     DiscordOAuth2Service,
     SpotifyOAuth2Service,
+    TwitterOAuth2Service,
+    GithubOAuth2Service,
     LocalStrategy,
     JwtStrategy,
     IdentificationService

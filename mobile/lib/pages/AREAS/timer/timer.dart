@@ -4,10 +4,10 @@ import 'package:mobile/json.dart';
 import 'package:mobile/pages/AREAS/actions.dart';
 import 'package:mobile/pages/AREAS/triggers.dart';
 
-const Color theme_color = Color(0xFF24292E);
+const Color theme_color = Color(0xFF4C4C4C);
 
-class GithubAREA extends StatelessWidget {
-  const GithubAREA({Key? key}) : super(key: key);
+class TimerAREA extends StatelessWidget {
+  const TimerAREA({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
     if (await canLaunch(url)) {
@@ -20,13 +20,12 @@ class GithubAREA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> actions =
-        JsonDataSingleton().getServiceActions('github');
-    final List<Map<String, dynamic>> reactions =
-        JsonDataSingleton().getServiceReactions('github');
+        JsonDataSingleton().getServiceActions('timer');
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Github',
+        title: const Text('Timer',
             style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold)),
       ),
       body: Padding(
@@ -39,9 +38,6 @@ class GithubAREA extends StatelessWidget {
               const SizedBox(height: 32.0),
               _buildSectionTitle('Triggers'),
               ..._buildButtons(context, actions, true),
-              const SizedBox(height: 16.0),
-              _buildSectionTitle('Actions'),
-              ..._buildButtons(context, reactions, false),
             ],
           ),
         ),
@@ -58,30 +54,15 @@ class GithubAREA extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset('assets/AREA/github.png', height: 100.0),
+            Image.asset('assets/AREA/timer.png', height: 100.0),
             const SizedBox(height: 8.0),
             const Text(
-                'Github is the best place to share code with friends, co-workers, classmates, and complete strangers.',
+                'Turn on Applets that run on an hourly, daily, weekly, monthly or yearly basis using this service.',
                 style: TextStyle(fontSize: 16.0, color: Colors.white)),
             const SizedBox(height: 16.0),
-            _buildConnectVisitButtons(),
           ],
         ),
       ),
-    );
-  }
-
-  Row _buildConnectVisitButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildUrlButton(
-            'Connect',
-            'https://accounts.spotify.com/fr/login?continue=https%3A%2F%2Fopen.spotify.com%2Fintl-fr',
-            theme_color),
-        _buildUrlButton(
-            'Visit', 'https://open.spotify.com/intl-fr', theme_color),
-      ],
     );
   }
 
@@ -104,20 +85,20 @@ class GithubAREA extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => isTrigger
                   ? TriggerDetails(
-                      color: 0xFF24292E,
-                      service: 'Github',
+                      color: 0xFF4C4C4C,
+                      service: 'Timer',
                       triggerName: item['name'],
                       description: item['description'],
                       onActionTap: () {},
-                      logoPath: 'assets/AREA/github.png',
+                      logoPath: 'assets/AREA/timer.png',
                     )
                   : ActionsDetails(
-                      color: 0xFF24292E,
-                      service: 'Github',
+                      color: 0xFF4C4C4C,
+                      service: 'Timer',
                       triggerName: item['name'],
                       description: item['description'],
                       onActionTap: () {},
-                      logoPath: 'assets/AREA/github.png',
+                      logoPath: 'assets/AREA/timer.png',
                     ),
             ),
           );
@@ -138,4 +119,5 @@ class GithubAREA extends StatelessWidget {
           style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
     );
   }
+
 }

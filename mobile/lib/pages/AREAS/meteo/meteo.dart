@@ -4,10 +4,10 @@ import 'package:mobile/json.dart';
 import 'package:mobile/pages/AREAS/actions.dart';
 import 'package:mobile/pages/AREAS/triggers.dart';
 
-const Color theme_color = Color(0xFF24292E);
+const Color theme_color = Color(0xFF8fe0ff);
 
-class GithubAREA extends StatelessWidget {
-  const GithubAREA({Key? key}) : super(key: key);
+class MeteoAREA extends StatelessWidget {
+  const MeteoAREA({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
     if (await canLaunch(url)) {
@@ -20,13 +20,11 @@ class GithubAREA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> actions =
-        JsonDataSingleton().getServiceActions('github');
-    final List<Map<String, dynamic>> reactions =
-        JsonDataSingleton().getServiceReactions('github');
+        JsonDataSingleton().getServiceActions('meteo');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Github',
+        title: const Text('Meteo',
             style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold)),
       ),
       body: Padding(
@@ -35,13 +33,10 @@ class GithubAREA extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSpotifyCard(),
+              _buildCard(),
               const SizedBox(height: 32.0),
               _buildSectionTitle('Triggers'),
               ..._buildButtons(context, actions, true),
-              const SizedBox(height: 16.0),
-              _buildSectionTitle('Actions'),
-              ..._buildButtons(context, reactions, false),
             ],
           ),
         ),
@@ -49,7 +44,7 @@ class GithubAREA extends StatelessWidget {
     );
   }
 
-  Widget _buildSpotifyCard() {
+  Widget _buildCard() {
     return Card(
       color: theme_color,
       elevation: 10.0,
@@ -58,10 +53,10 @@ class GithubAREA extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset('assets/AREA/github.png', height: 100.0),
+            Image.asset('assets/AREA/meteo.png', height: 100.0),
             const SizedBox(height: 8.0),
             const Text(
-                'Github is the best place to share code with friends, co-workers, classmates, and complete strangers.',
+                'Your personal weather data dashboard.',
                 style: TextStyle(fontSize: 16.0, color: Colors.white)),
             const SizedBox(height: 16.0),
             _buildConnectVisitButtons(),
@@ -76,18 +71,14 @@ class GithubAREA extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildUrlButton(
-            'Connect',
-            'https://accounts.spotify.com/fr/login?continue=https%3A%2F%2Fopen.spotify.com%2Fintl-fr',
-            theme_color),
-        _buildUrlButton(
-            'Visit', 'https://open.spotify.com/intl-fr', theme_color),
+            'Visit', 'https://ambientweather.net/', theme_color),
+        _buildUrlButton('Connect', 'https://ambientweather.com/customer/account/login/referer/aHR0cHM6Ly9hbWJpZW50d2VhdGhlci5jb20v/', theme_color)
       ],
     );
   }
 
   Widget _buildUrlButton(String text, String url, Color color) {
     return ElevatedButton(
-      // onPressed: () {},
       onPressed: () => _launchURL(url),
       style: ElevatedButton.styleFrom(primary: Colors.white, onPrimary: color),
       child: Text(text),
@@ -104,20 +95,20 @@ class GithubAREA extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => isTrigger
                   ? TriggerDetails(
-                      color: 0xFF24292E,
-                      service: 'Github',
+                      color: 0xFF8fe0ff,
+                      service: 'Meteo',
                       triggerName: item['name'],
                       description: item['description'],
                       onActionTap: () {},
-                      logoPath: 'assets/AREA/github.png',
+                      logoPath: 'assets/AREA/meteo.png',
                     )
                   : ActionsDetails(
-                      color: 0xFF24292E,
-                      service: 'Github',
+                      color: 0xFF8fe0ff,
+                      service: 'Meteo',
                       triggerName: item['name'],
                       description: item['description'],
                       onActionTap: () {},
-                      logoPath: 'assets/AREA/github.png',
+                      logoPath: 'assets/AREA/meteo.png',
                     ),
             ),
           );

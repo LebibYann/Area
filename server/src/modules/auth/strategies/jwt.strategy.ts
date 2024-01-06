@@ -13,6 +13,10 @@ import { type User } from 'src/modules/users/users.entity'
 import { type JwtPayload } from '../interfaces/jwt.interface'
 import { CredentialService } from '../services/credential.service'
 
+/**
+ * JwtStrategy
+ * Strategy for validating JWT tokens.
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor (
@@ -29,6 +33,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   private readonly logger = new Logger(JwtStrategy.name)
 
+  /**
+   * Validate the payload of the JWT token.
+   * @param payload - The payload of the JWT token.
+   * @returns User object if the token is valid.
+   */
   async validate (payload: JwtPayload): Promise<User> {
     if (payload.token_type === 'local') {
       const user = await this.usersService.findOneByEmail(payload.email)
@@ -36,12 +45,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         this.logger.warn('Cannot find user associated with this token.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
-      const credential = await this.credentialService.findOneByUserAndService(user, 'local')
+      const credential = await this.credentialService.findOneByUserAndService(
+        user.id,
+        'local'
+      )
       if (credential == null) {
         this.logger.warn('Cannot find credential associated with this token.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
-      if (await credential.validatePassword(payload.sub)) {
+      if (!await credential.validatePassword(payload.sub)) {
         this.logger.warn('Invalid password.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
@@ -56,7 +68,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         this.logger.warn('Invalid user ID.', payload)
         throw new UnauthorizedException('Invalid token.')
       }
+      return user
     }
-    throw new BadRequestException('Invalid token type. The token type must be either "local" or "oauth2".')
+    throw new BadRequestException('Invalid token type. The token type must be either "local" or "oauth2": ' + payload.token_type)
   }
 }

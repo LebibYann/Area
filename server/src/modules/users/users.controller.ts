@@ -24,15 +24,28 @@ import { User } from './users.entity'
 import { UpdateUserDto } from './dtos/updateUser.dto'
 import { AuthGuard } from '@nestjs/passport'
 
+/**
+ * UsersInterface
+ * Interface for request with user
+ */
 interface RequestWithUser extends ExpressRequest {
   user: User
 }
 
 @ApiTags('users')
 @Controller('users')
+/**
+ * UsersController
+ * Controller responsible for handling user-related HTTP requests.
+ */
 export class UsersController {
   constructor (private readonly usersService: UsersService) {}
 
+  /**
+   * Get the authenticated user.
+   * @param req - The HTTP request.
+   * @returns A Promise resolving to the authenticated User.
+   */
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')
@@ -47,6 +60,11 @@ export class UsersController {
     return req.user
   }
 
+  /**
+   * Delete the authenticated user.
+   * @param req - The HTTP request.
+   * @returns A Promise resolving to void.
+   */
   @Delete('me')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')
@@ -58,6 +76,12 @@ export class UsersController {
     await this.usersService.remove(req.user.id)
   }
 
+  /**
+   * Update the authenticated user.
+   * @param req - The HTTP request.
+   * @param updateUserDto - The data to update the user with.
+   * @returns A Promise resolving to the updated User or null if not found.
+   */
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')

@@ -4,7 +4,6 @@ class ActionsDetails extends StatelessWidget {
   final String service;
   final String triggerName;
   final String description;
-  final String actionText;
   final VoidCallback onActionTap;
   final String logoPath;
   final int color;
@@ -13,7 +12,6 @@ class ActionsDetails extends StatelessWidget {
     required this.service,
     required this.triggerName,
     required this.description,
-    required this.actionText,
     required this.onActionTap,
     required this.logoPath,
     required this.color,
@@ -76,13 +74,6 @@ class ActionsDetails extends StatelessWidget {
               style: const TextStyle(fontSize: 16.0),
             ),
           ),
-          const SizedBox(height: 32.0),
-
-            ElevatedButton(
-              onPressed: () => onActionTap(),
-              child: Text(actionText, style: TextStyle(color: Color(color)),),
-
-            ),
         ],
       ),
     );
