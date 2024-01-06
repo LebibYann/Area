@@ -10,7 +10,7 @@ export enum ServiceName {
   INSTAGRAM = 'instagram',
   TWITTER = 'twitter',
   GITHUB = 'github',
-  WHEATHER = 'weather',
+  WHEATHER = 'meteo',
   TIMER = 'timer'
 }
 
