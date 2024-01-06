@@ -9,6 +9,7 @@ import Create from './services/Create';
 import Applets from './services/Applets';
 import Join from './authenticator/Join';
 import Settings from './authenticator/Settings';
+import ServiceDetails from './services/ServiceDetails';
 
 const App = (): JSX.Element => {
   return (
@@ -16,7 +17,8 @@ const App = (): JSX.Element => {
       <NavigationHeader/>
       <main>
         <Routes>
-          <Route path="/" element={<Services/>}/>
+          <Route path="/" element={<Services />} />
+          <Route path='/:id' element={<ServiceDetails/>}/>
           <Route path="/join" element={<Join/>}/>
           <Route path="/login" element={<Login />}/>
           <Route path="/register" element={<Register />} />

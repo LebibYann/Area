@@ -27,6 +27,7 @@ const Settings = (): JSX.Element => {
       })
       const json = await response.json();
       if (readRequestStatus(json.statusCode, json.message)) {
+        setForm({...form, email: json.data.email});
         setLoading(false);
       }
     } catch (error) {
@@ -35,6 +36,7 @@ const Settings = (): JSX.Element => {
   }
 
   useEffect(() => {
+    window.history.pushState(null, "", window.location.origin);
     if (!token) {
         window.location.replace(window.location.origin);
     }

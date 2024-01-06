@@ -1,6 +1,6 @@
 import React from "react";
-import { LoginFormData } from "./Login";
 import "./Authenticator.css";
+import { LoginFormData } from "../types";
 
 const Register = (): JSX.Element => {
   const [form, setForm] = React.useState<LoginFormData>({
