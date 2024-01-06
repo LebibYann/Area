@@ -4,7 +4,7 @@ import {
 
 export enum ServiceName {
   GMAIL = 'gmail',
-  GOOGLE = 'google',
+  GOOGLE = 'gdrive',
   DISCORD = 'discord',
   SPOTIFY = 'spotify',
   INSTAGRAM = 'instagram',
