@@ -23,7 +23,7 @@ const Callback = (): JSX.Element => {
         login(responsejson.access_token);
         window.location.replace(window.location.origin);
       } else {
-        //window.location.replace(window.location.origin + "/join");
+        window.location.replace(window.location.origin + "/join");
       }
     } catch (error) {
       console.error(error);
@@ -42,9 +42,9 @@ const Callback = (): JSX.Element => {
     const service = url.pathname.split("/")[3];
     const query = queryString.parse(url.search);
 
-    if (query.code !== null)
+    if (query.code !== null) {
       handleOauth2(service, query.code as string);
-    //window.location.replace(window.location.origin + "/join");
+    }
   }, []);
 
   return (

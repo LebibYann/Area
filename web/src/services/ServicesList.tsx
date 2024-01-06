@@ -30,7 +30,7 @@ const ServicesList = (): JSX.Element => {
   }
 
   return (
-    <section className="services-list">
+    <section className="services-section">
       <SearchBar onChange={(e) => { updateSearch(e) }} value={searchKey} placeholder="Search Services" />
       <ul className="list">
         {searchedServices.map((searchedService) =>

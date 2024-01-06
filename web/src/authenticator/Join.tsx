@@ -11,22 +11,13 @@ const Join = (): JSX.Element => {
 
     const [display, setDisplay] = useState<boolean>(false);
 
-    const domain = "https://accounts.google.com/o/oauth2/v2/auth";
-    const redirectUri = "http://localhost:8081/login/auth/google";
-    const responseType = "code";
-    const accessType = "offline";
-    const scope = "openid%20profile%20email";
-    const includeGrantedScopes = "true";
-
-    const googleUrl = domain + 
+    const googleUrl = "https://accounts.google.com/o/oauth2/v2/auth" + 
     `?client_id=` + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-    `&redirect_uri=${redirectUri}` +
-    `&access_type=${accessType}` +
-    `&response_type=${responseType}` +
-    `&scope=${scope}` +
-    `&include_granted_scopes=${includeGrantedScopes}`;
-
-    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=identify%20email"
+    "&redirect_uri=http://localhost:8081/login/auth/google" +
+    "&access_type=offline" +
+    "&response_type=code" +
+    "&scope=openid%20profile%20email" +
+    "&include_granted_scopes=true";
 
     const spotifyUrl = "https://accounts.spotify.com/authorize?" + queryString.stringify({
         response_type: "code",
@@ -35,20 +26,9 @@ const Join = (): JSX.Element => {
         redirect_uri: "http://localhost:8081/login/auth/spotify"
     })
 
-
     const twitterUrl = "https://twitter.com/i/oauth2/authorize?response_type=code&client_id=RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ&redirect_uri=http://localhost:8081/login/auth/twitter&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain"
-    // const twitterUrl = "https://twitter.com/i/oauth2/authorize" + queryString.stringify({
-    //     response_type: "code",
-    //     client_id: import.meta.env.TWITTER_CLIENT_ID,
-    //     scope: "tweet.read tweet.write users.read",
-    //     redirect_uri: "http://localhost:8081/login/auth/twitter",
-    //     state: "state",
-    //     code_challenge: "challenge",
-    //     code_challenge_method: "plain"
-    // })
 
-    const githubUrl = "    https://github.com/login/oauth/authorize?client_id=fee6c82e9e3f4aa4c447&redirect_uri=http://localhost:8081/login/auth/github&response_type=code"
-
+    const githubUrl = "https://github.com/login/oauth/authorize?client_id=fee6c82e9e3f4aa4c447&redirect_uri=http://localhost:8081/login/auth/github&response_type=code"
 
     const updateDisplay = () => {
       setDisplay(!display);
@@ -62,21 +42,9 @@ const Join = (): JSX.Element => {
                     <img src={Google} className="service-icon"/>
                     Connect with Google
                 </a>
-                <a href={discordUrl} className='oauth-button discord'>
-                    <img src={Discord} className="service-icon"/>
-                    Connect with Discord
-                </a>
                 <a href={spotifyUrl} className='oauth-button spotify'>
                     <img src={Spotify} className="service-icon"/>
                     Connect with Spotify
-                </a>
-                <a href={twitterUrl} className='oauth-button twitter'>
-                    <img src={Spotify} className="service-icon"/>
-                    Connect with Twitter
-                </a>
-                <a href={githubUrl} className='oauth-button github'>
-                    <img src={Spotify} className="service-icon"/>
-                    Connect with Github
                 </a>
             </section>
             <p className="text">Or use your email to <Link to={"/register"} className="link">sign up</Link> or <Link to={"login"} className="link">log in</Link></p>
