@@ -66,11 +66,9 @@ class _LoginPage extends State<LoginPage> {
         String authorizationCode = request.uri.queryParameters['code'] ?? '';
         await server.close(force: true);
         if (auth == "Google") {
-          await postAuth2(
-              authorizationCode, "http://localhost:8080/oauth2/google", redirectUri);
-        } else if (auth == "Discord") {
-          await postAuth2(
-              authorizationCode, "http://localhost:8080/oauth2/discord", redirectUri);
+          await postAuth2(authorizationCode, "http://localhost:8080/oauth2/google", redirectUri);
+        } else if (auth == "Spotify") {
+          await postAuth2(authorizationCode, "http://localhost:8080/oauth2/spotify", redirectUri);
         }
         print('HandleCallBack func: $authorizationCode');
       });
@@ -93,11 +91,12 @@ class _LoginPage extends State<LoginPage> {
           'https://accounts.google.com/o/oauth2/v2/auth?client_id=$clientId&redirect_uri=$redirectUri&access_type=offline&response_type=code&scope=openid%20profile%20email&include_granted_scopes=true');
       launchURL(GoogleUrl);
       handleCallback(auth, redirectUri);
-    } else if (auth == "Discord") {
-      String redirectUri = "http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord";
-      final Uri DiscordUrl = Uri.parse(
-          'https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=$redirectUri&scope=identify');
-      launchURL(DiscordUrl);
+    } else if (auth == "Spotify") {
+      final clientId = dotenv.env['SPOTIFY_CLIENT_ID'];
+      String redirectUri = "http://localhost:8082/login/auth/spotify";
+      final Uri SpotifyUrl = Uri.parse(
+          'https://accounts.spotify.com/authorize?response_type=code&client_id=$clientId&scope=user-read-private user-read-email&redirect_uri=$redirectUri');
+      launchURL(SpotifyUrl);
       handleCallback(auth, redirectUri);
     } else {
       print("Error oauth not existing !");
@@ -113,8 +112,7 @@ class _LoginPage extends State<LoginPage> {
 
   postAuth(String mail, String password, String url) async {
     try {
-      var response = await http
-          .post(Uri.parse(url), body: {"email": mail, "password": password});
+      var response = await http.post(Uri.parse(url), body: {"email": mail, "password": password});
       print(response.body);
       if (response.statusCode == 201) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -237,7 +235,7 @@ class _LoginPage extends State<LoginPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () => oauth2("Discord"),
+              onPressed: () => oauth2("Spotify"),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
                 onPrimary: Colors.white,
@@ -245,16 +243,16 @@ class _LoginPage extends State<LoginPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.discord,
-                    color: Colors.white,
+                  Image.asset(
+                    'assets/logo/spotify_logo.png',
+                    height: 20.0,
                   ),
-                  SizedBox(width: 8.0),
-                  Text(
-                    'Login with Discord',
+                  const SizedBox(width: 8.0),
+                  const Text(
+                    'Login with Spotify',
                     style: TextStyle(fontSize: 20.0),
                   ),
                 ],
