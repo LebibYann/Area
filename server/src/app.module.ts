@@ -8,6 +8,10 @@ import * as path from 'path'
 import { EventModule } from './modules/events/event.module'
 import { AreaModule } from './modules/area/area.module'
 
+/**
+ * AppModule
+ * Root module of the application, importing other modules and setting up configurations.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot({

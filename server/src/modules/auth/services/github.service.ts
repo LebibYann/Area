@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common'
 import { OAuth2Service } from './oauth2.service'
 import { type TokenResponse } from '../interfaces/token.interface'
-import { type DiscordUserInfo } from '../interfaces/userInfo.interface'
+import { type IDTokenInfo } from '../interfaces/userInfo.interface'
 import { ConfigService } from '@nestjs/config'
 import { HttpService } from '@nestjs/axios'
 import { UsersService } from '../../users/users.service'
 import { CredentialService } from './credential.service'
 import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
-import { discordConfig } from 'config'
+import { githubConfig } from 'config'
 
 /**
- * DiscordService
- * Service responsible for handling Discord.
+ * githubService
+ * Service responsible for handling github.
  */
 @Injectable()
-export class DiscordOAuth2Service extends OAuth2Service {
+export class GithubOAuth2Service extends OAuth2Service {
   constructor (
     protected httpService: HttpService,
     protected userService: UsersService,
@@ -24,7 +24,7 @@ export class DiscordOAuth2Service extends OAuth2Service {
     super(httpService, userService, credentialService)
   }
 
-  private readonly clientSecret = this.configService.get<string>('DISCORD_CLIENT_SECRET')
+  private readonly clientSecret = this.configService.get<string>('GITHUB_CLIENT_SECRET')
 
   /**
    * Exchange the authorization code for an access token.
@@ -37,10 +37,10 @@ export class DiscordOAuth2Service extends OAuth2Service {
     redirectUri: string
   ): Promise<AccessTokenResponse> {
     return await super.exchangeCodeForToken(
-      'discord',
-      discordConfig.TOKEN_ENDPOINT,
+      'github',
+      githubConfig.GITHUB_TOKEN_ENDPOINT,
       code,
-      discordConfig.CLIENT_ID,
+      githubConfig.GITHUB_CLIENT_ID,
       this.clientSecret ?? '',
       redirectUri
     )
@@ -53,22 +53,24 @@ export class DiscordOAuth2Service extends OAuth2Service {
    */
   async refreshToken (refreshToken: string): Promise<TokenResponse> {
     return await super.refreshToken(
-      discordConfig.TOKEN_ENDPOINT,
+      githubConfig.GITHUB_TOKEN_ENDPOINT,
       refreshToken,
-      discordConfig.CLIENT_ID,
+      githubConfig.GITHUB_CLIENT_ID,
       this.clientSecret ?? ''
     )
   }
 
   /**
-   * Retrieve user information using the access token.
-   * @param accessToken - The valid access token obtained after authentication.
-   * @returns Discord user information.
+   * Get user information from the ID token.
+   * @param idToken - The ID token obtained during authentication.
+   * @returns Information extracted from the ID token.
    */
-  async getUserInfo (accessToken: string): Promise<DiscordUserInfo> {
-    return await super.getUserInfo(
-      accessToken,
-      discordConfig.USER_INFO_ENDPOINT
+  async getUserInfo (idToken: string): Promise<IDTokenInfo> {
+    const parts = idToken.split('.')
+    const idPayload = JSON.parse(
+      Buffer.from(parts[1], 'base64').toString('utf8')
     )
+
+    return idPayload
   }
 }

@@ -7,6 +7,10 @@ import { UsersService } from 'src/modules/users/users.service'
 import { AxiosError } from 'axios'
 import { type AccessTokenResponse } from '../interfaces/accessTokenRes.interface'
 
+/**
+ * OAuth2Service
+ * Service responsible for Oauth2.
+ */
 @Injectable()
 export class OAuth2Service {
   constructor (
@@ -17,6 +21,16 @@ export class OAuth2Service {
 
   private readonly logger = new Logger(OAuth2Service.name)
 
+  /**
+   * Exchange an authorization code for an access token.
+   * @param service - The name of the service.
+   * @param tokenEndpoint - The token endpoint URL.
+   * @param code - The authorization code.
+   * @param clientId - The client ID.
+   * @param clientSecret - The client secret.
+   * @param redirectUri - The redirect URI.
+   * @returns The access token response.
+   */
   async exchangeCodeForToken (
     service: string,
     tokenEndpoint: string,
@@ -58,6 +72,14 @@ export class OAuth2Service {
     }
   }
 
+  /**
+   * Refresh an access token using a refresh token.
+   * @param tokenEndpoint - The token endpoint URL.
+   * @param refreshToken - The refresh token.
+   * @param clientId - The client ID.
+   * @param clientSecret - The client secret.
+   * @returns The token response with a new access token.
+   */
   async refreshToken (
     tokenEndpoint: string,
     refreshToken: string,
@@ -84,6 +106,12 @@ export class OAuth2Service {
     }
   }
 
+  /**
+   * Get user information using an access token.
+   * @param accessToken - The access token.
+   * @param userInfoEndpoint - The user info endpoint URL.
+   * @returns User information.
+   */
   async getUserInfo (
     accessToken: string,
     userInfoEndpoint: string

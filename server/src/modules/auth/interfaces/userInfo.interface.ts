@@ -1,3 +1,6 @@
+/**
+ * Interface representing the information contained in an ID token.
+ */
 export interface IDTokenInfo {
   iss: string
   sub: string
@@ -13,6 +16,9 @@ export interface IDTokenInfo {
   picture: string
 }
 
+/**
+ * Interface representing user information from the Spotify service.
+ */
 export interface SpotifyUserInfo {
   country: string
   display_name: string
@@ -40,6 +46,9 @@ export interface SpotifyUserInfo {
   uri: string
 }
 
+/**
+ * Interface representing user information from the Discord service.
+ */
 export interface DiscordUserInfo {
   application: {
     id: string

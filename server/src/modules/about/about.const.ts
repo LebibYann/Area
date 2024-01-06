@@ -14,6 +14,10 @@ export enum ServiceName {
   TIMER = 'timer'
 }
 
+/**
+ * About.json
+ * Format of the about.json
+ */
 export const services: ServiceDto[] = [
   {
     name: ServiceName.GMAIL,
