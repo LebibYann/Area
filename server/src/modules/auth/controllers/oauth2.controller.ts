@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Logger, UseGuards, Request } from '@nestjs/common'
+import { Controller, Post, Body, Logger, UseGuards, Request, InternalServerErrorException, Get } from '@nestjs/common'
 import {
   ApiTags,
   ApiOperation,
@@ -21,6 +21,7 @@ import { TwitterOAuth2Service } from '../services/twitter.service'
 import { GithubOAuth2Service } from '../services/github.service'
 import { AuthGuard } from '@nestjs/passport'
 import { RequestWithUser } from 'src/common/interfaces/requestwithUser.interface'
+import { CredentialService } from '../services/credential.service'
 
 /**
  * Controller for OAuth2 authentication.
@@ -35,7 +36,8 @@ export class OAuth2Controller {
     private readonly twitterService: TwitterOAuth2Service,
     private readonly githubService: GithubOAuth2Service,
     private readonly identificationService: IdentificationService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly credentialsService: CredentialService
   ) { }
 
   logger = new Logger(OAuth2Controller.name)
@@ -210,5 +212,24 @@ export class OAuth2Controller {
         'github',
         token
       )
+    }
+
+    @Get('me')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth('access-token')
+    @ApiOperation({ summary: 'Get the list of services the user is connected to.' })
+    @ApiOkResponse({ description: 'The list of services the user is connected to.' })
+    @ApiBadRequestResponse({ description: 'Bad request.' })
+    @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
+    async getServices (
+      @Request() req: RequestWithUser
+    ): Promise<string[]> {
+      if (req.user == null) {
+        throw new InternalServerErrorException('Error with JWT strategy.')
+      }
+
+      const creds = await this.credentialsService.findAllByUserId(req.user.id)
+
+      return creds.map(cred => cred.service)
     }
 }
