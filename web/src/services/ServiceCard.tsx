@@ -5,7 +5,7 @@ import spotify from "../assets/images/SpotifyIcon.png";
 import instagram from "../assets/images/InstagramIcon.png";
 import "./ServiceCard.css";
 
-const useServiceIcon = (name: string) : string => {
+const useServiceIcon = (name: string) : string | undefined => {
   switch (name) {
     case "google":
       return (google)
@@ -16,21 +16,23 @@ const useServiceIcon = (name: string) : string => {
     case "instagram":
       return (instagram)
     default:
-      return ("")
+      return (undefined)
   }  
 }
 
 interface ServiceCardProps extends React.HTMLAttributes<HTMLLIElement>{
-  service: Service;
+  text: string;
+  iconName?: string | undefined;
+  serviceName: string;
 }
 
-const ServiceCard = ({service, ...props} : ServiceCardProps): JSX.Element => {
-  const icon = useServiceIcon(service.name);
+const ServiceCard = ({text, iconName, serviceName, ...props} : ServiceCardProps): JSX.Element => {
+  const icon = iconName && useServiceIcon(iconName);
 
   return (
-    <li key={service.name} className={"card " + service.name} {...props}>
-      <img src={useServiceIcon(service.name)} alt={service.name} className="service-icon" />
-      <h1>{service.name}</h1>
+    <li key={text} className={"card " + serviceName} {...props}>
+      {icon && <img src={icon} alt={iconName + " icon"} className="service-icon" />}
+      <h2>{text}</h2>
     </li>
   );
 };

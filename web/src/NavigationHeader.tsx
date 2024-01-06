@@ -29,12 +29,9 @@ const NavigationHeader = (): JSX.Element => {
                         <RedirectionButton href={"/create"} className='button black-button'>
                             Create
                         </RedirectionButton>
-                        <RedirectionButton onClick={() => {
-                            logout();
-                            window.location.reload();
-                        }} className='button white-button border'>
-                            Log out
-                        </RedirectionButton>
+                        <Link to={"/settings"} className='button white-button border'>
+                            Account
+                        </Link>
                     </>
                 }
             </section>

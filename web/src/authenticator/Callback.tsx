@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { login } from "../utils";
+import { login, readRequestStatus, useLogin } from "../utils";
 import queryString from "query-string";
 
 const Callback = (): JSX.Element => {
   const url = window.location;
 
   const handleOauth2 = async (service: string, code: string): Promise<void> => {
-    console.log(`http://localhost:8080/oauth2/${service}`)
     try {
       const response = await fetch(`http://localhost:8080/oauth2/${service}`, {
         method: "POST",
@@ -19,18 +18,25 @@ const Callback = (): JSX.Element => {
         }),
       });
       const responsejson = await response.json();
-      if (response.status !== 201) {
-        console.error(responsejson.message);
-        //window.location.replace(window.location.origin + "/join");
-      } else {
-        console.log(responsejson.access_token);
+      console.log(response.status);
+      if (readRequestStatus(response.status, responsejson.message)) {
         login(responsejson.access_token);
-        //window.location.replace(window.location.origin);
+        window.location.replace(window.location.origin);
+      } else {
+        //window.location.replace(window.location.origin + "/join");
       }
     } catch (error) {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+    const isLogged = useLogin();
+
+    if (isLogged) {
+      window.location.replace(window.location.origin);
+    }
+  }, []);
 
   useEffect(() => {
     const service = url.pathname.split("/")[3];

@@ -29,6 +29,11 @@
     background-color: white;
 }
 
+.red-button {
+    color: white;
+    background-color: red;
+}
+
 .border {
     border: 0.25em solid black;
 }

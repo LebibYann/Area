@@ -42,3 +42,17 @@ export async function useService(serviceName: string): Promise<Service | undefin
 
   return services.find((service) => service.name === serviceName);
 }
+
+export function readRequestStatus(status: number, message: string): boolean{
+  switch (status) {
+    case 200:
+    case 201:
+      return true;
+    case 401:
+      logout();
+      break;
+  }
+  console.log(status)
+  console.log(message);
+  return false;
+}
