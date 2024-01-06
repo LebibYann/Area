@@ -6,7 +6,8 @@ import {
   ApiOkResponse,
   ApiBadRequestResponse,
   ApiCreatedResponse,
-  ApiBearerAuth
+  ApiBearerAuth,
+  ApiUnauthorizedResponse
 } from '@nestjs/swagger'
 import { OAuth2Dto } from '../dtos/oauth2.dto'
 import { GoogleOAuth2Service } from '../services/google.service'
@@ -83,19 +84,20 @@ export class OAuth2Controller {
 
   /**
    * Login with Discord OAuth2.
-   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   * @returns {Promise<void>} void
    */
   @Post('discord')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Discord OAuth2' })
-  @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
+  @ApiOkResponse({ description: 'OAuth2 successful.' })
   @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiBody({ type: OAuth2Dto })
   async discord (
     @Request() req: RequestWithUser,
     @Body() oauth2Dto: OAuth2Dto
-  ) : Promise<LocalTokenDto> {
+  ) : Promise<void> {
+
     const token = await this.discordService.exchangeCodeForToken(
       oauth2Dto.code,
       oauth2Dto.redirectUri
@@ -108,18 +110,6 @@ export class OAuth2Controller {
       'discord',
       token
     )
-
-    const payload: JwtPayload = {
-      email: user.email,
-      sub: user.id.toString(),
-      token_type: 'oauth2'
-    }
-
-    this.logger.debug('Login Successful. Local JWT Generated')
-
-    return {
-      access_token: this.jwtService.sign(payload)
-    }
   }
 
   /**
@@ -164,81 +154,61 @@ export class OAuth2Controller {
 
   /**
    * Login with Twitter OAuth2.
-   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   * @returns {Promise<void>} void
    */
    @Post('Twitter')
+   @UseGuards(AuthGuard('jwt'))
+   @ApiBearerAuth('access-token')
    @ApiOperation({ summary: 'Twitter OAuth2' })
-   @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
+   @ApiOkResponse({ description: 'OAuth2 successful.' })
    @ApiBadRequestResponse({ description: 'Bad request.' })
+   @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
    @ApiBody({ type: OAuth2Dto })
-   async twitter (@Body() oauth2Dto: OAuth2Dto): Promise<LocalTokenDto> {
+   async twitter (
+    @Request() req: RequestWithUser,
+    @Body() oauth2Dto: OAuth2Dto
+  ): Promise<void> {
      const token = await this.twitterService.exchangeCodeForToken(
        oauth2Dto.code,
        oauth2Dto.redirectUri
      )
- 
+
      this.logger.debug('Fetched Twitter Token')
- 
-     const userInfo = await this.twitterService.getUserInfo(token.access_token)
- 
-     this.logger.debug('Fetched Twitter User Info')
- 
+
      const user = await this.identificationService.identifyUser(
-       userInfo.email,
+       req.user.email,
        'twitter',
        token
      )
- 
-     const payload: JwtPayload = {
-       email: user.email,
-       sub: user.id.toString(),
-       token_type: 'oauth2'
-     }
- 
-     this.logger.debug('Login Successful. Local JWT Generated')
- 
-     return {
-       access_token: this.jwtService.sign(payload)
-     }
    }
 
    /**
    * Login with Github OAuth2.
-   * @returns {Promise<LocalTokenDto>} LocalTokenDto
+   * @returns {Promise<void>} void
    */
     @Post('Github')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth('access-token')
     @ApiOperation({ summary: 'Github OAuth2' })
-    @ApiOkResponse({ description: 'Login successful.', type: LocalTokenDto })
+    @ApiOkResponse({ description: 'OAuth2 successful.' })
     @ApiBadRequestResponse({ description: 'Bad request.' })
+    @ApiUnauthorizedResponse({ description: 'Access token is invalid.' })
     @ApiBody({ type: OAuth2Dto })
-    async github (@Body() oauth2Dto: OAuth2Dto): Promise<LocalTokenDto> {
+    async github (
+      @Request() req: RequestWithUser,
+      @Body() oauth2Dto: OAuth2Dto
+    ): Promise<void> {
       const token = await this.githubService.exchangeCodeForToken(
         oauth2Dto.code,
         oauth2Dto.redirectUri
       )
-  
+
       this.logger.debug('Fetched Github Token')
-  
-      const userInfo = await this.githubService.getUserInfo(token.access_token)
-  
-      this.logger.debug('Fetched Github User Info')
-  
+
       const user = await this.identificationService.identifyUser(
-        userInfo.email,
+        req.user.email,
         'github',
         token
       )
-  
-      const payload: JwtPayload = {
-        email: user.email,
-        sub: user.id.toString(),
-        token_type: 'oauth2'
-      }
-  
-      this.logger.debug('Login Successful. Local JWT Generated')
-  
-      return {
-        access_token: this.jwtService.sign(payload)
-      }
     }
 }
