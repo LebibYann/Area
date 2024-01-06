@@ -21,7 +21,6 @@ class _LoginPage extends State<LoginPage> {
   final TextEditingController _passwordTEC = TextEditingController();
 
   postAuth2(String token, String url, String redirectUri) async {
-    print('postAuth2 func: $token');
     try {
         var response = await http.post(
         Uri.parse(url),
@@ -30,11 +29,13 @@ class _LoginPage extends State<LoginPage> {
       );
 
       if (response.statusCode == 201) {
-        String accessToken = response.body;
-        print("accessToken= $accessToken");
+        final accessToken = response.body;
         if (accessToken.isNotEmpty) {
           var state = Provider.of<AuthState>(context, listen: false);
-          state.accessToken = accessToken;
+          Map<String, dynamic> jsonResponse = json.decode(response.body);
+          String token = jsonResponse['access_token'];
+          print("Token= $token");
+          state.accessToken = token;
           nav();
         } else {
           print('Access token not found in the response');
@@ -70,7 +71,6 @@ class _LoginPage extends State<LoginPage> {
         } else if (auth == "Spotify") {
           await postAuth2(authorizationCode, "http://localhost:8080/oauth2/spotify", redirectUri);
         }
-        print('HandleCallBack func: $authorizationCode');
       });
     });
   }

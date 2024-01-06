@@ -39,7 +39,7 @@ class TwitterAREA extends StatelessWidget {
     // print(token);
 
     print(response.statusCode);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Center(
