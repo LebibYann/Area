@@ -31,7 +31,7 @@ export class IdentificationService {
     user: User
   ): Promise<Credential | null> {
     const credential = await this.credentialService.findOneByUserAndService(
-      user,
+      user.id,
       service
     )
     if (credential != null) {

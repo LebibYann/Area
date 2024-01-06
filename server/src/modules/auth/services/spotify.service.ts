@@ -38,9 +38,9 @@ export class SpotifyOAuth2Service extends OAuth2Service {
   ): Promise<AccessTokenResponse> {
     return await super.exchangeCodeForToken(
       'spotify',
-      spotifyConfig.SPOTIFY_TOKEN_ENDPOINT,
+      spotifyConfig.TOKEN_ENDPOINT,
       code,
-      spotifyConfig.SPOTIFY_CLIENT_ID,
+      spotifyConfig.CLIENT_ID,
       this.spotifyClientSecret,
       redirectUri
     )
@@ -63,6 +63,6 @@ export class SpotifyOAuth2Service extends OAuth2Service {
    * @returns User information from Spotify.
    */
   async getUserInfo (accessToken: string): Promise<SpotifyUserInfo> {
-    return await super.getUserInfo(accessToken, spotifyConfig.SPOTIFY_USER_INFO_ENDPOINT)
+    return await super.getUserInfo(accessToken, spotifyConfig.USER_INFO_ENDPOINT)
   }
 }

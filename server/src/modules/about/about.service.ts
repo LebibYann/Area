@@ -3,7 +3,7 @@ import {
   type ClientDto,
   type AboutDto
 } from './about.dto'
-import { services } from './about.const'
+import { ServiceName, services } from './about.const'
 
 
 /**
@@ -42,5 +42,9 @@ export class AboutService {
    */
   setClientIp (clientIp: string): void {
     this.clientIp = clientIp
+  }
+
+  getServicesNames (): string[] {
+    return Object.values(ServiceName)
   }
 }

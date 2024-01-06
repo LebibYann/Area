@@ -29,7 +29,7 @@ export class AuthService {
   async validateUser (email: string, password: string): Promise<User | null> {
     const user = await this.usersService.findOneByEmail(email)
     if (user != null) {
-      const credential = await this.credentialService.findOneByUserAndService(user, 'local')
+      const credential = await this.credentialService.findOneByUserAndService(user.id, 'local')
       if (credential == null) {
         this.logger.warn('Cannot find credential associated with this user.', { email })
         return null
