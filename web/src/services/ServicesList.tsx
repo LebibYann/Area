@@ -34,7 +34,7 @@ const ServicesList = (): JSX.Element => {
       <SearchBar onChange={(e) => updateSearch(e)} value={searchKey} placeholder="Search Services" />
       <ul className="list">
         {searchedServices.map((searchedService) =>
-          <ServiceCard service={searchedService} onClick={() => window.location.replace(window.location.origin + "/" + searchedService.name)}/>
+          <ServiceCard text={searchedService.name} iconName={searchedService.name} serviceName={searchedService.name} onClick={() => window.location.replace(window.location.origin + "/" + searchedService.name)}/>
         )}
       </ul>
     </section>

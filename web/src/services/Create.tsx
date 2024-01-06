@@ -89,16 +89,13 @@ const Create = (): JSX.Element => {
           {selectedService === undefined ?
           <ul className="list">
             {services.map((service) =>
-              <ServiceCard service={service} onClick={() => updateService(service)}/>
+              <ServiceCard text={service.name} iconName={service.name} serviceName={service.name} onClick={() => updateService(service)}/>
             )}
           </ul>
           :
           <ul className="list">
             {selectedService[mode].map((area) => 
-              <li onClick={() => updateArea(area)} className={"card " + selectedService.name}>
-                {area.name}
-                {area.description}
-              </li>
+              <ServiceCard text={area.description} serviceName={selectedService.name} onClick={() => updateArea(area)}/>
             )}
           </ul>
           }

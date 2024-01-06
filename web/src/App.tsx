@@ -8,6 +8,7 @@ import DownloadApk from './DownloadApk';
 import Create from './services/Create';
 import Applets from './services/Applets';
 import Join from './authenticator/Join';
+import Settings from './authenticator/Settings';
 
 const App = (): JSX.Element => {
   return (
@@ -18,7 +19,8 @@ const App = (): JSX.Element => {
           <Route path="/" element={<Services/>}/>
           <Route path="/join" element={<Join/>}/>
           <Route path="/login" element={<Login />}/>
-          <Route path="/register" element={<Register/>}/>
+          <Route path="/register" element={<Register />} />
+          <Route path="/settings" element={<Settings/>}/>
           <Route path="/my_applets" element={<Applets/>}/>
           <Route path="/my_applets/:id/*" element={<Applets/>}/>
           <Route path="/create" element={<Create/>}/>

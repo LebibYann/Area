@@ -6,6 +6,7 @@ li.card {
     border-radius: 0.5em;
     width: 200px;
     height: 200px;
+    text-align: center;
     align-items: center;
     justify-content: center;
     
