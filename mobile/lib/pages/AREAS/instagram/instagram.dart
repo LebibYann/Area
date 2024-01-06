@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/pages/AREAS/triggers.dart';
+import 'package:mobile/json.dart';
 
 class InstagramAREA extends StatelessWidget {
   const InstagramAREA({Key? key}) : super(key: key);
@@ -15,6 +16,8 @@ class InstagramAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> actions =
+        JsonDataSingleton().getServiceActions('instagram');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -28,7 +31,9 @@ class InstagramAREA extends StatelessWidget {
           children: [
             Card(
               elevation: 4.0,
+              color: Color(0xFFF3CCFF),
               child: Padding(
+
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,7 +75,7 @@ class InstagramAREA extends StatelessWidget {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            ..._buildTriggerButtons(context),
+            ..._buildButtons(context, actions),
           ],
         ),
       ),
@@ -78,89 +83,32 @@ class InstagramAREA extends StatelessWidget {
   }
 
 
-  List<Widget> _buildTriggerButtons(BuildContext context) {
-    return [
-      ElevatedButton(
+  List<Widget> _buildButtons(
+      BuildContext context, List<Map<String, dynamic>> actions) {
+    return actions.map((action) {
+      return ElevatedButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => TriggerDetails(
-                      color: 0xFFE1306C,
-                      service: 'Instagram',
-                      triggerName: 'Any new photo by you',
-                      description: 'This Trigger fires every time you share any new photo on Instagram',
-                      actionText: 'Add this trigger',
-                      onActionTap: () {
-                        // Your action code here
-                      },
-                      logoPath: 'assets/AREA/instagram.png',
-                    )),
+              builder: (context) => TriggerDetails(
+                color: 0xFFF3CCFF,
+                service: 'Instagram',
+                triggerName: action['name'],
+                description: action['description'],
+                onActionTap: () {
+                  // Your action code here
+                },
+                logoPath: 'assets/AREA/instagram.png',
+              ),
+            ),
           );
-        },
-        child: const Text('Any new photo by you'),
-      ),
-      const SizedBox(height: 15.0),
-      ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TriggerDetails(
-                      color: 0xFFE1306C,
-                      service: 'Instagram',
-                      triggerName: 'New photo by you with specific hashtag',
-                      description: 'This Trigger fires every time you share a photo on Instagram with a hashtag you specify',
-                      actionText: 'Add this trigger',
-                      onActionTap: () {
-                        // Your action code here
-                      },
-                      logoPath: 'assets/AREA/instagram.png',
-                    )
-                  ),
-          );
-        },
-        child: const Text('New photo by you with specific hashtag'),
-      ),
-      const SizedBox(height: 15.0),
-      ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TriggerDetails(
-                      color: 0xFFE1306C,
-                      service: 'Instagram',
-                      triggerName: 'Any video by you',
-                      description: 'This Trigger fires every time you share any new video on Instagram',
-                      actionText: 'Add this trigger',
-                      onActionTap: () {
-                        // Your action code here
-                      },
-                      logoPath: 'assets/AREA/instagram.png',
-                    )),
-          );
-        },
-        child: const Text('Any new video by you'),
-      ),
-      const SizedBox(height: 15.0),
-      ElevatedButton(
-        onPressed: () {
-          // todo
         },
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                color: Colors.black,
-                width: 2.0,
-              )),
-          primary: Colors.white,
           onPrimary: Colors.black,
         ),
-        child: const Text('Suggest a new trigger',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-    ];
+        child: Text(action['name']),
+      );
+    }).toList();
   }
 }
