@@ -23,20 +23,20 @@ export const services: ServiceDto[] = [
     name: ServiceName.GMAIL,
     image: 'assets/logo/gmail.png',
     actions: [
-      { name: 'Receive an e-mail', description: 'Trigger receiving an email via Gmail', param1: 'test', param2: 'test2' },
+      { name: 'Is last email read', description: 'Trigger when teh last email is readed'},
     ],
     reactions: [
-      {name: 'Send an e-mail',description: 'Send an email to someone',},
+      {name: 'Send an e-mail',description: 'Send an email to someone', param1: 'toEmailAddress', param2: 'fromEmailAddress', param3: 'subject', param4: 'bodyText'},
     ]
   },
   {
     name: ServiceName.GOOGLE,
     image: 'assets/logo/gdrive.png',
     actions: [
-      { name: 'New file', description: 'Trigger when a new file is uploaded' },
+      // { name: 'New file', description: 'Trigger when a new file is uploaded' },
     ],
     reactions: [
-      {name: 'Save a file',description: 'Save a file in the drive',},
+      // {name: 'Save a file',description: 'Save a file in the drive',},
     ]
   },
   {
@@ -53,17 +53,18 @@ export const services: ServiceDto[] = [
     name: ServiceName.SPOTIFY,
     image: 'assets/logo/spotify.png',
     actions: [
-      { name: 'Play a song', description: 'Trigger playing a song on Spotify' },
+      { name: 'Are new playlist', description: 'Check if a playlist a created' },
+      { name: 'Is playing song', description: 'Check if a song is played' },
     ],
     reactions: [
-      { name: 'Add to the playlist', description: 'Trigger adding a song to a Spotify playlist' },
+      { name: 'Play the current song', description: 'Play or resume the current song' },
     ]
   },
   {
     name: ServiceName.INSTAGRAM,
     image: 'assets/logo/instagram.png',
     actions: [
-        { name: 'New photo by you', description: 'Trigger every time you share any new photo on Instagram'},
+        // { name: 'New photo by you', description: 'Trigger every time you share any new photo on Instagram'},
     ],
     reactions: []
   },
@@ -71,27 +72,27 @@ export const services: ServiceDto[] = [
     name: ServiceName.TWITTER,
     image: 'assets/logo/twitter.png',
     actions: [
-      { name: 'Retweet', description: 'Trigger when your get retweet' },
+      { name: 'Is my word in tendancy', description: 'Trigger when my words ar in tendancies' ,param1: 'word1', param2: 'word2', param3: 'word3', param4: 'word4'},
     ],
     reactions: [
-      { name: 'Like', description: 'Like a post' },
+      { name: 'Tweet', description: 'Create a new tweet', param1: 'Text of the tweet'},
     ]
   },
   {
     name: ServiceName.GITHUB,
     image: 'assets/logo/github.png',
     actions: [
-      { name: 'Create a repository', description: 'Trigger creating a new repository on GitHub' },
+      { name: 'Is new issue', description: 'Trigger when a new issue is created in a repo' ,param1: 'Owner', param2: 'Repository'},
     ],
     reactions: [
-      { name: 'Upload a Readme', description: 'Upload a Readme on a repository' },
+      { name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Header',param4: 'Body'},
     ]
   },
   {
     name: ServiceName.WHEATHER,
     image: 'assets/logo/meteo.png',
     actions: [
-      { name: 'Get the weather', description: 'Trigger getting the current weather information' },
+      { name: 'Get the weather', description: 'Trigger getting the current weather information', param1: 'Location (ex:Paris)' },
     ],
     reactions: []
   },
@@ -99,7 +100,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.TIMER,
     image: 'assets/logo/timer.png',
     actions: [
-      { name: 'Start a timer', description: 'Trigger starting a timer' },
+      { name: 'Start a timer', description: 'Trigger starting a timer', param1: 'Time in minute (ex: 15)'},
     ],
     reactions: []
   }

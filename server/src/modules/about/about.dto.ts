@@ -48,7 +48,7 @@ export class AReaDto {
    * @example
    * header: Wake up for the meeting at 9h30
    */
-    @ApiProperty({ example: 'header: Wake up for the meeting at 9h30', description: 'Second param of the request' })
+     @ApiProperty({ example: 'mail: lol2@gmail.com', description: 'Second param of the request' })
     param2?: string
 
     /**
@@ -56,8 +56,11 @@ export class AReaDto {
    * @example
    * body: Guys if you say 9h30, you have to wake up!
    */
-    @ApiProperty({ example: 'body: Guys if you say 9h30, you have to wake up !', description: 'Third param of the request' })
+    @ApiProperty({ example: 'Header: Guys if you say 9h30, you have to wake up !', description: 'Third param of the request' })
     param3?: string
+
+    @ApiProperty({ example: 'Body: Guys if please stop make me wake up if you sleep', description: 'Fourth param of the request' })
+    param4?: string
 }
 
 /**
