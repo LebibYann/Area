@@ -3,7 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ServiceEmitter {
-    @OnEvent('')
+    @OnEvent('Timer')
     handleEvent(data: any) {
         console.log('Event triggered');
     }
