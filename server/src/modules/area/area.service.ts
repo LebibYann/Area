@@ -22,6 +22,10 @@ export class AreaService {
     });
   }
 
+  async findAll(): Promise<Area[]> {
+    return await this.areaRepository.find();
+  }
+
   async findByUser(userId: number): Promise<Area[]> {
     return await this.areaRepository.findBy({ userId });
   }
