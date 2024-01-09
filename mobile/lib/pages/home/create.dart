@@ -80,9 +80,7 @@ class CreatePage extends StatelessWidget {
         const SizedBox(height: 8),
         _buildFormFields(fileds),
         ElevatedButton(
-          onPressed: () {
-
-          },
+          onPressed: () {},
           child: const Text('create'),
         ),
       ],
@@ -118,20 +116,54 @@ class CreatePage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: const Text('Choose a service'),
+          title: const Center(
+            child: Text(
+              'Choose a service',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 23,
+              ),
+            ),
+          ),
+          titlePadding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 0.0),
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
           content: SingleChildScrollView(
-            child: ListBody(
-              children: services.map((serviceName) {
-                return ListTile(
-                  title:
-                      Text(serviceName, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25)),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _showServiceActionsOrReactionsDialog(
-                        context, serviceName, isAction);
-                  },
-                );
-              }).toList(),
+            child: Column(
+              children: <Widget>[
+                const Divider(
+                  color: Colors.black,
+                  thickness: 2,
+                ),
+                ListBody(
+                  children: services.map((serviceName) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 2.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 3.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          serviceName,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _showServiceActionsOrReactionsDialog(
+                              context, serviceName, isAction);
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
           ),
         );
@@ -157,7 +189,6 @@ class CreatePage extends StatelessWidget {
                   title: Text(option['name']),
                   subtitle: Text(option['description']),
                   onTap: () {
-
                     if (isAction) {
                       ifThisSelected = true;
                       selectedAction = option['name'];
@@ -179,6 +210,7 @@ class CreatePage extends StatelessWidget {
                         ),
                       );
                     } else {
+                      ifThisSelected = false;
                       selectedReaction = option['name'];
                       numberOfParametersReaction = JsonDataSingleton()
                           .countParametersInAction(selectedReaction);

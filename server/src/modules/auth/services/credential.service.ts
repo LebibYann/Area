@@ -28,6 +28,10 @@ export class CredentialService {
     return await this.credentialRepository.findOneBy({ userId, service })
   }
 
+  async findAllByUserId (userId: number): Promise<Credential[]> {
+    return await this.credentialRepository.findBy({ userId })
+  }
+
   /**
    * Create a new credential.
    * @param userId - The user ID associated with the credential.

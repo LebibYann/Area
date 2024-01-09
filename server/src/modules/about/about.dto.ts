@@ -20,6 +20,14 @@ export class ClientDto {
  */
 export class AReaDto {
   /**
+   * The id of the event.
+   * @example
+   * 0
+   */
+   @ApiProperty({ example: '0', description: 'The id of the event.' })
+   id: number
+
+  /**
    * The name of the action.
    * @example
    * send/receive email
@@ -48,16 +56,24 @@ export class AReaDto {
    * @example
    * header: Wake up for the meeting at 9h30
    */
-    @ApiProperty({ example: 'header: Wake up for the meeting at 9h30', description: 'Second param of the request' })
+     @ApiProperty({ example: 'mail: lol2@gmail.com', description: 'Second param of the request' })
     param2?: string
 
     /**
    * Third parameter of the request.
    * @example
-   * body: Guys if you say 9h30, you have to wake up!
+   * Header: Guys if you say 9h30, you have to wake up!
    */
-    @ApiProperty({ example: 'body: Guys if you say 9h30, you have to wake up !', description: 'Third param of the request' })
+    @ApiProperty({ example: 'Header: Guys if you say 9h30, you have to wake up!', description: 'Third param of the request' })
     param3?: string
+
+    /**
+   * Fourth parameter of the request.
+   * @example
+   * Body: Guys if please stop make me wake up if you sleep'
+   */
+    @ApiProperty({ example: 'Body: Guys if please stop make me wake up if you sleep', description: 'Fourth param of the request' })
+    param4?: string
 }
 
 /**
@@ -65,6 +81,13 @@ export class AReaDto {
  * Data transfer object for service information.
  */
 export class ServiceDto {
+  /**
+   * The id of the service.
+   * @example
+   * 0
+   */
+   @ApiProperty({ example: '0', description: 'The id of the service.' })
+   id: number
   /**
    * The name of the service.
    * @example

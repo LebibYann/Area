@@ -16,34 +16,55 @@ const Color discordBlue = Color(0xFF7289DA);
 class DiscordAREA extends StatelessWidget {
   const DiscordAREA({Key? key}) : super(key: key);
 
-  Future<void> postAuth2(String authorizationCode, String url,
-      String redirectUri, BuildContext context) async {
-    final String clientId =
-        dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
-    final String clientSecret =
-        dotenv.env['DISCORD_CLIENT_SECRET'] ?? 'fallbackClientSecret';
+  Future<void> postAuth2(String authorizationCode, String url, String redirectUri, BuildContext context) async {
+    final auth = Provider.of<AuthState>(context, listen: false);
+    final token = auth.accessToken;
 
     final response = await http.post(
       Uri.parse(url),
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'accept': 'application/json',
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
       },
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'grant_type': 'authorization_code',
+      body: json.encode({
         'code': authorizationCode,
-        'redirect_uri': redirectUri,
-      },
+        'redirectUri': redirectUri,
+      }),
     );
 
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      final accessToken = responseData['access_token'];
+    // print(authorizationCode);
+    // print(token);
 
-      var authState = Provider.of<AuthState>(context, listen: false);
-      authState.accessToken = accessToken;
+    print(response.statusCode);
+    if (response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: Text(
+                "Connection with Discord success",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
     } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: Text(
+                "Connection with Discord failled",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
       print('Error during authentication with Discord: ${response.body}');
     }
   }
@@ -53,20 +74,16 @@ class DiscordAREA extends StatelessWidget {
       server.listen((HttpRequest request) async {
         String authorizationCode = request.uri.queryParameters['code'] ?? '';
         await server.close(force: true);
-        await postAuth2(authorizationCode,
-            "http://localhost:8080/oauth2/discord", redirectUri, context);
-        print('Authorization Code: $authorizationCode');
+        await postAuth2(authorizationCode, "http://localhost:8080/oauth2/discord", redirectUri, context);
       });
     });
   }
 
   void _launchDiscordOAuth(BuildContext context) async {
-    final String clientId =
-        dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
+    final String clientId = dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
     final String scopes = 'identify%20email';
     String redirectUri = "http://localhost:8082/login/auth/discord";
-    final Uri oauthUrl = Uri.parse(
-        'https://discord.com/api/oauth2/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=$scopes');
+    final Uri oauthUrl = Uri.parse('https://discord.com/api/oauth2/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=$scopes');
 
     if (await canLaunch(oauthUrl.toString())) {
       await launch(oauthUrl.toString());
