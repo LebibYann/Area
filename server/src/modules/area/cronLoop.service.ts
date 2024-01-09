@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
 import { AreaService } from "./area.service";
+import { EventService } from "../events/event.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import axios from "axios";
 
@@ -14,13 +15,30 @@ export class CronLoopService {
   async handleCron() {
     this.logger.debug("Called every 1 minute");
     const areas = await this.areaService.findAll();
-    makeApiCallTimer(this.eventEmitter, "test"); // ok
+    // makeApiCallTimer(this.eventEmitter, "test"); // ok
     // makeApiCallWeather("Paris"); // ok
+    /* 
+      users.forEach(user) => {
+        user.areas.forEach(area) => {
+          switch(area.triggers.serviceId) {
+            case 0 && area.triggers.eventId: 
+                makeApiCallGmail(eventEmitter, user.accestoken['Google']);
+                break;
+            case 2:
+               recursiveSwitch(id + 2)
+               break;
+            default:
+               return;
+          }
+        }
+      }
+    */
     areas.forEach((area) => {
       this.logger.debug(`Area: ${area.id}`);
     });
   }
 }
+
 
 async function makeApiCallGmail(eventEmitter: EventEmitter2, accessToken:string): Promise<any> {
   const apiGmailGetLastMail = `https://www.googleapis.com/gmail/v1/users/me/messages?maxResults=1&q=-from%3Ame&access_token=${accessToken}`;
