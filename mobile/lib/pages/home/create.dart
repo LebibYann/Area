@@ -67,8 +67,9 @@ class CreatePage extends StatelessWidget {
           'actionId': idReaction,
         }));
 
-        print('Request ok: ${responseAction.body} && ${responseReaction.body}');
+        // print('Request ok: ${responseAction.body} && ${responseReaction.body}');
         if (responseArea.statusCode == 201) {
+          print(responseArea.body);
           print('Area created!');
         } else {
           print('Area failed!');
