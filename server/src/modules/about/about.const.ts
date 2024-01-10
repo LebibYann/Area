@@ -92,7 +92,7 @@ export const services: ServiceDto[] = [
       {id: 0, name: 'Is new issue', description: 'Trigger when a new issue is created in a repo' ,param1: 'Owner', param2: 'Repository'},
     ],
     reactions: [
-      {id: 0, name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Header',param4: 'Body'},
+      {id: 0, name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Title',param4: 'Body'},
     ]
   },
   {
@@ -100,7 +100,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.WHEATHER,
     image: 'assets/logo/meteo.png',
     actions: [
-      {id: 0, name: 'Get the weather', description: 'Trigger getting the current weather information', param1: 'Location (ex:Paris)' },
+      {id: 0, name: 'Is Above', description: 'Trigger when the temperature is above', param1: 'Location (ex:Paris)', param2: 'Temperature in celcius (ex: 2)' },
     ],
     reactions: []
   },
