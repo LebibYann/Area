@@ -1,19 +1,44 @@
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from '@nestjs/event-emitter';
+import { services } from "../about/about.const";
 import axios from "axios";
 // import { google } from 'googleapis';
 
 @Injectable()
 export class ServiceEmitter {
-    @OnEvent('Timer')
-    handleTimer(data: any) {
-        console.log('Event triggered');
-    }
 
-    @OnEvent('Weather')
-    handleWeather(data: any) {
-        console.log('Event triggered');
-    }
+  @OnEvent(services[0].reactions[0].name)
+  handleGmail0(data: any) {
+    // makeSendEmail("","","","","");
+    console.log(services[0].reactions[0].name, 'triggered');
+  }
+
+  @OnEvent(services[2].reactions[0].name)
+  handleDiscord0(data: any) {
+    console.log(services[2].reactions[0].name, 'triggered');
+  }
+
+  @OnEvent(services[3].reactions[0].name)
+  handleSpotify0(data: any) {
+    makePlaySpotify("");
+    console.log(services[3].reactions[0].name, 'triggered');
+  }
+
+  @OnEvent(services[5].reactions[0].name)
+  handleTwitter0(data: any) {
+    makeTweet("","");
+    console.log(services[5].reactions[0].name, 'triggered');
+  }
+
+  @OnEvent(services[6].reactions[0].name)
+  handleGithub0(data: any) {
+    makeCreateIssue("","","","","");
+    console.log(services[6].reactions[0].name, 'triggered');
+  }
+
+  @OnEvent('')
+  handleTimer(data: any) {
+  }
 }
 
 async function makePlaySpotify(accessToken:string): Promise<any> {
