@@ -63,6 +63,10 @@ export class EventService {
     });
   }
 
+  async findById (id: number): Promise<Event | null> {
+    return await this.eventRepository.findOneBy({ id });
+  }
+
   async findByUser(userId: number): Promise<Event[]> {
     return await this.eventRepository.findBy({ userId });
   }
