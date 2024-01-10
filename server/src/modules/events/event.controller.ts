@@ -50,7 +50,7 @@ export class EventController {
   @ApiBearerAuth('access-token')
   @ApiBody({ type: Object })
   @ApiOperation({ summary: 'Create an event' })
-  @ApiOkResponse({ description: 'The event has been created' })
+  @ApiOkResponse({ description: 'The event has been created', type: Event })
   @ApiUnauthorizedResponse({ description: 'Invalid access token' })
   @ApiBadRequestResponse({ description: 'Invalid service, event or parameters' })
   async create(
@@ -63,13 +63,19 @@ export class EventController {
     if (req.user == null) {
       throw new InternalServerErrorException('Error with JWT strategy.')
     }
-    return await this.eventService.create(
+
+    const newEvent = await this.eventService.create(
       req.user.id,
       req.url.includes('actions'),
       service,
       event,
       parameters
     );
+
+    if (!newEvent) {
+      throw new BadRequestException('Invalid service, event or parameters.');
+    }
+    return newEvent;
   }
 
   @Patch(':service/:event/:id')
