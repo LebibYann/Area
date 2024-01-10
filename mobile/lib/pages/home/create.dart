@@ -20,7 +20,7 @@ class CreatePage extends StatelessWidget {
 
   postArea(BuildContext context) async {
     try {
-      String urlAction = "http://localhost:8080/actions/$idAction/$idActionEvent";
+      String urlAction = "http://localhost:8080/triggers/$idAction/$idActionEvent";
       String urlReaction = "http://localhost:8080/actions/$idReaction/$idReactionEvent";
       final auth = Provider.of<AuthState>(context, listen: false);
       final token = auth.accessToken;
@@ -67,6 +67,7 @@ class CreatePage extends StatelessWidget {
           'actionId': idReaction,
         }));
 
+        print('Request ok: ${responseAction.body} && ${responseReaction.body}');
         if (responseArea.statusCode == 201) {
           print('Area created!');
         } else {
