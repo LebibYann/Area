@@ -12,13 +12,14 @@ export class AreaService {
 
   async create(
     userId: number,
-    serviceId: number,
+    triggerId: number,
     actionId: number
   ): Promise<Area | null> {
     return await this.areaRepository.save({
+      name: "My Area",
       userId,
-      serviceId,
       actionId,
+      triggerId
     });
   }
 

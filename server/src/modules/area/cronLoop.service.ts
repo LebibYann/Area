@@ -3,14 +3,22 @@ import { Cron } from "@nestjs/schedule";
 import { AreaService } from "./area.service";
 import { EventService } from "../events/event.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { services } from "../about/about.const";
+import { ServiceName } from "../about/about.const";
 import axios from "axios";
+import { CredentialService } from "../auth/services/credential.service";
+import { TimerService } from "../providers/services/timer.service";
 
 @Injectable()
 export class CronLoopService {
   private readonly logger = new Logger(CronLoopService.name);
 
-  constructor(private readonly areaService: AreaService, private readonly eventEmitter: EventEmitter2) {}
+  constructor(
+    private readonly areaService: AreaService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly eventService: EventService,
+    private readonly credentialService: CredentialService,
+    private readonly timerService: TimerService
+  ) {}
 
   @Cron("*/10 * * * * *") // every 1 minute
   async handleCron() {
@@ -18,25 +26,52 @@ export class CronLoopService {
     const areas = await this.areaService.findAll();
     // makeApiCallTimer(this.eventEmitter, "test"); // ok
     // makeApiCallWeather("Paris"); // ok
-    makeDiscordcall(this.eventEmitter, "test");
-    /* 
-      users.forEach(user) => {
-        user.areas.forEach(area) => {
-          switch(area.triggers.serviceId) {
-            case 0 && area.triggers.eventId: 
-                makeApiCallGmail(eventEmitter, user.accestoken['Google']);
-                break;
-            case 2:
-               recursiveSwitch(id + 2)
-               break;
-            default:
-               return;
-          }
-        }
+    // makeDiscordcall(this.eventEmitter, "test");
+    this.logger.debug(`Found ${areas.length} areas`);
+    areas.forEach(async (area) => {
+      this.logger.debug(`Area ${area.id} for user ${area.userId}`);
+      // Get the trigger
+      const trigger = await this.eventService.findById(area.triggerId);
+      if (!trigger) {
+        return;
       }
-    */
-    areas.forEach((area) => {
-      this.logger.debug(`Area: ${area.id}`);
+      // Get credentials for the user and the service
+      const credentials = await this.credentialService.findOneByUserAndService(
+        area.userId,
+        ServiceName[trigger.serviceId]
+      );
+      if (!credentials) {
+        return;
+      }
+      switch (ServiceName[trigger.serviceId]) {
+        case ServiceName.GMAIL:
+          makeApiCallGmail(this.eventEmitter, credentials.accessToken);
+          break;
+        case ServiceName.GITHUB:
+          makeApiCallGithub(this.eventEmitter, credentials.accessToken);
+          break;
+        case ServiceName.TWITTER:
+          makeApiCallTwitter(this.eventEmitter, credentials.accessToken, trigger.parameters.word1, trigger.parameters.word2, trigger.parameters.word3, trigger.parameters.word4);
+          break;
+        case ServiceName.TIMER:
+          this.logger.debug(`Timer for user ${area.userId}`);
+          const currentTime = await this.timerService.getCurrentTime();
+          this.logger.debug(`Current time: ${currentTime}`);
+          this.logger.debug(`Trigger time: ${trigger.parameters.time}`);
+          this.logger.debug(`Trigger : ${currentTime >= trigger.parameters.time}`);
+          if (currentTime && currentTime >= trigger.parameters.time) {
+            this.logger.debug(`Triggering timer for user ${area.userId}`);
+          }
+          break;
+        case ServiceName.WEATHER:
+          makeApiCallWeather(this.eventEmitter, trigger.parameters)
+          break;
+        case ServiceName.SPOTIFY:
+          makeApiCallSpotify(this.eventEmitter, credentials.accessToken);
+          break;
+        default:
+          return;
+      }
     });
   }
 }
@@ -147,7 +182,7 @@ async function makeApiCallSpotify(eventEmitter: EventEmitter2, accessToken:strin
 }
 
 async function makeDiscordcall(eventEmitter: EventEmitter2, accessToken:string): Promise<any> {
-  eventEmitter.emit(services[2].reactions[0].name, true);
+  eventEmitter.emit(ServiceName[2].reactions[0].name, true);
   return true;
   const apiSpotifyGetPlaylist = 'https://api.spotify.com/v1/me/playlists';
   const apiSpotifyGetPlaybackState = 'https://api.spotify.com/v1/me/player';

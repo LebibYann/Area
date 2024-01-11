@@ -10,7 +10,7 @@ export enum ServiceName {
   INSTAGRAM = 'instagram',
   TWITTER = 'twitter',
   GITHUB = 'github',
-  WHEATHER = 'meteo',
+  WEATHER = 'meteo',
   TIMER = 'timer'
 }
 
@@ -97,7 +97,7 @@ export const services: ServiceDto[] = [
   },
   {
     id: 7,
-    name: ServiceName.WHEATHER,
+    name: ServiceName.WEATHER,
     image: 'assets/logo/meteo.png',
     actions: [
       {id: 0, name: 'Is Above', description: 'Trigger when the temperature is above', param1: 'Location (ex:Paris)', param2: 'Temperature in celcius (ex: 2)' },
