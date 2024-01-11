@@ -15,6 +15,7 @@ export class ServiceEmitter {
 
   @OnEvent(services[2].reactions[0].name)
   handleDiscord0(data: any) {
+    makeDiscrodMesage("","test");
     console.log(services[2].reactions[0].name, 'triggered');
   }
 
@@ -85,6 +86,24 @@ async function makeTweet(accessToken:string, text:string): Promise<any> {
       }
   
       return false;
+}
+
+async function makeDiscrodMesage(accessToken:string, text:string): Promise<any> {
+  const url = 'https://discord.com/api/webhooks/1194974339469148211/pZdLvt2LfgfTXnsImu3iSizmbDla4uMrDkB4knBw4Es9Achkv571IiRaT4vO8rdWVtWD';
+
+  try {
+      const response = await axios.post(url, {
+        content: text,
+      });
+      if (response.status >= 200 && response.status < 300) {
+        console.log('Discord Message send created successfully');
+      }
+    } catch (error) {
+      console.log(`API call failed (Discord): ${error.message}`);
+      return false;
+    }
+
+    return false;
 }
 
 async function makeCreateIssue(accessToken:string, repos:string, owner:string, title:string, body:string, ): Promise<any> {

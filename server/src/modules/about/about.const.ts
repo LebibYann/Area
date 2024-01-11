@@ -49,7 +49,7 @@ export const services: ServiceDto[] = [
       {id: 0, name: 'Mention', description: 'Trigger when mentionned in a chanel' },
     ],
     reactions: [
-      {id: 0, name: 'React to a message', description: 'React to the last message' },
+      {id: 0, name: 'Send a message in channel', description: 'Send a message in générale channel', param1: 'message' },
     ]
   },
   {

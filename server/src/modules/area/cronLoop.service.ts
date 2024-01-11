@@ -3,7 +3,7 @@ import { Cron } from "@nestjs/schedule";
 import { AreaService } from "./area.service";
 import { EventService } from "../events/event.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { ServiceName } from "../about/about.const";
+import { services, ServiceName } from "../about/about.const";
 import axios from "axios";
 import { CredentialService } from "../auth/services/credential.service";
 import { TimerService } from "../providers/services/timer.service";
@@ -24,6 +24,7 @@ export class CronLoopService {
   async handleCron() {
     this.logger.debug("Called every 1 minute");
     const areas = await this.areaService.findAll();
+    makeDiscordcall(this.eventEmitter, "test");
     this.logger.debug(`Found ${areas.length} areas`);
     areas.forEach(async (area) => {
       // Get the trigger
@@ -162,6 +163,27 @@ async function makeApiCallWeather(eventEmitter: EventEmitter2, location:string):
 }
 
 async function makeApiCallSpotify(eventEmitter: EventEmitter2, accessToken:string): Promise<any> {
+  const apiSpotifyGetPlaylist = 'https://api.spotify.com/v1/me/playlists';
+  const apiSpotifyGetPlaybackState = 'https://api.spotify.com/v1/me/player';
+  const headers = {
+    Authorization: `Bearer ${accessToken}`,
+  };
+  try {
+    const response = await axios(apiSpotifyGetPlaylist, {headers});
+    if (response.status >= 200 && response.status < 300) {
+      console.log(response.data);
+      eventEmitter.emit('NewPlaylist', true);
+    }
+  } catch (error) {
+    console.log(`API call failed (Spotify): ${error.message}`);
+    return false;
+  }
+  return false;
+}
+
+async function makeDiscordcall(eventEmitter: EventEmitter2, accessToken:string): Promise<any> {
+  eventEmitter.emit(services[2].reactions[0].name, true);
+  return true;
   const apiSpotifyGetPlaylist = 'https://api.spotify.com/v1/me/playlists';
   const apiSpotifyGetPlaybackState = 'https://api.spotify.com/v1/me/player';
   const headers = {
