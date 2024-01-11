@@ -6,16 +6,26 @@ import '../components/Button.css'
 import './ServicesList.css'
 import ServiceCard from './ServiceCard'
 
+interface paramsForm {
+  param1: string,
+  param2: string,
+  param3: string,
+  param4: string
+}
+
 const Create = (): JSX.Element => {
-  const isLogged = useLogin()
+  const token = useLogin()
   const [action, setAction] = useState<AppletArea | undefined>(undefined)
   const [reaction, setReaction] = useState<AppletArea | undefined>(undefined)
   const [selectedService, setSelectedService] = useState<Service | undefined>(undefined)
   const [mode, setMode] = useState<'actions' | 'reactions' | undefined>(undefined)
+  const [showForm, setShowForm] = useState<boolean>(false)
+  const [form, setForm] = useState<paramsForm>({param1: '', param2: '', param3: '', param4: ''})
   const [services, setServices] = useState<Service[]>([])
 
   const updateServices = async () => {
     const promise = await useServices()
+    console.log(promise)
     setServices(promise)
   }
 
@@ -32,6 +42,47 @@ const Create = (): JSX.Element => {
     } else if (mode === 'reactions') {
       setReaction({ service: selectedService.name, area: selectedArea })
     }
+    setShowForm(true)
+  }
+
+  const updateForm = () => {
+    if (selectedService === undefined) {
+      return
+    }
+    if (mode === 'actions' && action !== undefined) {
+      
+      fetch(`http://localhost:8080/triggers/${selectedService.id}/${action.area.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          action: action?.area.id,
+        })
+      }).then((response) => response.json()).then((data) => {
+        console.log(data)
+        setAction({ service: selectedService.name, area: { ...action?.area, ...form, id: data.eventId} })
+      }).catch((error) => {
+        console.log(error)
+      })
+    } else if (mode === 'reactions' && reaction !== undefined) {
+      fetch(`http://localhost:8080/actions/${selectedService.id}/${reaction.area.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          action: action?.area.id,
+        })
+      }).then((response) => response.json()).then((data) => {
+        console.log(data)
+        setReaction({ service: selectedService.name, area: { ...reaction?.area, ...form }, id: data.eventId })
+      }).catch((error) => {
+        console.log(error)
+      })
+    }
     updateDisplay(undefined)
   }
 
@@ -41,18 +92,56 @@ const Create = (): JSX.Element => {
       return
     }
     if (mode === undefined) {
+      setShowForm(false)
+      setForm({param1: '', param2: '', param3: '', param4: ''})
       setSelectedService(undefined)
     }
     setMode(mode)
   }
 
+  const createArea = () => {
+    fetch('http://localhost:8080/area', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        action: action?.id,
+        reaction: reaction?.id
+      })
+    }).then((response) => response.json()).then((data) => {
+      console.log(data)
+    })
+  }
+
+  const handleChange = (
+    key: string, 
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
+      setForm({...form, [key]: event.target.value});
+  }
+
   useEffect(() => {
-    if (!isLogged) {
+    if (!token) {
       window.location.replace('/login')
     }
 
+    fetch('http://localhost:8080/oauth2/me', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    }).then((response) => response.json()).then((data) => {
+      console.log(data)
+    }).catch((error) => {
+      console.error(error)
+    })
+
     updateServices()
   }, [])
+  
 
   return (
     <section className="create-container">
@@ -77,22 +166,42 @@ const Create = (): JSX.Element => {
               <span>Then {reaction.area.description} </span>
           </section>
           }
-          <button className="button black-button"> Create </button>
+          {action !== undefined && reaction !== undefined &&
+            <button className="button black-button" onClick={() => { createArea() }}> Create </button>
+          }
         </section>
         : <section className="services-container">
           <button onClick={() => { updateDisplay(undefined) }} className="button white-button border">Back</button>
           {selectedService === undefined
             ? <ul className="list">
-            {services.map((service) =>
-              <ServiceCard text={service.name} iconName={service.name} serviceName={service.name} onClick={() => { updateService(service) }}/>
-            )}
-          </ul>
-            : <ul className="list">
-            {selectedService[mode].map((area) =>
-              <ServiceCard text={area.description} serviceName={selectedService.name} onClick={() => { updateArea(area) }}/>
-            )}
-          </ul>
-          }
+              {services.map((service, index) =>
+                <ServiceCard key={index} text={service.name} iconName={service.name} serviceName={service.name} onClick={() => { updateService(service) }} />
+              )}
+            </ul>
+            : !showForm ? <ul className="list">
+              {selectedService[mode].map((area, index) =>
+                <ServiceCard key={index} text={area.description} serviceName={selectedService.name} onClick={() => { updateArea(area) }} />
+              )}
+              </ul>
+            :
+              <div>
+                <div className='form-input'>
+                    <input onChange={(e): void => handleChange("param1", e)} value={form.param1} type="text" placeholder='First Parameter'/>
+                </div>
+                <div className='form-input'>
+                    <input onChange={(e): void => handleChange("param2", e)} value={form.param2} type="text" placeholder='Second Parameter'/>
+                </div>
+                <div className='form-input'>
+                    <input onChange={(e): void => handleChange("param3", e)} value={form.param3} type="text" placeholder='Third Parameter'/>
+                </div>
+                <div className='form-input'>
+                    <input onChange={(e): void => handleChange("param4", e)} value={form.param4} type="text" placeholder='Fourth Parameter'/>
+                </div>
+                <div className='form-submit'>
+                    <input type='button' value={"Create " + mode.slice(0, -1)} onClick={() => {updateForm()}}/>
+                </div>
+              </div>
+            }
         </section>
       }
     </section>
