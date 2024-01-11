@@ -62,7 +62,7 @@ const Create = (): JSX.Element => {
         })
       }).then((response) => response.json()).then((data) => {
         console.log(data)
-        setAction({ service: selectedService.name, area: { ...action?.area, ...form, id: data.eventId} })
+        setAction({ service: selectedService.name, area: { ...action?.area, ...form }, id: data.id}   )
       }).catch((error) => {
         console.log(error)
       })
@@ -78,7 +78,7 @@ const Create = (): JSX.Element => {
         })
       }).then((response) => response.json()).then((data) => {
         console.log(data)
-        setReaction({ service: selectedService.name, area: { ...reaction?.area, ...form }, id: data.eventId })
+        setReaction({ service: selectedService.name, area: { ...reaction?.area, ...form }, id: data.id })
       }).catch((error) => {
         console.log(error)
       })
@@ -100,6 +100,8 @@ const Create = (): JSX.Element => {
   }
 
   const createArea = () => {
+    console.log(action)
+    console.log(reaction)
     fetch('http://localhost:8080/area', {
       method: 'POST',
       headers: {
