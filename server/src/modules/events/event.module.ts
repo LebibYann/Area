@@ -20,6 +20,6 @@ import { HttpModule } from "@nestjs/axios";
   ],
   controllers: [EventController],
   providers: [EventService, AboutService, CredentialService, TimerService],
-  exports: []
+  exports: [EventService]
 })
 export class EventModule {}

@@ -20,10 +20,11 @@ import { EventModule } from "../events/event.module";
     TypeOrmModule.forFeature([Area, Event, Credential]),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    HttpModule
+    HttpModule,
+    EventModule
 ],
   controllers: [AreaController],
-  providers: [AreaService, CronLoopService, EventService, CredentialService, AboutService, TimerService, ServiceEmitter],
+  providers: [AreaService, CronLoopService, CredentialService, AboutService, TimerService, ServiceEmitter],
   exports: []
 })
 export class AreaModule {}
