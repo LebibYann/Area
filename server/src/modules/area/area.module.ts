@@ -13,6 +13,7 @@ import { AboutService } from "../about/about.service";
 import { Credential } from "../auth/entities/credential.entity";
 import { TimerService } from "../providers/services/timer.service";
 import { HttpModule, HttpService } from "@nestjs/axios";
+import { EventModule } from "../events/event.module";
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { HttpModule, HttpService } from "@nestjs/axios";
     HttpModule
 ],
   controllers: [AreaController],
-  providers: [AreaService, CronLoopService],
+  providers: [AreaService, CronLoopService, EventService, CredentialService, AboutService, TimerService, ServiceEmitter],
   exports: []
 })
 export class AreaModule {}
