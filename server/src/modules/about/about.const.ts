@@ -3,7 +3,7 @@ import {
 } from './about.dto'
 
 export enum ServiceName {
-  GMAIL = 'gmail',
+  GMAIL = 'google',
   GOOGLE = 'gdrive',
   DISCORD = 'discord',
   SPOTIFY = 'spotify',
@@ -27,7 +27,7 @@ export const services: ServiceDto[] = [
       { id: 0, name: 'Is last email read', description: 'Trigger when teh last email is readed'},
     ],
     reactions: [
-      {id: 1, name: 'Send an e-mail',description: 'Send an email to someone', param1: 'toEmailAddress', param2: 'fromEmailAddress', param3: 'subject', param4: 'bodyText'},
+      {id: 0, name: 'Send an e-mail',description: 'Send an email to someone', param1: 'toEmailAddress', param2: 'fromEmailAddress', param3: 'subject', param4: 'bodyText'},
     ]
   },
   {
@@ -49,7 +49,7 @@ export const services: ServiceDto[] = [
       {id: 0, name: 'Mention', description: 'Trigger when mentionned in a chanel' },
     ],
     reactions: [
-      {id: 1, name: 'React to a message', description: 'React to the last message' },
+      {id: 0, name: 'React to a message', description: 'React to the last message' },
     ]
   },
   {
@@ -61,7 +61,7 @@ export const services: ServiceDto[] = [
       {id: 1, name: 'Is playing song', description: 'Check if a song is played' },
     ],
     reactions: [
-      {id: 2, name: 'Play the current song', description: 'Play or resume the current song' },
+      {id: 0, name: 'Play the current song', description: 'Play or resume the current song' },
     ]
   },
   {
@@ -81,7 +81,7 @@ export const services: ServiceDto[] = [
       {id: 0, name: 'Is my word in tendancy', description: 'Trigger when my words ar in tendancies' ,param1: 'word1', param2: 'word2', param3: 'word3', param4: 'word4'},
     ],
     reactions: [
-      {id: 1, name: 'Tweet', description: 'Create a new tweet', param1: 'Text of the tweet'},
+      {id: 0, name: 'Tweet', description: 'Create a new tweet', param1: 'Text of the tweet'},
     ]
   },
   {
@@ -92,7 +92,7 @@ export const services: ServiceDto[] = [
       {id: 0, name: 'Is new issue', description: 'Trigger when a new issue is created in a repo' ,param1: 'Owner', param2: 'Repository'},
     ],
     reactions: [
-      {id: 1, name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Header',param4: 'Body'},
+      {id: 0, name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Title',param4: 'Body'},
     ]
   },
   {
@@ -100,7 +100,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.WHEATHER,
     image: 'assets/logo/meteo.png',
     actions: [
-      {id: 0, name: 'Get the weather', description: 'Trigger getting the current weather information', param1: 'Location (ex:Paris)' },
+      {id: 0, name: 'Is Above', description: 'Trigger when the temperature is above', param1: 'Location (ex:Paris)', param2: 'Temperature in celcius (ex: 2)' },
     ],
     reactions: []
   },

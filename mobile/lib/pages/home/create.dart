@@ -1,13 +1,100 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/json.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile/provider.dart';
+import 'package:provider/provider.dart';
 
 class CreatePage extends StatelessWidget {
   String selectedAction = "";
   int numberOfParametersAction = -1;
+  int idAction = -1;
+  int idActionEvent = -1;
   String selectedReaction = "";
   int numberOfParametersReaction = -1;
+  int idReaction = -1;
+  int idReactionEvent = -1;
   List<String> params = [];
   bool ifThisSelected = false;
+  List<TextEditingController> controllers = [];
+
+  postArea(BuildContext context) async {
+    try {
+      String urlAction = "http://localhost:8080/triggers/$idAction/$idActionEvent";
+      String urlReaction = "http://localhost:8080/actions/$idReaction/$idReactionEvent";
+      final auth = Provider.of<AuthState>(context, listen: false);
+      final token = auth.accessToken;
+
+      Map<String, dynamic> jsonMapAction = {};
+      for (int i = 0; i < numberOfParametersAction; i++) {
+        jsonMapAction['field${i + 1}'] = controllers[i].text;
+      }
+      var jsonAction = jsonEncode(jsonMapAction);
+      Map<String, dynamic> jsonMapReaction = {};
+      for (int i = numberOfParametersAction; i < numberOfParametersAction + numberOfParametersReaction; i++) {
+        jsonMapReaction['param${i - numberOfParametersAction + 1}'] = controllers[i].text;
+      }
+      var jsonReaction = jsonEncode(jsonMapReaction);
+
+      var responseAction = await http.post(Uri.parse(urlAction),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonAction);
+      var responseReaction = await http.post(Uri.parse(urlReaction),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonReaction);
+
+      if (responseAction.statusCode == 201 && responseReaction.statusCode == 201) {
+        Map<String, dynamic> responseMapAction = jsonDecode(responseAction.body);
+        int idAction = responseMapAction['id'];
+        Map<String, dynamic> responseMapReaction = jsonDecode(responseReaction.body);
+        int idReaction = responseMapReaction['id'];
+
+        print(idAction);
+        print(idReaction);
+
+        var responseArea = await http.post(Uri.parse(urlAction),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'triggerId': idAction,
+          'actionId': idReaction,
+        }));
+
+        // print('Request ok: ${responseAction.body} && ${responseReaction.body}');
+        if (responseArea.statusCode == 201) {
+          print(responseArea.body);
+          print('Area created!');
+        } else {
+          print('Area failed!');
+        }
+      } else if (responseAction.statusCode == 401 && responseReaction.statusCode == 401){
+        print('Request failed: Status ${responseAction.statusCode}: ${responseAction.body} && ${responseReaction.statusCode}: ${responseReaction.body}');
+      } else {
+        print('Request failed: Status ${responseAction.statusCode}: ${responseAction.body} && ${responseReaction.statusCode}: ${responseReaction.body}');
+        print ("please go to the exploration page to connect your account to the service");
+      }
+      // Navigator.of(context).pop();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  String _createJsonBody(List<String> fieldValues) {
+  Map<String, dynamic> jsonMap = {};
+  for (int i = 0; i < fieldValues.length; i++) {
+    jsonMap['field${i + 1}'] = fieldValues[i];
+  }
+
+  // Convert the map to JSON
+  return jsonEncode(jsonMap);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +156,7 @@ class CreatePage extends StatelessWidget {
     );
   }
 
-  Widget _buildForm(String name, List<String> fileds) {
+  Widget _buildForm(String name, List<String> fileds, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -80,7 +167,9 @@ class CreatePage extends StatelessWidget {
         const SizedBox(height: 8),
         _buildFormFields(fileds),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            postArea(context);
+          },
           child: const Text('create'),
         ),
       ],
@@ -92,6 +181,7 @@ class CreatePage extends StatelessWidget {
 
     for (var field in fileds) {
       TextEditingController controller = TextEditingController();
+      controllers.add(controller);
 
       formFields.add(
         TextFormField(
@@ -192,10 +282,10 @@ class CreatePage extends StatelessWidget {
                     if (isAction) {
                       ifThisSelected = true;
                       selectedAction = option['name'];
-                      numberOfParametersAction = JsonDataSingleton()
-                          .countParametersInAction(selectedAction);
-                      params += JsonDataSingleton()
-                          .getParameterNamesInAction(selectedAction);
+                      numberOfParametersAction = JsonDataSingleton().countParametersInAction(selectedAction);
+                      idAction = JsonDataSingleton().getServiceId(serviceName);
+                      idActionEvent = JsonDataSingleton().getEventIdInService(serviceName, selectedAction);
+                      params += JsonDataSingleton().getParameterNamesInAction(selectedAction);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Center(
@@ -212,10 +302,10 @@ class CreatePage extends StatelessWidget {
                     } else {
                       ifThisSelected = false;
                       selectedReaction = option['name'];
-                      numberOfParametersReaction = JsonDataSingleton()
-                          .countParametersInAction(selectedReaction);
-                      params += JsonDataSingleton()
-                          .getParameterNamesInAction(selectedReaction);
+                      numberOfParametersReaction = JsonDataSingleton().countParametersInAction(selectedReaction);
+                      idReaction = JsonDataSingleton().getServiceId(serviceName);
+                      idReactionEvent = JsonDataSingleton().getEventIdInService(serviceName, selectedReaction);
+                      params += JsonDataSingleton().getParameterNamesInAction(selectedReaction);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Center(
@@ -248,7 +338,7 @@ class CreatePage extends StatelessWidget {
                                 children: [
                                   _buildForm(
                                       '$selectedAction with $selectedReaction',
-                                      params)
+                                      params, context)
                                 ],
                               ),
                             ),

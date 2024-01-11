@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:http/http.dart' as http;
 
 class JsonDataSingleton {
@@ -107,7 +108,7 @@ class JsonDataSingleton {
 
         for (var action in allActions) {
           if (action['name'] == actionName) {
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= 4; i++) {
               final paramName = 'param$i';
               if (action.containsKey(paramName)) {
                 parameterCount++;
@@ -135,7 +136,7 @@ class JsonDataSingleton {
 
       for (var action in allActions) {
         if (action['name'] == actionName) {
-          for (int i = 1; i <= 3; i++) {
+          for (int i = 1; i <= 4; i++) {
             final paramName = 'param$i';
             if (action.containsKey(paramName)) {
               parameterNames.add(action[paramName]);
@@ -151,4 +152,42 @@ class JsonDataSingleton {
   }
 }
 
+int getServiceId(String serviceName) {
+    if (jsonData != null) {
+      final List<dynamic> services = jsonData!['server']['services'];
+
+      for (var service in services) {
+        if (service.containsKey('name') && service['name'] == serviceName) {
+          return service['id'];
+        }
+      }
+      return -1;
+    } else {
+      return -1;
+    }
+  }
+
+  int getEventIdInService(String serviceName, String eventName) {
+    if (jsonData != null) {
+      final List<dynamic> services = jsonData!['server']['services'];
+
+      for (var service in services) {
+        if (service.containsKey('name') && service['name'] == serviceName) {
+          final List<dynamic> actions = service['actions'] ?? [];
+          final List<dynamic> reactions = service['reactions'] ?? [];
+          final List<dynamic> allEvents = [...actions, ...reactions];
+
+          for (var event in allEvents) {
+            if (event.containsKey('name') && event['name'] == eventName) {
+              return event['id'];
+            }
+          }
+          return -1;
+        }
+      }
+      return -1;
+    } else {
+      return -1;
+    }
+  }
 }
