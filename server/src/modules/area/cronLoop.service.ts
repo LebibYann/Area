@@ -26,10 +26,21 @@ export class CronLoopService {
     const areas = await this.areaService.findAll();
     this.logger.debug(`Found ${areas.length} areas`);
     areas.forEach(async (area) => {
-      this.logger.debug(`Area ${area.id} for user ${area.userId}`);
       // Get the trigger
       const trigger = await this.eventService.findById(area.triggerId);
       if (!trigger) {
+        return;
+      }
+      if (trigger.serviceId == 8) {
+        const currentTime = await this.timerService.getCurrentTime();
+        if (currentTime && currentTime >= trigger.parameters.time) {
+          this.logger.debug(`Triggering timer for user ${area.userId}`);
+          this.eventEmitter.emit("Timer", true);
+          this.logger.debug(`Removing area for user ${area.userId}`);
+          await this.areaService.delete(area.id);
+          this.logger.debug(`Removing timer for user ${area.userId}`);
+          await this.eventService.delete(area.triggerId);
+        }
         return;
       }
       // Get credentials for the user and the service
@@ -40,6 +51,7 @@ export class CronLoopService {
       if (!credentials) {
         return;
       }
+      this.logger.debug(ServiceName[trigger.serviceId], ServiceName.TIMER)
       switch (ServiceName[trigger.serviceId]) {
         case ServiceName.GMAIL:
           makeApiCallGmail(this.eventEmitter, credentials.accessToken);
@@ -49,16 +61,6 @@ export class CronLoopService {
           break;
         case ServiceName.TWITTER:
           makeApiCallTwitter(this.eventEmitter, credentials.accessToken, trigger.parameters.word1, trigger.parameters.word2, trigger.parameters.word3, trigger.parameters.word4);
-          break;
-        case ServiceName.TIMER:
-          this.logger.debug(`Timer for user ${area.userId}`);
-          const currentTime = await this.timerService.getCurrentTime();
-          this.logger.debug(`Current time: ${currentTime}`);
-          this.logger.debug(`Trigger time: ${trigger.parameters.time}`);
-          this.logger.debug(`Trigger : ${currentTime >= trigger.parameters.time}`);
-          if (currentTime && currentTime >= trigger.parameters.time) {
-            this.logger.debug(`Triggering timer for user ${area.userId}`);
-          }
           break;
         case ServiceName.WEATHER:
           makeApiCallWeather(this.eventEmitter, trigger.parameters)
