@@ -58,8 +58,9 @@ class CreatePage extends StatelessWidget {
         print(idAction);
         print(idReaction);
 
-        var responseArea = await http.post(Uri.parse(urlAction),
+        var responseArea = await http.post(Uri.parse("http://localhost:8080/area"),
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
