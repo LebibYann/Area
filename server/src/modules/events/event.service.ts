@@ -4,6 +4,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AboutService } from "../about/about.service";
 import { CredentialService } from "../auth/services/credential.service";
+import { ServiceName } from "../about/about.const";
+import { TimerService } from "../providers/services/timer.service";
 
 @Injectable()
 export class EventService {
@@ -12,7 +14,8 @@ export class EventService {
     private readonly eventRepository: Repository<Event>,
 
     private readonly aboutService: AboutService,
-    private readonly credentialService: CredentialService
+    private readonly credentialService: CredentialService,
+    private readonly timerService: TimerService
   ) {}
 
   logger = new Logger('EventService');
@@ -41,17 +44,32 @@ export class EventService {
       throw new BadRequestException('Invalid trigger (action) id.')
     }
 
-    // Check if the user has credentials for this service
-    const credentials = await this.credentialService.findOneByUserAndService(
-      userId,
-      this.servicesNames[serviceId]
-    );
-    if (!credentials) {
-      throw new BadRequestException('No credentials for this service.');
+    if (serviceId != 8 && serviceId != 7) {
+      // Check if the user has credentials for this service
+      const credentials = await this.credentialService.findOneByUserAndService(
+        userId,
+        this.servicesNames[serviceId]
+      );
+      if (!credentials) {
+        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+        throw new BadRequestException('No credentials for this service.');
+      }
+      this.logger.debug(`User ${userId} has credentials for service \"${this.servicesNames[serviceId]}\"`);
     }
-    this.logger.debug(`User ${userId} has credentials for service \"${this.servicesNames[serviceId]}\"`);
 
-    // TODO: Check if the parameters are valid
+    // Check if the parameters are valid
+    // For timer
+    if (serviceId == 8) {
+      if (!parameters.time) {
+        throw new BadRequestException('Invalid parameters.');
+      }
+      this.timerService.getCurrentTime().then((time) => {
+        this.logger.debug(`Current time: ${time}`);
+        this.logger.debug(parameters, parameters.time);
+        parameters.time = time + parameters.time;
+        this.logger.debug(time, parameters.time);
+      })
+    }
 
     this.logger.debug(`Creating event for user ${userId} on service \"${this.servicesNames[serviceId]}\" with event \"${this.aboutJson.server.services[serviceId].actions[eventId].name}\" and parameters ${JSON.stringify(parameters)}`);
     return await this.eventRepository.save({

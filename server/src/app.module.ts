@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import * as path from 'path'
 import { EventModule } from './modules/events/event.module'
 import { AreaModule } from './modules/area/area.module'
+import { ProvidersModule } from './modules/providers/provider.module'
 
 /**
  * AppModule
@@ -32,7 +33,8 @@ import { AreaModule } from './modules/area/area.module'
     UsersModule,
     AuthModule,
     EventModule,
-    AreaModule
+    AreaModule,
+    ProvidersModule
   ],
   controllers: [],
   providers: []
