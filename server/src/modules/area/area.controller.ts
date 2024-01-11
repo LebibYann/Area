@@ -1,9 +1,9 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { AreaService } from "./area.service";
+import { AreaService } from "./services/area.service";
 import { AuthGuard } from "@nestjs/passport";
 import { RequestWithUser } from "src/common/interfaces/requestwithUser.interface";
-import { CreateAreaDto } from "./createArea.dto";
+import { CreateAreaDto } from "./dtos/createArea.dto";
 import { Area } from "./area.entity";
 
 @ApiTags("area")

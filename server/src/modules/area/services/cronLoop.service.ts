@@ -1,12 +1,13 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
 import { AreaService } from "./area.service";
-import { EventService } from "../events/event.service";
+import { EventService } from "../../events/event.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { services, ServiceName } from "../about/about.const";
+import { services, ServiceName } from "../../about/about.const";
 import axios from "axios";
-import { CredentialService } from "../auth/services/credential.service";
-import { TimerService } from "../providers/services/timer.service";
+import { CredentialService } from "../../auth/services/credential.service";
+import { TimerService } from "../../providers/services/timer.service";
+import { AboutService } from "src/modules/about/about.service";
 
 @Injectable()
 export class CronLoopService {
@@ -17,14 +18,18 @@ export class CronLoopService {
     private readonly eventEmitter: EventEmitter2,
     private readonly eventService: EventService,
     private readonly credentialService: CredentialService,
-    private readonly timerService: TimerService
+    private readonly timerService: TimerService,
+    private readonly aboutService: AboutService
   ) {}
+
+  private readonly aboutJson = this.aboutService.getAboutJson();
 
   @Cron("*/10 * * * * *") // every 1 minute
   async handleCron() {
     this.logger.debug("Called every 1 minute");
     const areas = await this.areaService.findAll();
-    makeDiscordcall(this.eventEmitter, "test");
+    this.logger.debug(`Discord`)
+    //makeDiscordcall(this.eventEmitter, "test");
     this.logger.debug(`Found ${areas.length} areas`);
     areas.forEach(async (area) => {
       // Get the trigger
@@ -73,6 +78,26 @@ export class CronLoopService {
           return;
       }
     });
+  }
+
+  async triggerAction(actionId: number): Promise<void> {
+    // Get the action
+    const action = await this.eventService.findById(actionId);
+    if (!action) {
+      throw new Error("TriggerAction: Invalid action id.");
+    }
+    // Get credentials for the user and the service
+    const credentials = await this.credentialService.findOneByUserAndService(
+      action.userId,
+      ServiceName[action.serviceId]
+    );
+    if (!credentials) {
+      throw new Error("TriggerAction: No credentials for this service.");
+    }
+    this.eventEmitter.emit(
+      this.aboutJson.server.services[action.serviceId].reactions[action.eventId].name,
+      action.parameters
+    );
   }
 }
 
