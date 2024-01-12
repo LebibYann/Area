@@ -4,8 +4,10 @@ import 'package:mobile/json.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/provider.dart';
 import 'package:provider/provider.dart';
+import 'explore.dart';
 
 class CreatePage extends StatelessWidget {
+
   String selectedAction = "";
   int numberOfParametersAction = -1;
   int idAction = -1;
@@ -20,8 +22,10 @@ class CreatePage extends StatelessWidget {
 
   postArea(BuildContext context) async {
     try {
-      String urlAction = "http://localhost:8080/triggers/$idAction/$idActionEvent";
-      String urlReaction = "http://localhost:8080/actions/$idReaction/$idReactionEvent";
+      String urlAction =
+          "http://localhost:8080/triggers/$idAction/$idActionEvent";
+      String urlReaction =
+          "http://localhost:8080/actions/$idReaction/$idReactionEvent";
       final auth = Provider.of<AuthState>(context, listen: false);
       final token = auth.accessToken;
 
@@ -31,55 +35,84 @@ class CreatePage extends StatelessWidget {
       }
       var jsonAction = jsonEncode(jsonMapAction);
       Map<String, dynamic> jsonMapReaction = {};
-      for (int i = numberOfParametersAction; i < numberOfParametersAction + numberOfParametersReaction; i++) {
-        jsonMapReaction['param${i - numberOfParametersAction + 1}'] = controllers[i].text;
+      for (int i = numberOfParametersAction;
+          i < numberOfParametersAction + numberOfParametersReaction;
+          i++) {
+        jsonMapReaction['param${i - numberOfParametersAction + 1}'] =
+            controllers[i].text;
       }
       var jsonReaction = jsonEncode(jsonMapReaction);
 
       var responseAction = await http.post(Uri.parse(urlAction),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonAction);
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonAction);
       var responseReaction = await http.post(Uri.parse(urlReaction),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonReaction);
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonReaction);
 
-      if (responseAction.statusCode == 201 && responseReaction.statusCode == 201) {
-        Map<String, dynamic> responseMapAction = jsonDecode(responseAction.body);
+      if (responseAction.statusCode == 201 &&
+          responseReaction.statusCode == 201) {
+        Map<String, dynamic> responseMapAction =
+            jsonDecode(responseAction.body);
         int idAction = responseMapAction['id'];
-        Map<String, dynamic> responseMapReaction = jsonDecode(responseReaction.body);
+        Map<String, dynamic> responseMapReaction =
+            jsonDecode(responseReaction.body);
         int idReaction = responseMapReaction['id'];
 
         print(idAction);
         print(idReaction);
 
-        var responseArea = await http.post(Uri.parse("http://localhost:8080/area"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({
-          'triggerId': idAction,
-          'actionId': idReaction,
-        }));
+        var responseArea =
+            await http.post(Uri.parse("http://localhost:8080/area"),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode({
+                  'triggerId': idAction,
+                  'actionId': idReaction,
+                }));
 
         // print('Request ok: ${responseAction.body} && ${responseReaction.body}');
         if (responseArea.statusCode == 201) {
           print(responseArea.body);
           print('Area created!');
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('AREA successfully created')));
+            Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CreatePage()),
+        );
         } else {
           print('Area failed!');
+
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error during AREA creation')));
+          Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CreatePage()),
+        );
         }
-      } else if (responseAction.statusCode == 401 && responseReaction.statusCode == 401){
-        print('Request failed: Status ${responseAction.statusCode}: ${responseAction.body} && ${responseReaction.statusCode}: ${responseReaction.body}');
+      } else if (responseAction.statusCode == 401 &&
+          responseReaction.statusCode == 401) {
+        print(
+            'Request failed: Status ${responseAction.statusCode}: ${responseAction.body} && ${responseReaction.statusCode}: ${responseReaction.body}');
       } else {
-        print('Request failed: Status ${responseAction.statusCode}: ${responseAction.body} && ${responseReaction.statusCode}: ${responseReaction.body}');
-        print ("please go to the exploration page to connect your account to the service");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ExplorePage()),
+        );
+        print(
+            'Request failed: Status ${responseAction.statusCode}: ${responseAction.body} && ${responseReaction.statusCode}: ${responseReaction.body}');
+        print(
+            "please go to the exploration page to connect your account to the service");
       }
       // Navigator.of(context).pop();
     } catch (e) {
@@ -88,14 +121,14 @@ class CreatePage extends StatelessWidget {
   }
 
   String _createJsonBody(List<String> fieldValues) {
-  Map<String, dynamic> jsonMap = {};
-  for (int i = 0; i < fieldValues.length; i++) {
-    jsonMap['field${i + 1}'] = fieldValues[i];
-  }
+    Map<String, dynamic> jsonMap = {};
+    for (int i = 0; i < fieldValues.length; i++) {
+      jsonMap['field${i + 1}'] = fieldValues[i];
+    }
 
-  // Convert the map to JSON
-  return jsonEncode(jsonMap);
-}
+    // Convert the map to JSON
+    return jsonEncode(jsonMap);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,10 +316,13 @@ class CreatePage extends StatelessWidget {
                     if (isAction) {
                       ifThisSelected = true;
                       selectedAction = option['name'];
-                      numberOfParametersAction = JsonDataSingleton().countParametersInAction(selectedAction);
+                      numberOfParametersAction = JsonDataSingleton()
+                          .countParametersInAction(selectedAction);
                       idAction = JsonDataSingleton().getServiceId(serviceName);
-                      idActionEvent = JsonDataSingleton().getEventIdInService(serviceName, selectedAction);
-                      params += JsonDataSingleton().getParameterNamesInAction(selectedAction);
+                      idActionEvent = JsonDataSingleton()
+                          .getEventIdInService(serviceName, selectedAction);
+                      params += JsonDataSingleton()
+                          .getParameterNamesInAction(selectedAction);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Center(
@@ -303,10 +339,14 @@ class CreatePage extends StatelessWidget {
                     } else {
                       ifThisSelected = false;
                       selectedReaction = option['name'];
-                      numberOfParametersReaction = JsonDataSingleton().countParametersInAction(selectedReaction);
-                      idReaction = JsonDataSingleton().getServiceId(serviceName);
-                      idReactionEvent = JsonDataSingleton().getEventIdInService(serviceName, selectedReaction);
-                      params += JsonDataSingleton().getParameterNamesInAction(selectedReaction);
+                      numberOfParametersReaction = JsonDataSingleton()
+                          .countParametersInAction(selectedReaction);
+                      idReaction =
+                          JsonDataSingleton().getServiceId(serviceName);
+                      idReactionEvent = JsonDataSingleton()
+                          .getEventIdInService(serviceName, selectedReaction);
+                      params += JsonDataSingleton()
+                          .getParameterNamesInAction(selectedReaction);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Center(
@@ -331,7 +371,7 @@ class CreatePage extends StatelessWidget {
                           builder: (context) => Scaffold(
                             appBar: AppBar(
                               title: const Text(
-                                  'Finish your creation by filling informations!'),
+                                  'Please fill informations'),
                             ),
                             body: Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -339,7 +379,8 @@ class CreatePage extends StatelessWidget {
                                 children: [
                                   _buildForm(
                                       '$selectedAction with $selectedReaction',
-                                      params, context)
+                                      params,
+                                      context)
                                 ],
                               ),
                             ),
