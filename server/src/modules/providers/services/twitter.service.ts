@@ -28,4 +28,28 @@ export class TwitterService {
       return 0;
     }
   }
+
+  async makeTweet(accessToken:string, text:string): Promise<any> {
+    const maketweet = 'https://api.twitter.com/2/tweets/compose';
+
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    };
+
+    const data = {
+      status: text,
+    };
+    try {
+      const response = await firstValueFrom(this.httpService.post(maketweet, data, {headers}));
+      if (response.status !== 200) {
+        throw new Error(`API call failed (Twitter): ${response.statusText}`);
+      }
+      this.logger.debug(`API call success (Twitter): ${response.data}`);
+      return response.data;
+    } catch (error) {
+      this.logger.error(`API call failed (Twitter): ${error.message}`);
+      return 0;
+    }
+  }
 }
