@@ -1,13 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
 import { AreaService } from "./area.service";
-import { EventService } from "../events/event.service";
+import { EventService } from "../../events/event.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { ServiceName } from "../about/about.const";
+import { services, ServiceName } from "../../about/about.const";
 import axios from "axios";
-import { CredentialService } from "../auth/services/credential.service";
-import { TimerService } from "../providers/services/timer.service";
-import { WeatherService } from "../providers/services/weather.service";
+import { CredentialService } from "../../auth/services/credential.service";
+import { TimerService } from "../../providers/services/timer.service";
+import { WeatherService } from "../../providers/services/weather.service";
+import { AboutService } from "src/modules/about/about.service";
 
 @Injectable()
 export class CronLoopService {
@@ -19,20 +20,35 @@ export class CronLoopService {
     private readonly eventService: EventService,
     private readonly credentialService: CredentialService,
     private readonly timerService: TimerService,
-    private readonly weatherService: WeatherService
+    private readonly weatherService: WeatherService,
+    private readonly aboutService: AboutService
   ) {}
+
+  private readonly aboutJson = this.aboutService.getAboutJson();
 
   @Cron("*/10 * * * * *") // every 1 minute
   async handleCron() {
     this.logger.debug("Called every 1 minute");
     const areas = await this.areaService.findAll();
-    // makeApiCallTimer(this.eventEmitter, "test"); // ok
+    this.logger.debug(`Discord`)
+    //makeDiscordcall(this.eventEmitter, "test");
     this.logger.debug(`Found ${areas.length} areas`);
     areas.forEach(async (area) => {
-      this.logger.debug(`Area ${area.id} for user ${area.userId}`);
       // Get the trigger
       const trigger = await this.eventService.findById(area.triggerId);
       if (!trigger) {
+        return;
+      }
+      if (trigger.serviceId == 8) {
+        const currentTime = await this.timerService.getCurrentTime();
+        if (currentTime && currentTime >= trigger.parameters.time) {
+          this.logger.debug(`Triggering timer for user ${area.userId}`);
+          this.eventEmitter.emit("Timer", true);
+          this.logger.debug(`Removing area for user ${area.userId}`);
+          await this.areaService.delete(area.id);
+          this.logger.debug(`Removing timer for user ${area.userId}`);
+          await this.eventService.delete(area.triggerId);
+        }
         return;
       }
       // Get credentials for the user and the service
@@ -43,6 +59,7 @@ export class CronLoopService {
       if (!credentials) {
         return;
       }
+      this.logger.debug(ServiceName[trigger.serviceId], ServiceName.TIMER)
       switch (ServiceName[trigger.serviceId]) {
         case ServiceName.GMAIL:
           makeApiCallGmail(this.eventEmitter, credentials.accessToken);
@@ -52,16 +69,6 @@ export class CronLoopService {
           break;
         case ServiceName.TWITTER:
           makeApiCallTwitter(this.eventEmitter, credentials.accessToken, trigger.parameters.word1, trigger.parameters.word2, trigger.parameters.word3, trigger.parameters.word4);
-          break;
-        case ServiceName.TIMER:
-          this.logger.debug(`Timer for user ${area.userId}`);
-          const currentTime = await this.timerService.getCurrentTime();
-          this.logger.debug(`Current time: ${currentTime}`);
-          this.logger.debug(`Trigger time: ${trigger.parameters.time}`);
-          this.logger.debug(`Trigger : ${currentTime >= trigger.parameters.time}`);
-          if (currentTime && currentTime >= trigger.parameters.time) {
-            this.logger.debug(`Triggering timer for user ${area.userId}`);
-          }
           break;
         case ServiceName.WEATHER:
           const currentTemp = await this.weatherService.getCurrentWeather("");
@@ -77,6 +84,26 @@ export class CronLoopService {
           return;
       }
     });
+  }
+
+  async triggerAction(actionId: number): Promise<void> {
+    // Get the action
+    const action = await this.eventService.findById(actionId);
+    if (!action) {
+      throw new Error("TriggerAction: Invalid action id.");
+    }
+    // Get credentials for the user and the service
+    const credentials = await this.credentialService.findOneByUserAndService(
+      action.userId,
+      ServiceName[action.serviceId]
+    );
+    if (!credentials) {
+      throw new Error("TriggerAction: No credentials for this service.");
+    }
+    this.eventEmitter.emit(
+      this.aboutJson.server.services[action.serviceId].reactions[action.eventId].name,
+      action.parameters
+    );
   }
 }
 

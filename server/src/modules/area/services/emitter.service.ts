@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from '@nestjs/event-emitter';
-import { services } from "../about/about.const";
+import { services } from "../../about/about.const";
 import axios from "axios";
+import { DiscordSendMessagesDto } from "../dtos/discordActions.dto";
 // import { google } from 'googleapis';
 
 @Injectable()
@@ -14,9 +15,9 @@ export class ServiceEmitter {
   }
 
   @OnEvent(services[2].reactions[0].name)
-  handleDiscord0(data: any) {
-    makeDiscrodMesage("","test");
+  handleDiscord0(data: DiscordSendMessagesDto) {
     console.log(services[2].reactions[0].name, 'triggered');
+    makeDiscrodMesage("", data.content);
   }
 
   @OnEvent(services[3].reactions[0].name)
@@ -49,7 +50,7 @@ async function makePlaySpotify(accessToken:string): Promise<any> {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     };
-  
+
     try {
         const response = await axios.put(url, { headers });
         if (response.status >= 200 && response.status < 300) {
@@ -84,7 +85,7 @@ async function makeTweet(accessToken:string, text:string): Promise<any> {
         console.log(`API call failed (Tweeter): ${error.message}`);
         return false;
       }
-  
+
       return false;
 }
 

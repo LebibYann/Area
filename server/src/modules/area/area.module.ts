@@ -2,11 +2,11 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Area } from "./area.entity";
 import { AreaController } from "./area.controller";
-import { AreaService } from "./area.service";
+import { AreaService } from "./services/area.service";
 import { ScheduleModule } from "@nestjs/schedule";
-import { CronLoopService } from "./cronLoop.service";
+import { CronLoopService } from "./services/cronLoop.service";
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ServiceEmitter } from './emitter.service';
+import { ServiceEmitter } from './services/emitter.service';
 import { EventService } from "../events/event.service";
 import { CredentialService } from "../auth/services/credential.service";
 import { AboutService } from "../about/about.service";
@@ -20,10 +20,11 @@ import { EventModule } from "../events/event.module";
     TypeOrmModule.forFeature([Area, Event, Credential]),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    HttpModule
+    HttpModule,
+    EventModule
 ],
   controllers: [AreaController],
-  providers: [AreaService, CronLoopService, EventService, CredentialService, AboutService, TimerService, ServiceEmitter],
+  providers: [AreaService, CronLoopService, CredentialService, AboutService, TimerService, ServiceEmitter],
   exports: []
 })
 export class AreaModule {}
