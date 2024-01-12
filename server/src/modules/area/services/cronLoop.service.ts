@@ -26,10 +26,8 @@ export class CronLoopService {
 
   @Cron("*/10 * * * * *") // every 1 minute
   async handleCron() {
-    this.logger.debug("Called every 1 minute");
+    this.logger.debug("Called every 10 seconds");
     const areas = await this.areaService.findAll();
-    this.logger.debug(`Discord`)
-    //makeDiscordcall(this.eventEmitter, "test");
     this.logger.debug(`Found ${areas.length} areas`);
     areas.forEach(async (area) => {
       // Get the trigger
@@ -37,14 +35,18 @@ export class CronLoopService {
       if (!trigger) {
         return;
       }
-      if (trigger.serviceId == 8) {
-        const currentTime = await this.timerService.getCurrentTime();
-        if (currentTime && currentTime >= trigger.parameters.time) {
-          this.logger.debug(`Triggering timer for user ${area.userId}`);
-          this.eventEmitter.emit("Timer", true);
+      if (trigger.serviceId == 7 || trigger.serviceId == 8) {
+        const triggeredResults = await this.eventEmitter.emitAsync(
+          services[trigger.serviceId].actions[trigger.eventId].name,
+          trigger.parameters
+        );
+        const triggered = triggeredResults.some((result) => result);
+        this.logger.debug(`Triggered: ${triggered}`);
+        if (triggered) {
+          this.triggerAction(area.actionId);
           this.logger.debug(`Removing area for user ${area.userId}`);
           await this.areaService.delete(area.id);
-          this.logger.debug(`Removing timer for user ${area.userId}`);
+          this.logger.debug(`Removing trigger for user ${area.userId}`);
           await this.eventService.delete(area.triggerId);
         }
         return;
@@ -54,29 +56,21 @@ export class CronLoopService {
         area.userId,
         ServiceName[trigger.serviceId]
       );
-      if (!credentials) {
+      if (!credentials)
         return;
-      }
-      this.logger.debug(ServiceName[trigger.serviceId], ServiceName.TIMER)
-      switch (ServiceName[trigger.serviceId]) {
-        case ServiceName.GMAIL:
-          makeApiCallGmail(this.eventEmitter, credentials.accessToken);
-          break;
-        case ServiceName.GITHUB:
-          makeApiCallGithub(this.eventEmitter, credentials.accessToken);
-          break;
-        case ServiceName.TWITTER:
-          makeApiCallTwitter(this.eventEmitter, credentials.accessToken, trigger.parameters.word1, trigger.parameters.word2, trigger.parameters.word3, trigger.parameters.word4);
-          break;
-        case ServiceName.WEATHER:
-          makeApiCallWeather(this.eventEmitter, trigger.parameters)
-          break;
-        case ServiceName.SPOTIFY:
-          makeApiCallSpotify(this.eventEmitter, credentials.accessToken);
-          break;
-        default:
-          return;
-      }
+      const triggeredResults = await this.eventEmitter.emitAsync(
+        services[trigger.serviceId].actions[trigger.eventId].name,
+        { credentials: credentials, parameters: trigger.parameters }
+      );
+      const triggered = triggeredResults.some((result) => result);
+      this.logger.debug(`Triggered: ${triggered}`);
+      if (!triggered)
+        return;
+      this.triggerAction(area.actionId);
+      this.logger.debug(`Removing area for user ${area.userId}`);
+      await this.areaService.delete(area.id);
+      this.logger.debug(`Removing trigger for user ${area.userId}`);
+      await this.eventService.delete(area.triggerId);
     });
   }
 

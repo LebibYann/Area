@@ -109,7 +109,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.TIMER,
     image: 'assets/logo/timer.png',
     actions: [
-      {id: 0, name: 'Start a timer', description: 'Trigger starting a timer', param1: 'Time in minute (ex: 15)'},
+      {id: 0, name: 'Start a timer', description: 'Trigger starting a timer', param1: 'time: Time in seconds' },
     ],
     reactions: []
   }

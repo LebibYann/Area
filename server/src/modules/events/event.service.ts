@@ -58,16 +58,14 @@ export class EventService {
     }
 
     // Check if the parameters are valid
-    // For timer
     if (serviceId == 8) {
       if (!parameters.time) {
         throw new BadRequestException('Invalid parameters.');
       }
-      this.timerService.getCurrentTime().then((time) => {
-        this.logger.debug(`Current time: ${time}`);
-        this.logger.debug(parameters, parameters.time);
+      await this.timerService.getCurrentTime().then((time) => {
+        this.logger.debug(`Parameters before : ${JSON.stringify(parameters)}`);
         parameters.time = time + parameters.time;
-        this.logger.debug(time, parameters.time);
+        this.logger.debug(`Parameters after: ${JSON.stringify(parameters)}`);
       })
     }
 
