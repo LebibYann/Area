@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile/json.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/provider.dart';
@@ -7,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'explore.dart';
 
 class CreatePage extends StatelessWidget {
-
   String selectedAction = "";
   int numberOfParametersAction = -1;
   int idAction = -1;
@@ -84,21 +84,21 @@ class CreatePage extends StatelessWidget {
           print(responseArea.body);
           print('Area created!');
 
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('AREA successfully created')));
-            Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => CreatePage()),
-        );
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('AREA successfully created')));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => CreatePage()),
+          );
         } else {
           print('Area failed!');
 
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error during AREA creation')));
           Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => CreatePage()),
-        );
+            context,
+            MaterialPageRoute(builder: (context) => CreatePage()),
+          );
         }
       } else if (responseAction.statusCode == 401 &&
           responseReaction.statusCode == 401) {
@@ -260,8 +260,12 @@ class CreatePage extends StatelessWidget {
                 ),
                 ListBody(
                   children: services.map((serviceName) {
+                    String capitalizedServiceName = serviceName.isNotEmpty
+                        ? serviceName[0].toUpperCase() +
+                            serviceName.substring(1)
+                        : serviceName;
                     return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 2.0),
+                      margin: const EdgeInsets.symmetric(vertical: 7.0),
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.black,
@@ -270,12 +274,14 @@ class CreatePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: ListTile(
-                        title: Text(
-                          serviceName,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
+                        title: Center(
+                          child: Text(
+                            capitalizedServiceName,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                            ),
                           ),
                         ),
                         onTap: () {
@@ -305,90 +311,101 @@ class CreatePage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(isAction ? 'Select an Action' : 'Select a Reaction'),
+          title: Center(child: Text(isAction ? 'Select an Action' : 'Select a Reaction', style: TextStyle(fontWeight: FontWeight.bold))),
           content: SingleChildScrollView(
             child: ListBody(
               children: options.map((option) {
-                return ListTile(
-                  title: Text(option['name']),
-                  subtitle: Text(option['description']),
-                  onTap: () {
-                    if (isAction) {
-                      ifThisSelected = true;
-                      selectedAction = option['name'];
-                      numberOfParametersAction = JsonDataSingleton()
-                          .countParametersInAction(selectedAction);
-                      idAction = JsonDataSingleton().getServiceId(serviceName);
-                      idActionEvent = JsonDataSingleton()
-                          .getEventIdInService(serviceName, selectedAction);
-                      params += JsonDataSingleton()
-                          .getParameterNamesInAction(selectedAction);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Center(
-                            child: Text(
-                              "$selectedAction choosen!",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.white),
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 7.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: ListTile(
+                    title: Center(child: Text(option['name'],
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
+                    subtitle: Text(option['description']),
+                    onTap: () {
+                      if (isAction) {
+                        ifThisSelected = true;
+                        selectedAction = option['name'];
+                        numberOfParametersAction = JsonDataSingleton()
+                            .countParametersInAction(selectedAction);
+                        idAction =
+                            JsonDataSingleton().getServiceId(serviceName);
+                        idActionEvent = JsonDataSingleton()
+                            .getEventIdInService(serviceName, selectedAction);
+                        params += JsonDataSingleton()
+                            .getParameterNamesInAction(selectedAction);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Center(
+                              child: Text(
+                                "$selectedAction choosen!",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
+                            backgroundColor: Colors.green,
+                            duration: const Duration(seconds: 3),
                           ),
-                          backgroundColor: Colors.green,
-                          duration: const Duration(seconds: 3),
-                        ),
-                      );
-                    } else {
-                      ifThisSelected = false;
-                      selectedReaction = option['name'];
-                      numberOfParametersReaction = JsonDataSingleton()
-                          .countParametersInAction(selectedReaction);
-                      idReaction =
-                          JsonDataSingleton().getServiceId(serviceName);
-                      idReactionEvent = JsonDataSingleton()
-                          .getEventIdInService(serviceName, selectedReaction);
-                      params += JsonDataSingleton()
-                          .getParameterNamesInAction(selectedReaction);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Center(
-                            child: Text(
-                              "$selectedReaction choosen!",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.white),
+                        );
+                      } else {
+                        ifThisSelected = false;
+                        selectedReaction = option['name'];
+                        numberOfParametersReaction = JsonDataSingleton()
+                            .countParametersInAction(selectedReaction);
+                        idReaction =
+                            JsonDataSingleton().getServiceId(serviceName);
+                        idReactionEvent = JsonDataSingleton()
+                            .getEventIdInService(serviceName, selectedReaction);
+                        params += JsonDataSingleton()
+                            .getParameterNamesInAction(selectedReaction);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Center(
+                              child: Text(
+                                "$selectedReaction choosen!",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
+                            backgroundColor: Colors.green,
+                            duration: const Duration(seconds: 3),
                           ),
-                          backgroundColor: Colors.green,
-                          duration: const Duration(seconds: 3),
-                        ),
-                      );
-                    }
+                        );
+                      }
 
-                    Navigator.of(context).pop();
+                      Navigator.of(context).pop();
 
-                    if (numberOfParametersReaction != -1 &&
-                        numberOfParametersAction != -1) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => Scaffold(
-                            appBar: AppBar(
-                              title: const Text(
-                                  'Please fill informations'),
-                            ),
-                            body: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                children: [
-                                  _buildForm(
-                                      '$selectedAction with $selectedReaction',
-                                      params,
-                                      context)
-                                ],
+                      if (numberOfParametersReaction != -1 &&
+                          numberOfParametersAction != -1) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Scaffold(
+                              appBar: AppBar(
+                                title: const Text('Please fill informations'),
+                              ),
+                              body: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    _buildForm(
+                                        '$selectedAction with $selectedReaction',
+                                        params,
+                                        context)
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }
-                  },
+                        );
+                      }
+                    },
+                  ),
                 );
               }).toList(),
             ),
