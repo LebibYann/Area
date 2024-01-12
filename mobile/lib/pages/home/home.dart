@@ -15,11 +15,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 2;
 
+  void changePage(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+
       body: Center(
         child: _buildPage(_currentIndex),
       ),

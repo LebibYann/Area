@@ -24,7 +24,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.GMAIL,
     image: 'assets/logo/gmail.png',
     actions: [
-      { id: 0, name: 'Is last email read', description: 'Trigger when teh last email is readed'},
+      { id: 0, name: 'Is last email read', description: 'Trigger when the last email is red'},
     ],
     reactions: [
       {id: 0, name: 'Send an e-mail',description: 'Send an email to someone', param1: 'toEmailAddress', param2: 'fromEmailAddress', param3: 'subject', param4: 'bodyText'},
@@ -49,7 +49,7 @@ export const services: ServiceDto[] = [
       {id: 0, name: 'Mention', description: 'Trigger when mentionned in a chanel' },
     ],
     reactions: [
-      {id: 0, name: 'Send a message in channel', description: 'Send a message in générale channel', param1: 'message' },
+      {id: 0, name: 'Send a message in channel', description: 'Send a message in general channel', param1: 'message' },
     ]
   },
   {
@@ -78,7 +78,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.TWITTER,
     image: 'assets/logo/twitter.png',
     actions: [
-      {id: 0, name: 'Is my word in tendancy', description: 'Trigger when my words ar in tendancies' ,param1: 'word1', param2: 'word2', param3: 'word3', param4: 'word4'},
+      {id: 0, name: 'Is my word in tendancy', description: 'Trigger when my words are in tendancies' ,param1: 'word1', param2: 'word2', param3: 'word3', param4: 'word4'},
     ],
     reactions: [
       {id: 0, name: 'Tweet', description: 'Create a new tweet', param1: 'Text of the tweet'},
