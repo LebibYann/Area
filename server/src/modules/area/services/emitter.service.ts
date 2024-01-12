@@ -14,12 +14,6 @@ export class ServiceEmitter {
     console.log(services[0].reactions[0].name, 'triggered');
   }
 
-  @OnEvent(services[2].reactions[0].name)
-  handleDiscord0(data: DiscordSendMessagesDto) {
-    console.log(services[2].reactions[0].name, 'triggered');
-    makeDiscrodMesage("", data.content);
-  }
-
   @OnEvent(services[3].reactions[0].name)
   handleSpotify0(data: any) {
     makePlaySpotify("");
