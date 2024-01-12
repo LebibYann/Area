@@ -7,6 +7,7 @@ import { ServiceName } from "../about/about.const";
 import axios from "axios";
 import { CredentialService } from "../auth/services/credential.service";
 import { TimerService } from "../providers/services/timer.service";
+import { WeatherService } from "../providers/services/weather.service";
 
 @Injectable()
 export class CronLoopService {
@@ -17,7 +18,8 @@ export class CronLoopService {
     private readonly eventEmitter: EventEmitter2,
     private readonly eventService: EventService,
     private readonly credentialService: CredentialService,
-    private readonly timerService: TimerService
+    private readonly timerService: TimerService,
+    private readonly weatherService: WeatherService
   ) {}
 
   @Cron("*/10 * * * * *") // every 1 minute
@@ -25,8 +27,6 @@ export class CronLoopService {
     this.logger.debug("Called every 1 minute");
     const areas = await this.areaService.findAll();
     // makeApiCallTimer(this.eventEmitter, "test"); // ok
-    // makeApiCallWeather("Paris"); // ok
-    // makeDiscordcall(this.eventEmitter, "test");
     this.logger.debug(`Found ${areas.length} areas`);
     areas.forEach(async (area) => {
       this.logger.debug(`Area ${area.id} for user ${area.userId}`);
@@ -64,7 +64,11 @@ export class CronLoopService {
           }
           break;
         case ServiceName.WEATHER:
-          makeApiCallWeather(this.eventEmitter, trigger.parameters)
+          const currentTemp = await this.weatherService.getCurrentWeather("");
+          if (currentTemp && currentTemp >= trigger.parameters.temp) {
+            this.logger.debug(`Triggering weather for user ${area.userId}`);
+          }
+          // makeApiCallWeather(this.eventEmitter, trigger.parameters)
           break;
         case ServiceName.SPOTIFY:
           makeApiCallSpotify(this.eventEmitter, credentials.accessToken);
@@ -182,22 +186,20 @@ async function makeApiCallSpotify(eventEmitter: EventEmitter2, accessToken:strin
 }
 
 async function makeDiscordcall(eventEmitter: EventEmitter2, accessToken:string): Promise<any> {
-  eventEmitter.emit(ServiceName[2].reactions[0].name, true);
-  return true;
-  const apiSpotifyGetPlaylist = 'https://api.spotify.com/v1/me/playlists';
-  const apiSpotifyGetPlaybackState = 'https://api.spotify.com/v1/me/player';
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
-  try {
-    const response = await axios(apiSpotifyGetPlaylist, {headers});
-    if (response.status >= 200 && response.status < 300) {
-      console.log(response.data);
-      eventEmitter.emit('NewPlaylist', true);
-    }
-  } catch (error) {
-    console.log(`API call failed (Spotify): ${error.message}`);
-    return false;
-  }
+  // const apiSpotifyGetPlaylist = 'https://api.spotify.com/v1/me/playlists';
+  // const apiSpotifyGetPlaybackState = 'https://api.spotify.com/v1/me/player';
+  // const headers = {
+  //   Authorization: `Bearer ${accessToken}`,
+  // };
+  // try {
+  //   const response = await axios(apiSpotifyGetPlaylist, {headers});
+  //   if (response.status >= 200 && response.status < 300) {
+  //     console.log(response.data);
+  //     eventEmitter.emit('NewPlaylist', true);
+  //   }
+  // } catch (error) {
+  //   console.log(`API call failed (Spotify): ${error.message}`);
+  //   return false;
+  // }
   return false;
 }
