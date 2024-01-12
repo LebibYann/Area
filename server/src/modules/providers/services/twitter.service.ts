@@ -3,7 +3,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 import { OnEvent } from "@nestjs/event-emitter";
 import { services } from "../../about/about.const";
-import { TwitterSendTweetDto } from "src/modules/area/dtos/tweeterActions.dto";
+import { TwitterSendTweetDto, TwitterGetTrends} from "src/modules/area/dtos/tweeterActions.dto";
 
 @Injectable()
 export class TwitterService {
@@ -13,11 +13,10 @@ export class TwitterService {
 
   logger = new Logger(TwitterService.name);
 
-
-  @OnEvent(services[5].reactions[0].name)
-  handleDiscord0(data: TwitterSendTweetDto) {
-    console.log(services[5].reactions[0].name, 'triggered');
-    this.makeTweet(data.token ,data.content);
+  @OnEvent(services[5].actions[0].name)
+  async isTriggered (data:TwitterGetTrends): Promise<boolean> {
+    const currentstate = await this.getTwitterTrends(data.token, data.word1, data.word2, data.word3, data.word4);
+    return currentstate;
   }
 
   async getTwitterTrends(accessToken:string, word1:string, word2:string, word3:string, word4:string): Promise<any> {
@@ -37,6 +36,12 @@ export class TwitterService {
       this.logger.error(`API call failed (Twitter): ${error.message}`);
       return 0;
     }
+  }
+
+  @OnEvent(services[5].reactions[0].name)
+  handleDiscord0(data: TwitterSendTweetDto) {
+    console.log(services[5].reactions[0].name, 'triggered');
+    this.makeTweet(data.token,data.content);
   }
 
   async makeTweet(accessToken:string, text:string): Promise<any> {

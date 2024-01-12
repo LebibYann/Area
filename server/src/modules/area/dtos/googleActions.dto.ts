@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 export class GoogleSendMailDto {
   @ApiProperty({
     example: "gtgbhfijbsdiuvoriubivbfd",
-    description: "The acces token of github",
+    description: "The acces token of google",
   })
   token: string;
 

@@ -3,7 +3,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 import { OnEvent } from "@nestjs/event-emitter";
 import { services } from "../../about/about.const";
-import { GithubCreateIssuesDto } from "src/modules/area/dtos/githubActions.dto";
+import { GithubCreateIssuesDto, GithubGetIssuesDto } from "src/modules/area/dtos/githubActions.dto";
 
 @Injectable()
 export class GithubService {
@@ -13,10 +13,10 @@ export class GithubService {
 
   logger = new Logger(GithubService.name);
 
-  @OnEvent(services[6].reactions[0].name)
-  handleGithub0(data: GithubCreateIssuesDto) {
-    console.log(services[6].reactions[0].name, 'triggered');
-    this.makeCreateIssue(data.token, data.repos, data.owner, data.title, data.body);
+  @OnEvent(services[6].actions[0].name)
+  async isTriggered (data: GithubGetIssuesDto): Promise<boolean> {
+    const currentIssues = await this.getGithubIssues(data.token);
+    return currentIssues >= data.issues;
   }
 
   async getGithubIssues(accessToken:string): Promise<any> {
@@ -38,6 +38,12 @@ export class GithubService {
       this.logger.error(`API call failed (Github): ${error.message}`);
       return 0;
     }
+  }
+
+  @OnEvent(services[6].reactions[0].name)
+  handleGithub0(data: GithubCreateIssuesDto) {
+    console.log(services[6].reactions[0].name, 'triggered');
+    this.makeCreateIssue(data.token, data.repos, data.owner, data.title, data.body);
   }
 
   async makeCreateIssue(accessToken:string, repos:string, owner:string, title:string, body:string): Promise<any> {

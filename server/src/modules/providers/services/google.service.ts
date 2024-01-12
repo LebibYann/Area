@@ -14,11 +14,10 @@ export class GoogleService {
 
   logger = new Logger(GoogleService.name);
 
-
-  @OnEvent(services[0].reactions[0].name)
-  handleGoogle0(data: GoogleSendMailDto) {
-    console.log(services[0].reactions[0].name, 'triggered');
-    this.sendMail(data.token ,data.from, data.to, data.header, data.body);
+  @OnEvent(services[6].actions[0].name)
+  async isTriggered (data:string): Promise<boolean> {
+    const currentstate = await this.isLastMailRead(data);
+    return currentstate;
   }
 
   async isLastMailRead(accessToken:string): Promise<any> {
@@ -35,6 +34,12 @@ export class GoogleService {
       this.logger.error(`API call failed (Google): ${error.message}`);
       return 0;
     }
+  }
+
+  @OnEvent(services[0].reactions[0].name)
+  handleGoogle0(data: GoogleSendMailDto) {
+    console.log(services[0].reactions[0].name, 'triggered');
+    this.sendMail(data.token ,data.from, data.to, data.header, data.body);
   }
 
   async sendMail(accessToken:string, from:string, to:string, subject:string, body:string): Promise<any> {

@@ -31,3 +31,17 @@ export class GithubCreateIssuesDto {
   })
   body: string;
 }
+
+export class GithubGetIssuesDto {
+    @ApiProperty({
+      example: "gtgbhfijbsdiuvoriubivbfd",
+      description: "The acces token of github",
+    })
+    token: string;
+  
+    @ApiProperty({
+      example: "70",
+      description: "The number of issues",
+    })
+    issues: number;
+  }
