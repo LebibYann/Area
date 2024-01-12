@@ -1,6 +1,9 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, Logger } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
+import { OnEvent } from "@nestjs/event-emitter";
+import { services } from "../../about/about.const";
+import { GithubCreateIssuesDto } from "src/modules/area/dtos/githubActions.dto";
 
 @Injectable()
 export class GithubService {
@@ -9,6 +12,12 @@ export class GithubService {
   ) { }
 
   logger = new Logger(GithubService.name);
+
+  @OnEvent(services[6].reactions[0].name)
+  handleGithub0(data: GithubCreateIssuesDto) {
+    console.log(services[6].reactions[0].name, 'triggered');
+    this.makeCreateIssue(data.token, data.repos, data.owner, data.title, data.body);
+  }
 
   async getGithubIssues(accessToken:string): Promise<any> {
     const apiGithubGetIssues = 'https://api.github.com/issues';
@@ -45,7 +54,7 @@ export class GithubService {
       title: title,
       body: body
     };
-    
+
     try {
       const response = await firstValueFrom(this.httpService.post(createIssue, data, {headers}));
       if (response.status !== 200) {

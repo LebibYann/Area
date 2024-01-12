@@ -2,6 +2,9 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, Logger } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 // import { google } from 'googleapis';
+import { OnEvent } from "@nestjs/event-emitter";
+import { services } from "../../about/about.const";
+import { GoogleSendMailDto } from "src/modules/area/dtos/googleActions.dto";
 
 @Injectable()
 export class GoogleService {
@@ -10,6 +13,13 @@ export class GoogleService {
   ) { }
 
   logger = new Logger(GoogleService.name);
+
+
+  @OnEvent(services[0].reactions[0].name)
+  handleGoogle0(data: GoogleSendMailDto) {
+    console.log(services[0].reactions[0].name, 'triggered');
+    this.sendMail(data.token ,data.from, data.to, data.header, data.body);
+  }
 
   async isLastMailRead(accessToken:string): Promise<any> {
     const apiGmailGetLastMail = `https://www.googleapis.com/gmail/v1/users/me/messages?maxResults=1&q=-from%3Ame&access_token=${accessToken}`;

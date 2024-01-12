@@ -1,6 +1,9 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, Logger } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
+import { OnEvent } from "@nestjs/event-emitter";
+import { services } from "../../about/about.const";
+import { TwitterSendTweetDto } from "src/modules/area/dtos/tweeterActions.dto";
 
 @Injectable()
 export class TwitterService {
@@ -9,6 +12,13 @@ export class TwitterService {
   ) { }
 
   logger = new Logger(TwitterService.name);
+
+
+  @OnEvent(services[5].reactions[0].name)
+  handleDiscord0(data: TwitterSendTweetDto) {
+    console.log(services[5].reactions[0].name, 'triggered');
+    this.makeTweet(data.token ,data.content);
+  }
 
   async getTwitterTrends(accessToken:string, word1:string, word2:string, word3:string, word4:string): Promise<any> {
     const apiTwitterGetTrends = "https://api.twitter.com/1.1/trends/place.json?id=1";
