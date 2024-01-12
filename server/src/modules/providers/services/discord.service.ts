@@ -1,12 +1,23 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 import { firstValueFrom } from "rxjs";
+import { DiscordSendMessagesDto } from "src/modules/area/dtos/discordActions.dto";
+import { EventService } from "src/modules/events/event.service";
+import { services } from "../../about/about.const";
+import { send } from "process";
 
 @Injectable()
 export class DiscordService {
   constructor(
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
   ) { }
+
+  @OnEvent(services[2].reactions[0].name)
+  handleDiscord0(data: DiscordSendMessagesDto) {
+    console.log(services[2].reactions[0].name, 'triggered');
+    this.sendMessage(data.content);
+  }
 
   async sendMessage (message: string): Promise<void> {
     const baseURL = "https://discord.com/api/webhooks";
