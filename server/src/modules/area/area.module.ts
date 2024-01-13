@@ -12,6 +12,10 @@ import { CredentialService } from "../auth/services/credential.service";
 import { AboutService } from "../about/about.service";
 import { Credential } from "../auth/entities/credential.entity";
 import { TimerService } from "../providers/services/timer.service";
+import { WeatherService } from "../providers/services/weather.service";
+import { TwitterService } from "../providers/services/twitter.service";
+import { GoogleService } from "../providers/services/google.service";
+import { GithubService } from "../providers/services/github.service";
 import { HttpModule, HttpService } from "@nestjs/axios";
 import { EventModule } from "../events/event.module";
 
@@ -24,7 +28,7 @@ import { EventModule } from "../events/event.module";
     EventModule
 ],
   controllers: [AreaController],
-  providers: [AreaService, CronLoopService, CredentialService, AboutService, TimerService, ServiceEmitter],
+  providers: [AreaService, CronLoopService, CredentialService, AboutService, TimerService, ServiceEmitter, WeatherService, TwitterService, GoogleService, GithubService],
   exports: []
 })
 export class AreaModule {}
