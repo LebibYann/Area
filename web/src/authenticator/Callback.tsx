@@ -4,30 +4,59 @@ import queryString from "query-string";
 
 const Callback = (): JSX.Element => {
   const url = window.location;
+  const token = useLogin()
 
   const handleOauth2 = async (service: string, code: string): Promise<void> => {
-    try {
-      const response = await fetch(`http://localhost:8080/oauth2/${service}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-          redirectUri: "http://localhost:8081/login/auth/" + service,
-        }),
-      });
-      const responsejson = await response.json();
-      console.log(response.status);
-      if (readRequestStatus(response.status, responsejson.message)) {
-        login(responsejson.access_token);
-        window.location.replace(window.location.origin);
-      } else {
-        window.location.replace(window.location.origin + "/join");
+    if (service == "spotify" || service == "google") {
+      try {
+        const response = await fetch(`http://localhost:8080/oauth2/${service}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+            redirectUri: "http://localhost:8081/login/auth/" + service,
+          }),
+        });
+        const responsejson = await response.json();
+        console.log(response.status);
+        if (readRequestStatus(response.status, responsejson.message)) {
+          login(responsejson.access_token);
+          window.location.replace(window.location.origin);
+        } else {
+          window.location.replace(window.location.origin + "/join");
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      try {
+        console.log("test", token);
+        const response = await fetch(`http://localhost:8080/oauth2/${service}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            code,
+            redirectUri: "http://localhost:8081/login/auth/" + service,
+          }),
+        });
+        const responsejson = await response.json();
+        console.log(response.status);
+        if (readRequestStatus(response.status, responsejson.message)) {
+          login(responsejson.access_token);
+          window.location.replace(window.location.origin);
+        } else {
+          window.location.replace(window.location.origin + "/join");
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
+    
   }
 
   useEffect(() => {
