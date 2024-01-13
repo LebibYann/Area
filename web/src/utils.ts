@@ -70,7 +70,7 @@ export function getServiceUri(service: string): string | undefined {
       return "https://accounts.spotify.com/authorize?" + queryString.stringify({
         response_type: "code",
         client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-        scope: "user-read-private user-read-email",
+        scope: "user-read-private user-read-email app-remote-control streaming user-read-playback-state user-modify-playback-state user-read-currently-playing",
         redirect_uri: "http://localhost:8081/login/auth/spotify"
       });
     case "discord":

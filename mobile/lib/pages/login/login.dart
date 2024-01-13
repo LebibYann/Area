@@ -94,8 +94,9 @@ class _LoginPage extends State<LoginPage> {
     } else if (auth == "Spotify") {
       final clientId = dotenv.env['SPOTIFY_CLIENT_ID'];
       String redirectUri = "http://localhost:8082/login/auth/spotify";
+      String scope = "user-read-private user-read-email app-remote-control streaming user-read-playback-state user-modify-playback-state user-read-currently-playing";
       final Uri SpotifyUrl = Uri.parse(
-          'https://accounts.spotify.com/authorize?response_type=code&client_id=$clientId&scope=user-read-private user-read-email&redirect_uri=$redirectUri');
+          'https://accounts.spotify.com/authorize?response_type=code&client_id=$clientId&scope=$scope&redirect_uri=$redirectUri');
       launchURL(SpotifyUrl);
       handleCallback(auth, redirectUri);
     } else {
