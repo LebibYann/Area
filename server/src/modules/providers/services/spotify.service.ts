@@ -1,5 +1,5 @@
 import { HttpService } from "@nestjs/axios";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { firstValueFrom } from "rxjs";
 import { services } from "src/modules/about/about.const";
@@ -11,6 +11,8 @@ export class SpotifyService {
   constructor(
     private readonly httpService: HttpService
   ) { }
+
+  logger = new Logger(SpotifyService.name);
 
   @OnEvent(services[3].actions[0].name)
   async getPlaylist (data: {credentials: Credential, parameters: any}): Promise<boolean> {
@@ -36,8 +38,15 @@ export class SpotifyService {
     const headers = {
       Authorization: `Bearer ${data.credentials.accessToken}`,
     };
+    this.logger.debug(`Spotify accessToken: ${data.credentials.accessToken}`);
     try {
-      const response = await firstValueFrom(this.httpService.get(apiEndpoint, { headers }));
+      const response = await firstValueFrom(this.httpService.get(apiEndpoint,
+        {
+          headers: {
+            Authorization: `Bearer ${data.credentials.accessToken}`,
+          }
+        }
+        ));
       if (response.status !== 200) {
         throw new Error(`API call failed (Spotify): ${response.statusText}`);
       }

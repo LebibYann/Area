@@ -32,6 +32,8 @@ export class CronLoopService {
 
   private readonly aboutJson = this.aboutService.getAboutJson();
 
+  private readonly servicesNames = Object.keys(ServiceName)
+
   @Cron("*/10 * * * * *") // every 1 minute
   async handleCron() {
     this.logger.debug("Called every 10 seconds");
@@ -60,9 +62,10 @@ export class CronLoopService {
         return;
       }
       // Get credentials for the user and the service
+      this.logger.debug(`Service id: ${trigger.serviceId}. Service name: ${ServiceName[this.servicesNames[trigger.serviceId]]}`);
       const credentials = await this.credentialService.findOneByUserAndService(
         area.userId,
-        ServiceName[trigger.serviceId]
+        ServiceName[this.servicesNames[trigger.serviceId]]
       );
       if (!credentials)
         return;

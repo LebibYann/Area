@@ -8,6 +8,7 @@ import { AboutService } from './about.service'
  */
 @Module({
   controllers: [AboutController],
-  providers: [AboutService]
+  providers: [AboutService],
+  exports: [AboutService]
 })
 export class AboutModule {}

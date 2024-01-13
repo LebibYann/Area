@@ -129,7 +129,7 @@ export class OAuth2Controller {
       oauth2Dto.redirectUri
     )
 
-    this.logger.debug('Fetched Spotify Token')
+    this.logger.debug('Fetched Spotify Token', token)
 
     const userInfo = await this.spotifyService.getUserInfo(token.access_token)
 
@@ -205,7 +205,7 @@ export class OAuth2Controller {
         oauth2Dto.redirectUri
       )
 
-      this.logger.debug('Fetched Github Token')
+      this.logger.debug('Fetched Github Token', token)
 
       const user = await this.identificationService.identifyUser(
         req.user.email,

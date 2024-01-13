@@ -55,6 +55,7 @@ export class OAuth2Service {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept-Encoding': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
             Authorization: 'Basic ' + Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
           }
         }

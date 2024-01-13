@@ -44,18 +44,18 @@ export class EventService {
       throw new BadRequestException('Invalid trigger (action) id.')
     }
 
-    if (serviceId != 8 && serviceId != 7) {
-      // Check if the user has credentials for this service
-      const credentials = await this.credentialService.findOneByUserAndService(
-        userId,
-        this.servicesNames[serviceId]
-      );
-      if (!credentials) {
-        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
-        throw new BadRequestException('No credentials for this service.');
-      }
-      this.logger.debug(`User ${userId} has credentials for service \"${this.servicesNames[serviceId]}\"`);
-    }
+    // if (serviceId != 8 && serviceId != 7) {
+    //   // Check if the user has credentials for this service
+    //   const credentials = await this.credentialService.findOneByUserAndService(
+    //     userId,
+    //     this.servicesNames[serviceId]
+    //   );
+    //   if (!credentials) {
+    //     this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+    //     throw new BadRequestException('No credentials for this service.');
+    //   }
+    //   this.logger.debug(`User ${userId} has credentials for service \"${this.servicesNames[serviceId]}\"`);
+    // }
 
     // Check if the parameters are valid
     if (serviceId == 8) {
