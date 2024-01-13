@@ -103,7 +103,7 @@ export function getServiceUri(service: string): string | undefined {
     case "github":
       return "https://github.com/login/oauth/authorize?client_id=fee6c82e9e3f4aa4c447&redirect_uri=http://localhost:8081/login/auth/github&response_type=code";
     case "twitter":
-      return "https://twitter.com/i/oauth2/authorize?response_type=code&client_id=RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ&redirect_uri=http://localhost:8081/login/auth/twitter&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain"
+      return "https://twitter.com/i/oauth2/authorize?response_type=code&client_id=RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ&redirect_uri=http://localhost:8081/login/auth/twitter&scope=tweet.read%20tweet.write%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain"
     default:
       return undefined;
   }

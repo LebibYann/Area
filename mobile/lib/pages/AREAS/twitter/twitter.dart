@@ -83,7 +83,7 @@ class TwitterAREA extends StatelessWidget {
 
   void _launchGithubOAuth(BuildContext context) async {
     final String clientId = dotenv.env['TWITTER_CLIENT_ID'] ?? 'fallbackClientId';
-    final String scopes = 'tweet.read%20users.read%20follows.read%20offline.access';
+    final String scopes = 'tweet.read%20tweet.write%20users.read%20follows.read%20offline.access';
     String redirectUri = "http://localhost:8082/login/auth/$service";
     final Uri oauthUrl = Uri.parse('https://twitter.com/i/oauth2/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&&scope=$scopes&state=state&code_challenge=challenge&code_challenge_method=plain');
 

@@ -91,7 +91,7 @@ export const services: ServiceDto[] = [
     image: 'assets/logo/github.png',
     actions: [
       {id: 0, name: 'Is new issue', description: 'Trigger when a new issue is created in a repo' ,param1: 'Owner', param2: 'Repository'},
-      {id: 1, name: 'New follower', description: 'Trigger when you get a new follower' },
+      {id: 1  , name: 'New follower', description: 'Trigger when you get a new follower' },
     ],
     reactions: [
       {id: 0, name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Title',param4: 'Body'},
