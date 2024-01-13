@@ -9,6 +9,7 @@ const Callback = (): JSX.Element => {
   const handleOauth2 = async (service: string, code: string): Promise<void> => {
     if (service == "spotify" || service == "google") {
       try {
+        console.log(code);
         const response = await fetch(`http://localhost:8080/oauth2/${service}`, {
           method: "POST",
           headers: {

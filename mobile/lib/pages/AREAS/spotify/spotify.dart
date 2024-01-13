@@ -84,7 +84,8 @@ class SpotifyAREA extends StatelessWidget {
   void _launchGithubOAuth(BuildContext context) async {
     final String clientId = dotenv.env['SPOTIFY_CLIENT_ID'] ?? 'fallbackClientId';
     String redirectUri = "http://localhost:8082/login/auth/$service";
-    final Uri oauthUrl = Uri.parse('https://accounts.spotify.com/authorize?response_type=code&client_id=$clientId&scope=user-read-private user-read-email&redirect_uri=$redirectUri');
+    String scope = "user-read-private user-read-email app-remote-control streaming user-read-playback-state user-modify-playback-state user-read-currently-playing";
+    final Uri oauthUrl = Uri.parse('https://accounts.spotify.com/authorize?response_type=code&client_id=$clientId&scope=$scope&redirect_uri=$redirectUri');
 
     if (await canLaunch(oauthUrl.toString())) {
       await launch(oauthUrl.toString());
