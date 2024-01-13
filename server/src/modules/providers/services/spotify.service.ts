@@ -15,20 +15,41 @@ export class SpotifyService {
   logger = new Logger(SpotifyService.name);
 
   @OnEvent(services[3].actions[0].name)
-  async getPlaylist (data: {credentials: Credential, parameters: any}): Promise<boolean> {
-    const apiSpotifyGetPlaylist = 'https://api.spotify.com/v1/me/playlists';
-    const headers = {
-      Authorization: `Bearer ${data.credentials.accessToken}`,
-    };
+  async isNewFollower (data: {credentials: Credential, parameters: any}): Promise<boolean> {
+    const nbFollowers = await this.getNbFollowers(data.credentials.accessToken);
+    if (nbFollowers > data.parameters.param1) {
+      return true;
+    }
+    return false;
+  }
+
+  @OnEvent(services[3].actions[2].name)
+  async isFollowersCapReached (data: {credentials: Credential, parameters: any}): Promise<boolean> {
+    const nbFollowers = await this.getNbFollowers(data.credentials.accessToken);
+    if (nbFollowers >= data.parameters.param1) {
+      return true;
+    }
+    return false;
+  }
+
+  async getNbFollowers (accessToken: string): Promise<number> {
+    const apiEndpoint = "https://api.spotify.com/v1/me";
+    this.logger.debug(`Spotify accessToken: ${accessToken}`);
     try {
-      const response = await firstValueFrom(this.httpService.get(apiSpotifyGetPlaylist, { headers }));
+      const response = await firstValueFrom(this.httpService.get(apiEndpoint,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          }
+        }
+        ));
       if (response.status !== 200) {
         throw new Error(`API call failed (Spotify): ${response.statusText}`);
       }
-      return response.data.is_playing;
+      return response.data.followers.total;
     } catch (error) {
       console.log(`API call failed (Spotify): ${error.message}`);
-      return false;
+      return 0;
     }
   }
 

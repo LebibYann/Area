@@ -101,7 +101,7 @@ export class CronLoopService {
     }
     this.eventEmitter.emit(
       this.aboutJson.server.services[action.serviceId].reactions[action.eventId].name,
-      action.parameters
+      { credentials, parameters: action.parameters }
     );
   }
 }
