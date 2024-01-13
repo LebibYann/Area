@@ -219,9 +219,15 @@ class CreatePage extends StatelessWidget {
 
       formFields.add(
         TextFormField(
-          controller: controller,
-          decoration: InputDecoration(labelText: field),
-        ),
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: field,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                obscureText: true,
+              ),
       );
 
       formFields.add(SizedBox(height: 8));
