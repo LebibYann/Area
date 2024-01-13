@@ -19,10 +19,10 @@ export interface Area {
     id: number;
     name: string;
     description: string;
-    param1: string;
-    param2: string;
-    param3: string;
-    param4: string;
+    param1: string | undefined;
+    param2: string | undefined;
+    param3: string | undefined;
+    param4: string | undefined;
 }
 
 export interface Service {

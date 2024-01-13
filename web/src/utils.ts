@@ -2,6 +2,7 @@ import { LocalStorageKeysEnum, Service } from "./types";
 import google from "./assets/images/GoogleIcon.png";
 import discord from "./assets/images/DiscordIcon.png";
 import queryString from "query-string";
+import { read } from "fs";
 
 export function useLogin(): string | null {
   return localStorage.getItem("login");
@@ -40,6 +41,30 @@ export async function useServices(): Promise<Service[]> {
 export async function useService(serviceName: string): Promise<Service | undefined> {
   const services = await useServices();
   return services.find((service) => service.name === serviceName);
+}
+
+export async function useConnectedServices(): Promise<Service[] | undefined> {
+  const token = useLogin();
+  if (token === undefined) {
+    return [];
+  }
+  try {
+    const response = await fetch('http://localhost:8080/oauth2/me', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    const data = await response.json()
+    if (readRequestStatus(response.status, data.message)) {
+      console.log(data)
+      return data.services;
+    }
+  } catch (error) {
+      console.error(error)
+  }
+  return [];
 }
 
 export function readRequestStatus(status: number, message: string): boolean{
