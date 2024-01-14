@@ -124,8 +124,8 @@ const Create = (): JSX.Element => {
           'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify({
-          action: action?.id,
-          reaction: reaction?.id
+          triggerId: action?.id,
+          actionId: reaction?.id
         })
     })
       const data = await response.json()
