@@ -24,7 +24,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.GMAIL,
     image: 'assets/logo/gmail.png',
     actions: [
-      { id: 0, name: 'Is last email read', description: 'Trigger when the last email is red'},
+      { id: 0, name: 'Received new e-mail', description: 'Trigger when you receive a new email' },
     ],
     reactions: [
       {id: 0, name: 'Send an e-mail',description: 'Send an email to someone', param1: 'toEmailAddress', param2: 'fromEmailAddress', param3: 'subject', param4: 'bodyText'},

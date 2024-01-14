@@ -16,22 +16,27 @@ export class GoogleService {
 
   logger = new Logger(GoogleService.name);
 
-  @OnEvent(services[6].actions[0].name)
-  async isTriggered (data:string): Promise<boolean> {
-    const currentstate = await this.isLastMailRead(data);
-    return currentstate;
+  @OnEvent(services[0].actions[0].name)
+  async isTriggered (data: {credentials: Credential, parameters: {param1: number}}): Promise<boolean> {
+    const nbEmails = await this.getNbEmails(data.credentials.accessToken);
+    return nbEmails > data.parameters.param1;
   }
 
-  async isLastMailRead(accessToken:string): Promise<any> {
-    const apiGmailGetLastMail = `https://www.googleapis.com/gmail/v1/users/me/messages?maxResults=1&q=-from%3Ame&access_token=${accessToken}`;
+  async getNbEmails (accessToken: string): Promise<number> {
+    const apiEndpoint = "https://gmail.googleapis.com/gmail/v1/users/me/profile";
+    this.logger.debug(`Google accessToken: ${accessToken}`);
+
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
 
     try {
-      const response = await firstValueFrom(this.httpService.get(apiGmailGetLastMail));
+      const response = await firstValueFrom(this.httpService.get(apiEndpoint, {headers}));
       if (response.status !== 200) {
         throw new Error(`API call failed (Google): ${response.statusText}`);
       }
       this.logger.debug(`API call success (Google): ${response.data}`);
-      return response.data;
+      return response.data.messagesTotal;
     } catch (error) {
       this.logger.error(`API call failed (Google): ${error.message}`);
       return 0;

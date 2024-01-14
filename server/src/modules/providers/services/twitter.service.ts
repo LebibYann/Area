@@ -41,7 +41,6 @@ export class TwitterService {
 
   @OnEvent(services[5].reactions[0].name)
   handleDiscord0(data: {credentials: Credential, parameters: TwitterSendTweetDto}): void {
-    console.log(services[5].reactions[0].name, 'triggered');
     this.makeTweet(data);
   }
 

@@ -7,6 +7,7 @@ import { CredentialService } from "../auth/services/credential.service";
 import { ServiceName } from "../about/about.const";
 import { TimerService } from "../providers/services/timer.service";
 import { SpotifyService } from "../providers/services/spotify.service";
+import { GoogleService } from "../providers/services/google.service";
 
 @Injectable()
 export class EventService {
@@ -17,6 +18,7 @@ export class EventService {
     private readonly aboutService: AboutService,
     private readonly credentialService: CredentialService,
     private readonly spotifyService: SpotifyService,
+    private readonly googleService: GoogleService,
     private readonly timerService: TimerService
   ) {}
 
@@ -96,6 +98,23 @@ export class EventService {
         params = {
           param1: nbFollowers
         }
+      }
+      parameters = params;
+    }
+
+    if (ServiceName[this.servicesNames[serviceId]] == ServiceName.GMAIL && !isAction) {
+      const credentials = await this.credentialService.findOneByUserAndService(
+        userId,
+        ServiceName[this.servicesNames[serviceId]]
+      );
+      if (!credentials) {
+        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+        throw new BadRequestException('No credentials for this service.');
+      }
+      const nbEmails = await this.googleService.getNbEmails(credentials.accessToken);
+      this.logger.debug(`User ${userId} has ${nbEmails} emails on Google`);
+      let params = {
+        param1: nbEmails
       }
       parameters = params;
     }

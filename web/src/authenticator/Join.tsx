@@ -16,7 +16,7 @@ const Join = (): JSX.Element => {
     "&redirect_uri=http://localhost:8081/login/auth/google" +
     "&access_type=offline" +
     "&response_type=code" +
-    "&scope=openid%20profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send" +
+    "&scope=openid%20profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send%20https%3A%2F%2Fmail.google.com%2F" +
     "&include_granted_scopes=true";
 
     const spotifyUrl = "https://accounts.spotify.com/authorize?" + queryString.stringify({
