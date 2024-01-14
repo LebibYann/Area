@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { OnEvent } from "@nestjs/event-emitter";
 import { services } from "../../about/about.const";
 import { TwitterSendTweetDto, TwitterGetTrends} from "src/modules/area/dtos/tweeterActions.dto";
+import { Credential } from "src/modules/auth/entities/credential.entity";
 
 @Injectable()
 export class TwitterService {
@@ -39,24 +40,24 @@ export class TwitterService {
   }
 
   @OnEvent(services[5].reactions[0].name)
-  handleDiscord0(data: TwitterSendTweetDto) {
+  handleDiscord0(data: {credentials: Credential, parameters: TwitterSendTweetDto}): void {
     console.log(services[5].reactions[0].name, 'triggered');
-    this.makeTweet(data.token,data.content);
+    this.makeTweet(data);
   }
 
-  async makeTweet(accessToken:string, text:string): Promise<any> {
-    const maketweet = 'https://api.twitter.com/2/tweets/compose';
+  async makeTweet(data: {credentials: Credential, parameters: TwitterSendTweetDto}): Promise<any> {
+    const maketweet = 'https://api.twitter.com/2/tweets';
 
     const headers = {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${data.credentials.accessToken}`,
       'Content-Type': 'application/json',
     };
 
-    const data = {
-      status: text,
+    const body = {
+      text: data.parameters.param1,
     };
     try {
-      const response = await firstValueFrom(this.httpService.post(maketweet, data, {headers}));
+      const response = await firstValueFrom(this.httpService.post(maketweet, body, {headers}));
       if (response.status !== 200) {
         throw new Error(`API call failed (Twitter): ${response.statusText}`);
       }

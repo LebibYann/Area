@@ -13,12 +13,12 @@ export class TimerService {
   logger = new Logger(TimerService.name);
 
   @OnEvent(services[8].actions[0].name)
-  async isTriggered (data: {time: number}): Promise<boolean> {
+  async isTriggered (data: {param1: number}): Promise<boolean> {
     const currentTime = await this.getCurrentTime();
     this.logger.debug(`Current time: ${currentTime}`);
-    this.logger.debug(`Trigger time: ${data.time}`);
-    this.logger.debug(currentTime >= data.time);
-    return currentTime >= data.time;
+    this.logger.debug(`Trigger time: ${data.param1}`);
+    this.logger.debug(currentTime >= data.param1);
+    return currentTime >= data.param1;
   }
 
   async getCurrentTime (): Promise<number> {

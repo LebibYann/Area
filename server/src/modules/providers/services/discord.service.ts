@@ -14,9 +14,9 @@ export class DiscordService {
   ) { }
 
   @OnEvent(services[2].reactions[0].name)
-  handleDiscord0(data: DiscordSendMessagesDto) {
+  handleDiscord0(data: {credentials: any, parameters: DiscordSendMessagesDto}): void {
     console.log(services[2].reactions[0].name, 'triggered');
-    this.sendMessage(data.content);
+    this.sendMessage(data.parameters.param1);
   }
 
   async sendMessage (message: string): Promise<void> {

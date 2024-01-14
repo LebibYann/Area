@@ -6,6 +6,7 @@ import { AboutService } from "../about/about.service";
 import { CredentialService } from "../auth/services/credential.service";
 import { ServiceName } from "../about/about.const";
 import { TimerService } from "../providers/services/timer.service";
+import { SpotifyService } from "../providers/services/spotify.service";
 
 @Injectable()
 export class EventService {
@@ -15,13 +16,14 @@ export class EventService {
 
     private readonly aboutService: AboutService,
     private readonly credentialService: CredentialService,
+    private readonly spotifyService: SpotifyService,
     private readonly timerService: TimerService
   ) {}
 
   logger = new Logger('EventService');
 
   aboutJson = this.aboutService.getAboutJson();
-  servicesNames = this.aboutService.getServicesNames();
+  private readonly servicesNames = Object.keys(ServiceName);
 
   async create(
     userId: number,
@@ -48,7 +50,7 @@ export class EventService {
     //   // Check if the user has credentials for this service
     //   const credentials = await this.credentialService.findOneByUserAndService(
     //     userId,
-    //     this.servicesNames[serviceId]
+    //     ServiceName[this.servicesNames[serviceId]]
     //   );
     //   if (!credentials) {
     //     this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
@@ -59,17 +61,46 @@ export class EventService {
 
     // Check if the parameters are valid
     if (serviceId == 8) {
-      if (!parameters.time) {
+      if (!parameters.param1) {
         throw new BadRequestException('Invalid parameters.');
       }
       await this.timerService.getCurrentTime().then((time) => {
         this.logger.debug(`Parameters before : ${JSON.stringify(parameters)}`);
-        parameters.time = time + parameters.time;
+        parameters.param1 = time + parameters.param1;
         this.logger.debug(`Parameters after: ${JSON.stringify(parameters)}`);
       })
     }
 
-    this.logger.debug(`Creating event for user ${userId} on service \"${this.servicesNames[serviceId]}\" with event \"${this.aboutJson.server.services[serviceId].actions[eventId].name}\" and parameters ${JSON.stringify(parameters)}`);
+    if (ServiceName[this.servicesNames[serviceId]] == ServiceName.SPOTIFY) {
+      if (eventId == 2 && !parameters.param1) {
+        throw new BadRequestException('Invalid parameters.');
+      }
+      const credentials = await this.credentialService.findOneByUserAndService(
+        userId,
+        ServiceName[this.servicesNames[serviceId]]
+      );
+      if (!credentials) {
+        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+        throw new BadRequestException('No credentials for this service.');
+      }
+      const nbFollowers = await this.spotifyService.getNbFollowers(credentials.accessToken);
+      this.logger.debug(`User ${userId} has ${nbFollowers} followers on Spotify`);
+      let params = {
+        param1: 0
+      }
+      if ( eventId == 2 && parameters.param1 ) {
+        params = {
+          param1: parameters.param1
+        }
+      } else if (eventId == 0) {
+        params = {
+          param1: nbFollowers
+        }
+      }
+      parameters = params;
+    }
+
+    this.logger.debug(`Creating event for user ${userId} on service \"${this.servicesNames[serviceId]}\" with event .. and parameters ${JSON.stringify(parameters)}`);
     return await this.eventRepository.save({
       userId,
       isAction,

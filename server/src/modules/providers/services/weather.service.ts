@@ -3,6 +3,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { firstValueFrom } from "rxjs";
 import { services } from "src/modules/about/about.const";
+import { W } from "typeorm";
 
 @Injectable()
 export class WeatherService {
@@ -13,12 +14,12 @@ export class WeatherService {
   logger = new Logger(WeatherService.name);
 
   @OnEvent(services[7].actions[0].name)
-  async isTriggered (data: {temp: number}, location:string): Promise<boolean> {
-    const currentTemp = await this.getCurrentWeather(location);
+  async isTriggered (data: {param1: string, param2: number}): Promise<boolean> {
+    const currentTemp = await this.getCurrentWeather(data.param1);
     this.logger.debug(`Current temp: ${currentTemp}`);
-    this.logger.debug(`Trigger temp: ${data.temp}`);
-    this.logger.debug(currentTemp >= data.temp);
-    return currentTemp >= data.temp;
+    this.logger.debug(`Trigger temp: ${data.param2}`);
+    this.logger.debug(currentTemp == data.param2);
+    return currentTemp == data.param2;
   }
 
   async getCurrentWeather (location:string): Promise<number> {
