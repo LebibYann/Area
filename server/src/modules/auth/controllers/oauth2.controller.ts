@@ -22,6 +22,7 @@ import { GithubOAuth2Service } from '../services/github.service'
 import { AuthGuard } from '@nestjs/passport'
 import { RequestWithUser } from 'src/common/interfaces/requestwithUser.interface'
 import { CredentialService } from '../services/credential.service'
+import { log } from 'console'
 
 /**
  * Controller for OAuth2 authentication.
@@ -59,6 +60,7 @@ export class OAuth2Controller {
       oauth2Dto.code,
       oauth2Dto.redirectUri
     )
+    this.logger.debug('Fetched Google Token', token)
     const userInfo = await this.goolgleService.getUserInfo(token.id_token)
 
     this.logger.debug('Fetched User Info')

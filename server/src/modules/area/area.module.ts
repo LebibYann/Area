@@ -6,7 +6,6 @@ import { AreaService } from "./services/area.service";
 import { ScheduleModule } from "@nestjs/schedule";
 import { CronLoopService } from "./services/cronLoop.service";
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ServiceEmitter } from './services/emitter.service';
 import { EventService } from "../events/event.service";
 import { CredentialService } from "../auth/services/credential.service";
 import { AboutService } from "../about/about.service";
@@ -28,7 +27,17 @@ import { EventModule } from "../events/event.module";
     EventModule
 ],
   controllers: [AreaController],
-  providers: [AreaService, CronLoopService, CredentialService, AboutService, TimerService, ServiceEmitter, WeatherService, TwitterService, GoogleService, GithubService],
+  providers: [
+    AreaService,
+    CronLoopService,
+    CredentialService,
+    AboutService,
+    TimerService,
+    WeatherService,
+    TwitterService,
+    GoogleService,
+    GithubService
+  ],
   exports: []
 })
 export class AreaModule {}

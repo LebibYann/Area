@@ -42,7 +42,7 @@ export class GithubService {
 
   @OnEvent(services[6].reactions[0].name)
   handleGithub0(data: GithubCreateIssuesDto) {
-    console.log(services[6].reactions[0].name, 'triggered');
+    this.logger.debug(`Creating issue triggered`);
     this.makeCreateIssue(data.token, data.repos, data.owner, data.title, data.body);
   }
 

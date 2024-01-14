@@ -1,10 +1,12 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, Logger } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
-// import { google } from 'googleapis';
+import { google } from 'googleapis';
 import { OnEvent } from "@nestjs/event-emitter";
 import { services } from "../../about/about.const";
 import { GoogleSendMailDto } from "src/modules/area/dtos/googleActions.dto";
+import { Credential } from "src/modules/auth/entities/credential.entity";
+import { log } from "console";
 
 @Injectable()
 export class GoogleService {
@@ -37,37 +39,41 @@ export class GoogleService {
   }
 
   @OnEvent(services[0].reactions[0].name)
-  handleGoogle0(data: GoogleSendMailDto) {
-    console.log(services[0].reactions[0].name, 'triggered');
-    this.sendMail(data.token ,data.from, data.to, data.header, data.body);
+  handleGoogle0(data: { credentials: Credential, parameters: GoogleSendMailDto }): void {
+    this.logger.debug(`Sending mail triggered`);
+
+    this.sendMail(
+      data.credentials.accessToken,
+      data.parameters.param1,
+      data.parameters.param2,
+      data.parameters.param3,
+      data.parameters.param4,
+    );
   }
 
   async sendMail(accessToken:string, from:string, to:string, subject:string, body:string): Promise<any> {
-    // const gmail = google.gmail({version: 'v1', auth: accessToken});
+    const oauth2Client = new google.auth.OAuth2();
+    oauth2Client.setCredentials({access_token: accessToken});
+    const gmail = google.gmail({version: 'v1', auth: oauth2Client});
 
-//     const email = `
-//       From: ${from}
-//       To: ${to}
-//       Subject: ${subject}
+    const email = `From: ${from}\r\nTo: ${to}\r\nSubject: ${subject}\r\n\r\n${body}`;
 
-//       ${body}
-//     `;
+    const base64EncodedEmail = Buffer.from(email).toString('base64');
 
-//     const base64EncodedEmail = Buffer.from(email).toString('base64');
-
-//     try {
-//       const response = await gmail.users.messages.send({
-//         userId: 'me',
-//         requestBody: {
-//           raw: base64EncodedEmail,
-//         },
-//       });
-//       if (response.status >= 200 && response.status < 300) {
-//         console.log('Issue created successfully');
-//       }
-//     } catch (error) {
-//       console.log(`API call failed (GitHub): ${error.message}`);
-//       return false;
-//     }
+    try {
+      const response = await gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+          raw: base64EncodedEmail,
+        },
+      });
+      if (response.status >= 200 && response.status < 300) {
+        this.logger.debug(`API call success (GMail): ${response.data}`);
+        return true;
+      }
+    } catch (error) {
+      this.logger.error(`API call failed (GMail): ${error.message}`);
+      return false;
+    }
   }
 }

@@ -48,7 +48,7 @@ export class SpotifyService {
       }
       return response.data.followers.total;
     } catch (error) {
-      console.log(`API call failed (Spotify): ${error.message}`);
+      this.logger.error(`API call failed (Spotify): ${error.message}`);
       return 0;
     }
   }
@@ -73,14 +73,14 @@ export class SpotifyService {
       }
       return response.data.is_playing;
     } catch (error) {
-      console.log(`API call failed (Spotify): ${error.message}`);
+      this.logger.error(`API call failed (Spotify): ${error.message}`);
       return false;
     }
   }
 
   @OnEvent(services[3].reactions[0].name)
   handleSpotify0(data: SpotifyDto) {
-    console.log(services[2].reactions[0].name, 'triggered');
+    this.logger.debug(`Spotify accessToken: ${data.token}`);
     this.playsong(data.token);
   }
 
@@ -96,10 +96,10 @@ export class SpotifyService {
     try {
       const response = await firstValueFrom(this.httpService.post(baseURL, {headers}));
       if (response.status !== 200) {
-        throw new Error(`API call failed (Discord): ${response.statusText}`);
+        throw new Error(`API call failed (Spotify): ${response.statusText}`);
       }
     } catch (error) {
-      console.log(`API call failed (Discord): ${error.message}`);
+      this.logger.error(`API call failed (Spotify: ${error.message}`);
     }
   }
 }

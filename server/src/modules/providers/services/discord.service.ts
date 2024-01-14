@@ -1,5 +1,5 @@
 import { HttpService } from "@nestjs/axios";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { firstValueFrom } from "rxjs";
 import { DiscordSendMessagesDto } from "src/modules/area/dtos/discordActions.dto";
@@ -13,9 +13,11 @@ export class DiscordService {
     private readonly httpService: HttpService,
   ) { }
 
+  logger = new Logger(DiscordService.name);
+
   @OnEvent(services[2].reactions[0].name)
   handleDiscord0(data: {credentials: any, parameters: DiscordSendMessagesDto}): void {
-    console.log(services[2].reactions[0].name, 'triggered');
+    this.logger.debug(`Sending message triggered`);
     this.sendMessage(data.parameters.param1);
   }
 
@@ -34,7 +36,7 @@ export class DiscordService {
         throw new Error(`API call failed (Discord): ${response.statusText}`);
       }
     } catch (error) {
-      console.log(`API call failed (Discord): ${error.message}`);
+      this.logger.error(`API call failed (Discord): ${error.message}`);
     }
   }
 }
