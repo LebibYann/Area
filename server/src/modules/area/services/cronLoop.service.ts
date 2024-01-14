@@ -62,7 +62,6 @@ export class CronLoopService {
         return;
       }
       // Get credentials for the user and the service
-      this.logger.debug(`Service id: ${trigger.serviceId}. Service name: ${ServiceName[this.servicesNames[trigger.serviceId]]}`);
       const credentials = await this.credentialService.findOneByUserAndService(
         area.userId,
         ServiceName[this.servicesNames[trigger.serviceId]]

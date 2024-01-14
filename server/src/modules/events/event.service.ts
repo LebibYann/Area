@@ -7,6 +7,7 @@ import { CredentialService } from "../auth/services/credential.service";
 import { ServiceName } from "../about/about.const";
 import { TimerService } from "../providers/services/timer.service";
 import { SpotifyService } from "../providers/services/spotify.service";
+import { GithubService } from "../providers/services/github.service";
 
 @Injectable()
 export class EventService {
@@ -17,6 +18,7 @@ export class EventService {
     private readonly aboutService: AboutService,
     private readonly credentialService: CredentialService,
     private readonly spotifyService: SpotifyService,
+    private readonly githubService: GithubService,
     private readonly timerService: TimerService
   ) {}
 
@@ -93,6 +95,31 @@ export class EventService {
           param1: parameters.param1
         }
       } else if (eventId == 0) {
+        params = {
+          param1: nbFollowers
+        }
+      }
+      parameters = params;
+    }
+
+    if (ServiceName[this.servicesNames[serviceId]] == ServiceName.GITHUB) {
+      // if (eventId == 2 && !parameters.param1) {
+      //   throw new BadRequestException('Invalid parameters.');
+      // }
+      const credentials = await this.credentialService.findOneByUserAndService(
+        userId,
+        ServiceName[this.servicesNames[serviceId]]
+      );
+      if (!credentials) {
+        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+        throw new BadRequestException('No credentials for this service.');
+      }
+      const nbFollowers = await this.githubService.getNbFollowers(credentials.accessToken);
+      this.logger.debug(`User ${userId} has ${nbFollowers} followers on Spotify`);
+      let params = {
+        param1: 0
+      }
+      if (eventId == 0) {
         params = {
           param1: nbFollowers
         }

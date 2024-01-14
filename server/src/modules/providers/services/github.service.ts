@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { OnEvent } from "@nestjs/event-emitter";
 import { services } from "../../about/about.const";
 import { GithubCreateIssuesDto, GithubGetIssuesDto } from "src/modules/area/dtos/githubActions.dto";
+import { Credential } from "src/modules/auth/entities/credential.entity";
 
 @Injectable()
 export class GithubService {
@@ -39,6 +40,43 @@ export class GithubService {
       return 0;
     }
   }
+
+
+
+
+  @OnEvent(services[6].actions[1].name)
+  async isNewFollower (data: {credentials: Credential, parameters: any}): Promise<boolean> {
+    const nbFollowers = await this.getNbFollowers(data.credentials.accessToken);
+    if (nbFollowers > data.parameters.param1) {
+      return true;
+    }
+    return false;
+  }
+
+  async getNbFollowers (accessToken: string): Promise<number> {
+    const apiEndpoint = "https://api.github.com/user";
+    this.logger.debug(`Github accessToken: ${accessToken}`);
+    try {
+      const response = await firstValueFrom(this.httpService.get(apiEndpoint,
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${accessToken}`,
+          }
+        }
+        ));
+      if (response.status !== 200) {
+        throw new Error(`API call failed (Github): ${response.statusText}`);
+      }
+      return response.data.followers;
+    } catch (error) {
+      console.log(`API call failed (Github): ${error.message}`);
+      return 0;
+    }
+  }
+
+
+
 
   @OnEvent(services[6].reactions[0].name)
   handleGithub0(data: GithubCreateIssuesDto) {

@@ -56,7 +56,7 @@ export const services: ServiceDto[] = [
     name: ServiceName.SPOTIFY,
     image: 'assets/logo/spotify.png',
     actions: [
-      {id: 0, name: 'New follower', description: 'Trigger when you get a new follower' },
+      {id: 0, name: 'New follower Spotify', description: 'Trigger when you get a new follower' },
       {id: 1, name: 'Is playing song', description: 'Check if a song is played' }, //ok
       {id: 2, name: 'Cap follower', description: 'Trigger when you get a cap of follower', param1: 'followers (Ex 10)' },
     ],
@@ -79,7 +79,7 @@ export const services: ServiceDto[] = [
     image: 'assets/logo/twitter.png',
     actions: [
       {id: 0, name: 'Is my word in tendancy', description: 'Trigger when my words are in tendancies' ,param1: 'word1', param2: 'word2', param3: 'word3', param4: 'word4'},
-      {id: 1, name: 'New follower', description: 'Trigger when you get a new follower' },
+      {id: 1, name: 'New follower Twitter', description: 'Trigger when you get a new follower' },
     ],
     reactions: [
       {id: 0, name: 'Tweet', description: 'Create a new tweet', param1: 'Text of the tweet'},
@@ -91,7 +91,7 @@ export const services: ServiceDto[] = [
     image: 'assets/logo/github.png',
     actions: [
       {id: 0, name: 'Is new issue', description: 'Trigger when a new issue is created in a repo' ,param1: 'Owner', param2: 'Repository'},
-      {id: 1  , name: 'New follower', description: 'Trigger when you get a new follower' },
+      {id: 1  , name: 'New follower Github', description: 'Trigger when you get a new follower' },
     ],
     reactions: [
       {id: 0, name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Title',param4: 'Body'},

@@ -3,6 +3,7 @@ import { TimerService } from "./services/timer.service";
 import { HttpModule } from "@nestjs/axios";
 import { DiscordService } from "./services/discord.service";
 import { SpotifyService } from "./services/spotify.service";
+import { GithubService } from "./services/github.service";
 
 @Module({
   imports: [
@@ -12,12 +13,14 @@ import { SpotifyService } from "./services/spotify.service";
   providers: [
     TimerService,
     DiscordService,
-    SpotifyService
+    SpotifyService,
+    GithubService,
   ],
   exports: [
     TimerService,
     DiscordService,
-    SpotifyService
+    SpotifyService,
+    GithubService,
   ]
 })
 export class ProvidersModule {}
