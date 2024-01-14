@@ -3,6 +3,7 @@ import { getServiceUri, useService, useServices } from "../utils";
 import { type Service } from "types";
 import "./ServicesList.css";
 import "../components/Button.css";
+import "./ServiceDetails.css";
 import { connect } from "http2";
 
 const ServiceDetails = (): JSX.Element => {
@@ -39,7 +40,7 @@ const ServiceDetails = (): JSX.Element => {
       {loading ? (
       <p>Loading services...</p>
       ) : (
-          <div>
+          <section className="details-section">
             <h2 className="title">{data?.name}</h2>
             <button className={"button " + serviceName} onClick={handleConnection}>Connect</button>
             <h3>Actions</h3>
@@ -60,7 +61,7 @@ const ServiceDetails = (): JSX.Element => {
                 </li>
               )}
             </ul>
-          </div>
+          </section>
         )}
         </section>
       );

@@ -1,16 +1,14 @@
-import { Download } from "@mui/icons-material";
-import { File } from "buffer";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import './components/Button.css';
 
 const DownloadApk = (): JSX.Element => {
     return (
-        <div style={{
+        <section style={{
             display: 'flex',
             flexDirection: 'column',
         }}>
-            <a href={"/shared/app-release.apk"} download>Download</a>
-        </div>
+            <h2 className='title'>Download the Area application</h2>
+            <a className='button border black-button' href={"/shared/app-release.apk"} download>Download</a>
+        </section>
     );
 }
 

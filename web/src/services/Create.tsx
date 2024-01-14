@@ -21,7 +21,7 @@ const Create = (): JSX.Element => {
   const [mode, setMode] = useState<'actions' | 'reactions' | undefined>(undefined)
   const [showForm, setShowForm] = useState<boolean>(false)
   const [formHolder, setFormHolder] = useState<paramsForm>({param1: undefined, param2: undefined, param3: undefined, param4: undefined})
-  const [form, setForm] = useState<paramsForm>({param1: undefined, param2: undefined, param3: undefined, param4: undefined})
+  const [form, setForm] = useState<paramsForm>({param1: '', param2: '', param3: '', param4: ''})
   const [services, setServices] = useState<Service[]>([])
 
   const updateServices = async () => {
@@ -44,10 +44,7 @@ const Create = (): JSX.Element => {
     } else if (mode === 'reactions') {
       setReaction({ service: selectedService.name, area: selectedArea })
     }
-    if (selectedArea.param1 === undefined && selectedArea.param2 === undefined && selectedArea.param3 === undefined && selectedArea.param4 === undefined)
-      updateForm()
-    else
-      setShowForm(true)
+    setShowForm(true)
   }
 
   const updateForm = async () => {
@@ -70,7 +67,6 @@ const Create = (): JSX.Element => {
         })
         const data = await response.json();
         if (readRequestStatus(response.status, data.message)) {
-          console.log(data)
           setAction({ service: selectedService.name, area: { ...action?.area, ...form }, id: data.id })
         }
       } catch (error) {
@@ -94,7 +90,6 @@ const Create = (): JSX.Element => {
       })
         const data = await response.json()
         if (readRequestStatus(response.status, data.message)) {
-          console.log(data)
           setReaction({ service: selectedService.name, area: { ...reaction?.area, ...form }, id: data.id })
         }
       } catch (error) {
@@ -111,8 +106,8 @@ const Create = (): JSX.Element => {
     }
     if (mode === undefined) {
       setShowForm(false)
-      setForm({ param1: undefined, param2: undefined, param3: undefined, param4: undefined})
-      setFormHolder({param1: undefined, param2: undefined, param3: undefined, param4: undefined})
+      setFormHolder({ param1: undefined, param2: undefined, param3: undefined, param4: undefined})
+      setForm({param1: '', param2: '', param3: '', param4: ''})
       setSelectedService(undefined)
     }
     setMode(mode)

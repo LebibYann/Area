@@ -15,6 +15,7 @@ const NavigationHeader = (): JSX.Element => {
             </section>
             <section className='links-section'>
                 <Link to={"/"} className='text'>Explore</Link>
+                <Link to={"/client.apk"} className='text'>Application</Link>
                 {!isLogged &&
                     <>
                         <Link to={"/login"} className='text'>Log in</Link>
