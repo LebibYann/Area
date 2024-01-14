@@ -23,16 +23,14 @@ class CreatePage extends StatelessWidget {
 
   postArea(BuildContext context) async {
     try {
-      String urlAction =
-          "http://localhost:8080/triggers/$idAction/$idActionEvent";
-      String urlReaction =
-          "http://localhost:8080/actions/$idReaction/$idReactionEvent";
+      String urlAction = "http://localhost:8080/triggers/$idAction/$idActionEvent";
+      String urlReaction = "http://localhost:8080/actions/$idReaction/$idReactionEvent";
       final auth = Provider.of<AuthState>(context, listen: false);
       final token = auth.accessToken;
 
       Map<String, dynamic> jsonMapAction = {};
       for (int i = 0; i < numberOfParametersAction; i++) {
-        jsonMapAction['field${i + 1}'] = controllers[i].text;
+        jsonMapAction['param${i + 1}'] = controllers[i].text;
       }
       var jsonAction = jsonEncode(jsonMapAction);
       Map<String, dynamic> jsonMapReaction = {};
@@ -59,11 +57,9 @@ class CreatePage extends StatelessWidget {
 
       if (responseAction.statusCode == 201 &&
           responseReaction.statusCode == 201) {
-        Map<String, dynamic> responseMapAction =
-            jsonDecode(responseAction.body);
+        Map<String, dynamic> responseMapAction = jsonDecode(responseAction.body);
         int idAction = responseMapAction['id'];
-        Map<String, dynamic> responseMapReaction =
-            jsonDecode(responseReaction.body);
+        Map<String, dynamic> responseMapReaction = jsonDecode(responseReaction.body);
         int idReaction = responseMapReaction['id'];
 
         print(idAction);

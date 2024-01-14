@@ -39,11 +39,12 @@ export class WeatherService {
 
   @OnEvent(services[7].actions[1].name)
   async isTriggered2 (data: {param1: string, param2: number}): Promise<boolean> {
-    const currentWind = await this.getCurrentWeather(data.param1);
+    const currentWind = await this.getCurrentWind(data.param1);
     this.logger.debug(`Current wind: ${currentWind}`);
     this.logger.debug(`Trigger wind: ${data.param2}`);
-    this.logger.debug(currentWind == data.param2);
-    return currentWind >= data.param2;
+    if (currentWind > data.param2)
+      return true;
+    return false;
   }
 
   async getCurrentWind (location:string): Promise<number> {

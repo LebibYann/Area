@@ -84,7 +84,7 @@ class GmailAREA extends StatelessWidget {
   void _launchGithubOAuth(BuildContext context) async {
     final String clientId = dotenv.env['VITE_GOOGLE_CLIENT_ID'] ?? 'fallbackClientId';
     String redirectUri = "http://localhost:8082/login/auth/google";
-    final Uri oauthUrl = Uri.parse('https://accounts.google.com/o/oauth2/v2/auth?client_id=$clientId&redirect_uri=$redirectUri&access_type=offline&response_type=code&scope=openid%20profile%20email&include_granted_scopes=true');
+    final Uri oauthUrl = Uri.parse('https://accounts.google.com/o/oauth2/v2/auth?client_id=$clientId&redirect_uri=$redirectUri&access_type=offline&response_type=code&scope=openid%20profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send%20https%3A%2F%2Fmail.google.com%2F&include_granted_scopes=true');
 
     if (await canLaunch(oauthUrl.toString())) {
       await launch(oauthUrl.toString());

@@ -27,7 +27,7 @@ export const services: ServiceDto[] = [
       { id: 0, name: 'Received new e-mail', description: 'Trigger when you receive a new email' },
     ],
     reactions: [
-      {id: 0, name: 'Send an e-mail',description: 'Send an email to someone', param1: 'toEmailAddress', param2: 'fromEmailAddress', param3: 'subject', param4: 'bodyText'}, //ok
+      {id: 0, name: 'Send an e-mail',description: 'Send an email to someone', param1: 'fromEmailAddress', param2: 'toEmailAddress', param3: 'subject', param4: 'bodyText'}, //ok
     ]
   },
   {

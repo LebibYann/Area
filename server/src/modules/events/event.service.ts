@@ -75,6 +75,9 @@ export class EventService {
       }
       await this.timerService.getCurrentTime().then((time) => {
         this.logger.debug(`Parameters before : ${JSON.stringify(parameters)}`);
+        if (typeof parameters.param1 === 'string') {
+          parameters.param1 = Number(parameters.param1);
+        }
         parameters.param1 = time + parameters.param1;
         this.logger.debug(`Parameters after: ${JSON.stringify(parameters)}`);
       })
