@@ -14,7 +14,7 @@ export class GoogleService {
 
   logger = new Logger(GoogleService.name);
 
-  @OnEvent(services[6].actions[0].name)
+  @OnEvent(services[0].actions[0].name)
   async isTriggered (data:string): Promise<boolean> {
     const currentstate = await this.isLastMailRead(data);
     return currentstate;

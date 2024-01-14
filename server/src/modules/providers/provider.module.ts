@@ -4,6 +4,8 @@ import { HttpModule } from "@nestjs/axios";
 import { DiscordService } from "./services/discord.service";
 import { SpotifyService } from "./services/spotify.service";
 import { GithubService } from "./services/github.service";
+import { TwitterService } from "./services/twitter.service";
+import { WeatherService } from "./services/weather.service";
 
 @Module({
   imports: [
@@ -15,12 +17,16 @@ import { GithubService } from "./services/github.service";
     DiscordService,
     SpotifyService,
     GithubService,
+    TwitterService,
+    WeatherService,
   ],
   exports: [
     TimerService,
     DiscordService,
     SpotifyService,
     GithubService,
+    TwitterService,
+    WeatherService,
   ]
 })
 export class ProvidersModule {}

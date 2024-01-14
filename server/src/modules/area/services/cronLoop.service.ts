@@ -74,8 +74,8 @@ export class CronLoopService {
       );
       const triggered = triggeredResults.some((result) => result);
       this.logger.debug(`Triggered: ${triggered}`);
-      if (!triggered)
-        return;
+      // if (!triggered)
+      //   return;
       this.triggerAction(area.actionId);
       this.logger.debug(`Removing area for user ${area.userId}`);
       await this.areaService.delete(area.id);

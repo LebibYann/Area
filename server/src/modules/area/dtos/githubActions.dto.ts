@@ -46,10 +46,16 @@ export class GithubGetIssuesDto {
       description: "The acces token of github",
     })
     token: string;
+
+    @ApiProperty({
+      example: "test",
+      description: "The repos where the issue will be created",
+    })
+    param1: string;
   
     @ApiProperty({
-      example: "70",
-      description: "The number of issues",
+      example: "Test",
+      description: "The owner of the repos",
     })
-    issues: number;
-  }
+    param2: string;
+}

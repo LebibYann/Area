@@ -15,18 +15,22 @@ export class GithubService {
   logger = new Logger(GithubService.name);
 
   @OnEvent(services[6].actions[0].name)
-  async isTriggered (data: GithubGetIssuesDto): Promise<boolean> {
-    const currentIssues = await this.getGithubIssues(data.token);
-    return currentIssues >= data.issues;
+  async isTriggered (data: {credentials: Credential, parameters: any}): Promise<boolean> {
+    // this.logger.debug(data.credentials.accessToken, data.parameters.param1, data.parameters.param2);
+    const currentIssues = await this.getGithubIssues(data.credentials.accessToken, data.parameters.param1, data.parameters.param2);
+    if (currentIssues > data.parameters.param1) {
+      return true;
+    }
+    return false;
   }
 
-  async getGithubIssues(accessToken:string): Promise<any> {
-    const apiGithubGetIssues = 'https://api.github.com/issues';
+  async getGithubIssues(accessToken:string, owner:string, repos:string): Promise<any> {
+    this.logger.debug('func',accessToken, owner, repos);
+    const apiGithubGetIssues = `https://api.github.com/repos/${owner}/${repos}/issues`;
 
     const headers = {
       Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${accessToken}`,
-      'X-GitHub-Api-Version': '2022-11-28',
+      Authorization: `Bearer ${accessToken}`
     };
     try {
       const response = await firstValueFrom(this.httpService.get(apiGithubGetIssues, {headers}));
@@ -34,6 +38,7 @@ export class GithubService {
         throw new Error(`API call failed (Github): ${response.statusText}`);
       }
       this.logger.debug(`API call success (Github): ${response.data}`);
+      this.logger.debug(response.data);
       return response.data;
     } catch (error) {
       this.logger.error(`API call failed (Github): ${error.message}`);

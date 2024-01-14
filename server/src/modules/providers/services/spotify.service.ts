@@ -78,28 +78,28 @@ export class SpotifyService {
     }
   }
 
-  @OnEvent(services[3].reactions[0].name)
-  handleSpotify0(data: SpotifyDto) {
-    console.log(services[2].reactions[0].name, 'triggered');
-    this.playsong(data.token);
-  }
+  // @OnEvent(services[3].reactions[0].name)
+  // handleSpotify0(data: SpotifyDto) {
+  //   console.log(services[2].reactions[0].name, 'triggered');
+  //   this.playsong(data.token);
+  // }
 
-  async playsong (accessToken: string): Promise<void> {
+  // async playsong (accessToken: string): Promise<void> {
 
-    const baseURL = 'https://api.spotify.com/v1/me/player/play';
+  //   const baseURL = 'https://api.spotify.com/v1/me/player/play';
 
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    };
+  //   const headers = {
+  //     Authorization: `Bearer ${accessToken}`,
+  //     'Content-Type': 'application/json',
+  //   };
 
-    try {
-      const response = await firstValueFrom(this.httpService.post(baseURL, {headers}));
-      if (response.status !== 200) {
-        throw new Error(`API call failed (Discord): ${response.statusText}`);
-      }
-    } catch (error) {
-      console.log(`API call failed (Discord): ${error.message}`);
-    }
-  }
+  //   try {
+  //     const response = await firstValueFrom(this.httpService.post(baseURL, {headers}));
+  //     if (response.status !== 200) {
+  //       throw new Error(`API call failed (Discord): ${response.statusText}`);
+  //     }
+  //   } catch (error) {
+  //     console.log(`API call failed (Discord): ${error.message}`);
+  //   }
+  // }
 }
