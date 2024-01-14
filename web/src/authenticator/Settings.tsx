@@ -4,6 +4,11 @@ import { logout, readRequestStatus } from "../utils";
 import './Authenticator.css'
 import '../components/Button.css'
 
+/**
+ *
+ *
+ * @return {JSX.Element} Show the user settings
+ */
 const Settings = (): JSX.Element => {
   const token = localStorage.getItem(LocalStorageKeysEnum.LOGIN);
   const [form, setForm] = React.useState<LoginFormData>({

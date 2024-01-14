@@ -4,6 +4,11 @@ import { login, useLogin } from '../utils';
 import queryString from 'query-string';
 import { LoginFormData } from '../types';
 
+/**
+ *
+ *
+ * @return {JSX.Element} the page used to login to a service
+ */
 const Login = (): JSX.Element => {
 
     const [form, setForm] = React.useState<LoginFormData>({

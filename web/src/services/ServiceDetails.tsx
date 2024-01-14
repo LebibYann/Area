@@ -6,6 +6,11 @@ import "../components/Button.css";
 import "./ServiceDetails.css";
 import { connect } from "http2";
 
+/**
+ *
+ *
+ * @return {JSX.Element} show the details of a service and offer the possibility to connect to it
+ */
 const ServiceDetails = (): JSX.Element => {
   const [data, setData] = useState<Service>();
   const [loading, setLoading] = useState<boolean>(true);

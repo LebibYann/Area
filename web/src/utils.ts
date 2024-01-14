@@ -4,18 +4,37 @@ import discord from "./assets/images/DiscordIcon.png";
 import queryString from "query-string";
 import { read } from "fs";
 
+/**
+ * 
+ * @returns {string} The login token
+ */
 export function useLogin(): string | null {
   return localStorage.getItem("login");
 }
 
+/**
+ *
+ *
+ * @export void connecter the user
+ * @param {string} access_token
+ */
 export function login(access_token: string): void {
   localStorage.setItem(LocalStorageKeysEnum.LOGIN, access_token);
 }
 
+/**
+ *
+ *
+ * @export void disconnect the user
+ */
 export function logout(): void {
   localStorage.removeItem(LocalStorageKeysEnum.LOGIN);
 }
 
+/**
+ *
+ * @return {Promise<Service[]>} the list of services existing in the app
+ */
 export async function useServices(): Promise<Service[]> {
   try {
     const response = await fetch("http://localhost:8080/about.json", {
@@ -38,11 +57,21 @@ export async function useServices(): Promise<Service[]> {
   }
 }
 
+/**
+ *
+ * @param {string} serviceName
+ * @return {Promise<Service | undefined>} the service if it exists
+ */
 export async function useService(serviceName: string): Promise<Service | undefined> {
   const services = await useServices();
   return services.find((service) => service.name === serviceName);
 }
 
+/**
+ *
+ * @param {string} serviceName
+ * @return {string} the service icon path
+ */
 export async function useConnectedServices(): Promise<Service[] | undefined> {
   const token = useLogin();
   if (token === undefined) {
@@ -67,6 +96,14 @@ export async function useConnectedServices(): Promise<Service[] | undefined> {
   return [];
 }
 
+/**
+ *
+ *
+ * @export
+ * @param {number} status the status of the api response
+ * @param {string} message the message of the api response
+ * @return {*}  {boolean} return true if the request is successful and false otherwise
+ */
 export function readRequestStatus(status: number, message: string): boolean{
   switch (status) {
     case 200:
@@ -81,6 +118,11 @@ export function readRequestStatus(status: number, message: string): boolean{
   return false;
 }
 
+/**
+ *
+ * @param {string} service the service name
+ * @return {string} the redirection uri of the service
+ */
 export function getServiceUri(service: string): string | undefined {
   switch (service) {
     case "google":

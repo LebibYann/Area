@@ -1,5 +1,9 @@
 import './components/Button.css';
 
+/**
+ * 
+ * @returns {JSX.Element} the page used to download the apk
+ */
 const DownloadApk = (): JSX.Element => {
     return (
         <section style={{

@@ -5,6 +5,11 @@ import { type Service } from 'types'
 import './ServicesList.css'
 import SearchBar from '../components/SearchBar'
 
+/**
+ *
+ *
+ * @return {JSX.Element} the page used to display the list of services
+ */
 const ServicesList = (): JSX.Element => {
   const [services, setServices] = useState<Service[]>([])
   const [searchedServices, setSearchedServices] = useState<Service[]>([])
