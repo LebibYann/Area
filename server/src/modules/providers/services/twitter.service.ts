@@ -39,7 +39,6 @@ export class TwitterService {
     }
   }
 
-
   @OnEvent(services[5].actions[1].name)
   async isNewFollower (data: {credentials: Credential, parameters: any}): Promise<boolean> {
     const nbFollowers = await this.getNbFollowers(data.credentials.accessToken);

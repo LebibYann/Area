@@ -1,10 +1,12 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, Logger } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
-// import { google } from 'googleapis';
+import { google } from 'googleapis';
 import { OnEvent } from "@nestjs/event-emitter";
 import { services } from "../../about/about.const";
 import { GoogleSendMailDto } from "src/modules/area/dtos/googleActions.dto";
+import { Credential } from "src/modules/auth/entities/credential.entity";
+import { log } from "console";
 
 @Injectable()
 export class GoogleService {
@@ -15,21 +17,26 @@ export class GoogleService {
   logger = new Logger(GoogleService.name);
 
   @OnEvent(services[0].actions[0].name)
-  async isTriggered (data:string): Promise<boolean> {
-    const currentstate = await this.isLastMailRead(data);
-    return currentstate;
+  async isTriggered (data: {credentials: Credential, parameters: {param1: number}}): Promise<boolean> {
+    const nbEmails = await this.getNbEmails(data.credentials.accessToken);
+    return nbEmails > data.parameters.param1;
   }
 
-  async isLastMailRead(accessToken:string): Promise<any> {
-    const apiGmailGetLastMail = `https://www.googleapis.com/gmail/v1/users/me/messages?maxResults=1&q=-from%3Ame&access_token=${accessToken}`;
+  async getNbEmails (accessToken: string): Promise<number> {
+    const apiEndpoint = "https://gmail.googleapis.com/gmail/v1/users/me/profile";
+    this.logger.debug(`Google accessToken: ${accessToken}`);
+
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
 
     try {
-      const response = await firstValueFrom(this.httpService.get(apiGmailGetLastMail));
+      const response = await firstValueFrom(this.httpService.get(apiEndpoint, {headers}));
       if (response.status !== 200) {
         throw new Error(`API call failed (Google): ${response.statusText}`);
       }
       this.logger.debug(`API call success (Google): ${response.data}`);
-      return response.data;
+      return response.data.messagesTotal;
     } catch (error) {
       this.logger.error(`API call failed (Google): ${error.message}`);
       return 0;
@@ -37,37 +44,41 @@ export class GoogleService {
   }
 
   @OnEvent(services[0].reactions[0].name)
-  handleGoogle0(data: GoogleSendMailDto) {
-    console.log(services[0].reactions[0].name, 'triggered');
-    this.sendMail(data.token ,data.from, data.to, data.header, data.body);
+  handleGoogle0(data: { credentials: Credential, parameters: GoogleSendMailDto }): void {
+    this.logger.debug(`Sending mail triggered`);
+
+    this.sendMail(
+      data.credentials.accessToken,
+      data.parameters.param1,
+      data.parameters.param2,
+      data.parameters.param3,
+      data.parameters.param4,
+    );
   }
 
   async sendMail(accessToken:string, from:string, to:string, subject:string, body:string): Promise<any> {
-    // const gmail = google.gmail({version: 'v1', auth: accessToken});
+    const oauth2Client = new google.auth.OAuth2();
+    oauth2Client.setCredentials({access_token: accessToken});
+    const gmail = google.gmail({version: 'v1', auth: oauth2Client});
 
-//     const email = `
-//       From: ${from}
-//       To: ${to}
-//       Subject: ${subject}
+    const email = `From: ${from}\r\nTo: ${to}\r\nSubject: ${subject}\r\n\r\n${body}`;
 
-//       ${body}
-//     `;
+    const base64EncodedEmail = Buffer.from(email).toString('base64');
 
-//     const base64EncodedEmail = Buffer.from(email).toString('base64');
-
-//     try {
-//       const response = await gmail.users.messages.send({
-//         userId: 'me',
-//         requestBody: {
-//           raw: base64EncodedEmail,
-//         },
-//       });
-//       if (response.status >= 200 && response.status < 300) {
-//         console.log('Issue created successfully');
-//       }
-//     } catch (error) {
-//       console.log(`API call failed (GitHub): ${error.message}`);
-//       return false;
-//     }
+    try {
+      const response = await gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+          raw: base64EncodedEmail,
+        },
+      });
+      if (response.status >= 200 && response.status < 300) {
+        this.logger.debug(`API call success (GMail): ${response.data}`);
+        return true;
+      }
+    } catch (error) {
+      this.logger.error(`API call failed (GMail): ${error.message}`);
+      return false;
+    }
   }
 }

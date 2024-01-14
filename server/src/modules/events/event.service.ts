@@ -10,6 +10,8 @@ import { SpotifyService } from "../providers/services/spotify.service";
 import { GithubService } from "../providers/services/github.service";
 import { TwitterService } from "../providers/services/twitter.service";
 import { WeatherService } from "../providers/services/weather.service";
+import { GoogleService } from "../providers/services/google.service";
+
 
 @Injectable()
 export class EventService {
@@ -23,6 +25,7 @@ export class EventService {
     private readonly githubService: GithubService,
     private readonly twitterService: TwitterService,
     private readonly weatherService: WeatherService,
+    private readonly googleService: GoogleService,
     private readonly timerService: TimerService
   ) {}
 
@@ -106,6 +109,7 @@ export class EventService {
       parameters = params;
     }
 
+
     if (ServiceName[this.servicesNames[serviceId]] == ServiceName.GITHUB) {
       const credentials = await this.credentialService.findOneByUserAndService(
         userId,
@@ -127,7 +131,6 @@ export class EventService {
         const nbissues = await this.githubService.getGithubIssues(credentials.accessToken, parameters.param1, parameters.param2);
         this.logger.debug(`User ${userId} has ${nbissues} issues on Github`);
       }
-      
     }
 
     if (ServiceName[this.servicesNames[serviceId]] == ServiceName.TWITTER) {
@@ -154,23 +157,21 @@ export class EventService {
       }
     }
 
-    if (ServiceName[this.servicesNames[serviceId]] == ServiceName.WEATHER) {
-      if (eventId == 0) {
-        const currentTemp = await this.weatherService.getCurrentWeather("Paris");
-        this.logger.debug(`Weather ${currentTemp}`);
-        let params = {
-          param1: currentTemp
-        }
-        parameters = params;
+    if (ServiceName[this.servicesNames[serviceId]] == ServiceName.GMAIL && !isAction) {
+      const credentials = await this.credentialService.findOneByUserAndService(
+        userId,
+        ServiceName[this.servicesNames[serviceId]]
+      );
+      if (!credentials) {
+        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+        throw new BadRequestException('No credentials for this service.');
       }
-      if (eventId == 1) {
-        const currentTemp = await this.weatherService.getCurrentWind("Paris");
-        this.logger.debug(`Weather ${currentTemp}`);
-        let params = {
-          param1: currentTemp
-        }
-        parameters = params;
+      const nbEmails = await this.googleService.getNbEmails(credentials.accessToken);
+      this.logger.debug(`User ${userId} has ${nbEmails} emails on Google`);
+      let params = {
+        param1: nbEmails
       }
+      parameters = params;
     }
 
     this.logger.debug(`Creating event for user ${userId} on service \"${this.servicesNames[serviceId]}\" with event .. and parameters ${JSON.stringify(parameters)}`);

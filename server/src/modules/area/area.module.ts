@@ -27,7 +27,17 @@ import { EventModule } from "../events/event.module";
     EventModule
 ],
   controllers: [AreaController],
-  providers: [AreaService, CronLoopService, CredentialService, AboutService, TimerService, WeatherService, TwitterService, GoogleService, GithubService],
+  providers: [
+    AreaService,
+    CronLoopService,
+    CredentialService,
+    AboutService,
+    TimerService,
+    WeatherService,
+    TwitterService,
+    GoogleService,
+    GithubService
+  ],
   exports: []
 })
 export class AreaModule {}

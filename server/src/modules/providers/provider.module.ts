@@ -6,6 +6,8 @@ import { SpotifyService } from "./services/spotify.service";
 import { GithubService } from "./services/github.service";
 import { TwitterService } from "./services/twitter.service";
 import { WeatherService } from "./services/weather.service";
+import { GoogleService } from "./services/google.service";
+
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { WeatherService } from "./services/weather.service";
     GithubService,
     TwitterService,
     WeatherService,
+    GoogleService
   ],
   exports: [
     TimerService,
@@ -27,6 +30,7 @@ import { WeatherService } from "./services/weather.service";
     GithubService,
     TwitterService,
     WeatherService,
+    GoogleService
   ]
 })
 export class ProvidersModule {}
