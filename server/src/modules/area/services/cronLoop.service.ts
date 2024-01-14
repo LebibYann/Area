@@ -93,7 +93,7 @@ export class CronLoopService {
     // Get credentials for the user and the service
     const credentials = await this.credentialService.findOneByUserAndService(
       action.userId,
-      ServiceName[action.serviceId]
+      ServiceName[this.servicesNames[action.serviceId]]
     );
     if (!credentials) {
       throw new Error("TriggerAction: No credentials for this service.");
@@ -103,24 +103,4 @@ export class CronLoopService {
       { credentials, parameters: action.parameters }
     );
   }
-}
-
-
-async function makeApiCallSpotify(eventEmitter: EventEmitter2, accessToken:string): Promise<any> {
-  const apiSpotifyGetPlaylist = 'https://api.spotify.com/v1/me/playlists';
-  const apiSpotifyGetPlaybackState = 'https://api.spotify.com/v1/me/player';
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
-  try {
-    const response = await axios(apiSpotifyGetPlaylist, {headers});
-    if (response.status >= 200 && response.status < 300) {
-      console.log(response.data);
-      eventEmitter.emit('NewPlaylist', true);
-    }
-  } catch (error) {
-    console.log(`API call failed (Spotify): ${error.message}`);
-    return false;
-  }
-  return false;
 }

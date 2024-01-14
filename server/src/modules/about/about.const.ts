@@ -94,7 +94,8 @@ export const services: ServiceDto[] = [
       {id: 1  , name: 'New follower Github', description: 'Trigger when you get a new follower' },
     ],
     reactions: [
-      {id: 0, name: 'Create an issue', description: 'Create an issue in the repository' ,param1: 'Owner', param2: 'Repository', param3: 'Title',param4: 'Body'},
+      {id: 0, name: 'Create an issue', description: 'Create an issue in a repository' ,param1: 'Owner', param2: 'Repository', param3: 'Title',param4: 'Body'},
+      {id: 1, name: 'Create an repository', description: 'Create a repository' ,param1: 'Name', param2: 'Description'},
     ]
   },
   {

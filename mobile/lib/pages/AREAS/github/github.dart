@@ -84,7 +84,8 @@ class GithubAREA extends StatelessWidget {
   void _launchGithubOAuth(BuildContext context) async {
     final String clientId = dotenv.env['GITHUB_CLIENT_ID'] ?? 'fallbackClientId';
     String redirectUri = "http://localhost:8082/login/auth/$service";
-    final Uri oauthUrl = Uri.parse('https://github.com/login/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code');
+    String scope = "public_repo repo";
+    final Uri oauthUrl = Uri.parse('https://github.com/login/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=$scope');
 
     if (await canLaunch(oauthUrl.toString())) {
       await launch(oauthUrl.toString());

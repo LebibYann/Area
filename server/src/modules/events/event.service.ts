@@ -103,9 +103,6 @@ export class EventService {
     }
 
     if (ServiceName[this.servicesNames[serviceId]] == ServiceName.GITHUB) {
-      // if (eventId == 2 && !parameters.param1) {
-      //   throw new BadRequestException('Invalid parameters.');
-      // }
       const credentials = await this.credentialService.findOneByUserAndService(
         userId,
         ServiceName[this.servicesNames[serviceId]]
@@ -114,17 +111,20 @@ export class EventService {
         this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
         throw new BadRequestException('No credentials for this service.');
       }
-      const nbFollowers = await this.githubService.getNbFollowers(credentials.accessToken);
-      this.logger.debug(`User ${userId} has ${nbFollowers} followers on Spotify`);
-      let params = {
-        param1: 0
-      }
-      if (eventId == 0) {
-        params = {
-          param1: nbFollowers
+      if (!isAction) {
+        const nbFollowers = await this.githubService.getNbFollowers(credentials.accessToken);
+        this.logger.debug(`User ${userId} has ${nbFollowers} followers on Github`);
+        let params = {
+          param1: 0
         }
+        if (eventId == 1) {
+          params = {
+            param1: nbFollowers
+          }
+        }
+        parameters = params;
       }
-      parameters = params;
+      
     }
 
     this.logger.debug(`Creating event for user ${userId} on service \"${this.servicesNames[serviceId]}\" with event .. and parameters ${JSON.stringify(parameters)}`);
