@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { login, readRequestStatus, useLogin } from "../utils";
 import queryString from "query-string";
 
+/**
+ *
+ *
+ * @return {JSX.Element} the page used to send the code return by the oauth2 authentication to the api
+ * and redirect the user to the home page
+ */
 const Callback = (): JSX.Element => {
   const url = window.location;
   const token = useLogin()

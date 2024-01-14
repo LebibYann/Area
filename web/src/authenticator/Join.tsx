@@ -7,6 +7,11 @@ import Discord from "../assets/images/DiscordIcon.png";
 import Spotify from "../assets/images/SpotifyIcon.png"
 
 
+/**
+ *
+ *
+ * @return {JSX.Element} the page used to join the platform through oauth2 authentication
+ */
 const Join = (): JSX.Element => {
 
     const [display, setDisplay] = useState<boolean>(false);

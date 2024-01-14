@@ -2,6 +2,11 @@ import React from "react";
 import "./Authenticator.css";
 import { LoginFormData } from "../types";
 
+/**
+ *
+ *
+ * @return {JSX.Element} the page used to display the register form
+ */
 const Register = (): JSX.Element => {
   const [form, setForm] = React.useState<LoginFormData>({
     email: "",

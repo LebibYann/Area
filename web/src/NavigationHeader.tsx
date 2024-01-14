@@ -5,6 +5,11 @@ import { logout, useLogin, useServices } from './utils';
 import RedirectionButton from './components/RedirectionButton';
 import './components/Button.css';
 
+/**
+ *
+ *
+ * @return {JSX.Element} the navigation header
+ */
 const NavigationHeader = (): JSX.Element => {
     const isLogged = useLogin();
 

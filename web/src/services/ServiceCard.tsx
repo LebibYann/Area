@@ -35,6 +35,12 @@ interface ServiceCardProps extends React.HTMLAttributes<HTMLLIElement> {
   serviceName: string
 }
 
+/**
+ *
+ *
+ * @param {ServiceCardProps} { text, iconName, serviceName, ...props } the props of the component
+ * @return {JSX.Element} a card used to display a service
+ */
 const ServiceCard = ({ text, iconName, serviceName, ...props }: ServiceCardProps): JSX.Element => {
   const icon = iconName && useServiceIcon(iconName)
 

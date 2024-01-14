@@ -13,6 +13,11 @@ interface paramsForm {
   param4: string | undefined
 }
 
+/**
+ *
+ *
+ * @return {JSX.Element} the page used to create an applet
+ */
 const Create = (): JSX.Element => {
   const token = useLogin()
   const [action, setAction] = useState<AppletArea | undefined>(undefined)
