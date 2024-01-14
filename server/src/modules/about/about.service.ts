@@ -3,12 +3,21 @@ import {
   type ClientDto,
   type AboutDto
 } from './about.dto'
-import { services } from './about.const'
+import { ServiceName, services } from './about.const'
 
+
+/**
+ * AboutService
+ * Service responsible for providing information about the application.
+ */
 @Injectable()
 export class AboutService {
   clientIp: string
 
+  /**
+   * Get about information in JSON format.
+   * @returns About information in JSON format.
+   */
   getAboutJson (): AboutDto {
     const currentTime = Math.floor(Date.now() / 1000)
 
@@ -27,7 +36,15 @@ export class AboutService {
     return aboutDto
   }
 
+  /**
+   * Set the client's IP address.
+   * @param clientIp - The client's IP address.
+   */
   setClientIp (clientIp: string): void {
     this.clientIp = clientIp
+  }
+
+  getServicesNames (): string[] {
+    return Object.values(ServiceName)
   }
 }

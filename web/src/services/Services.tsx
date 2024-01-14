@@ -1,10 +1,9 @@
-import ServicesList from "./ServicesList";
+import ServicesList from './ServicesList'
 
 const Services = (): JSX.Element => {
-
-    return (
-        <ServicesList />
-    );
+  return (
+    <ServicesList/>
+  )
 }
 
-export default Services;
+export default Services

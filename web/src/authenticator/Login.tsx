@@ -2,17 +2,9 @@ import React, { MutableRefObject, useEffect, useRef } from 'react';
 import './Authenticator.css';
 import { login, useLogin } from '../utils';
 import queryString from 'query-string';
-
-
-export interface LoginFormData {
-    email: string;
-    password: string;
-}
-
+import { LoginFormData } from '../types';
 
 const Login = (): JSX.Element => {
-
-    
 
     const [form, setForm] = React.useState<LoginFormData>({
         email: '',

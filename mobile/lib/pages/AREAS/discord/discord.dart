@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/pages/AREAS/actions.dart';
+import 'package:mobile/pages/AREAS/triggers.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -15,34 +16,55 @@ const Color discordBlue = Color(0xFF7289DA);
 class DiscordAREA extends StatelessWidget {
   const DiscordAREA({Key? key}) : super(key: key);
 
-  Future<void> postAuth2(String authorizationCode, String url,
-      String redirectUri, BuildContext context) async {
-    final String clientId =
-        dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
-    final String clientSecret =
-        dotenv.env['DISCORD_CLIENT_SECRET'] ?? 'fallbackClientSecret';
+  Future<void> postAuth2(String authorizationCode, String url, String redirectUri, BuildContext context) async {
+    final auth = Provider.of<AuthState>(context, listen: false);
+    final token = auth.accessToken;
 
     final response = await http.post(
       Uri.parse(url),
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'accept': 'application/json',
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
       },
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'grant_type': 'authorization_code',
+      body: json.encode({
         'code': authorizationCode,
-        'redirect_uri': redirectUri,
-      },
+        'redirectUri': redirectUri,
+      }),
     );
 
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      final accessToken = responseData['access_token'];
+    // print(authorizationCode);
+    // print(token);
 
-      var authState = Provider.of<AuthState>(context, listen: false);
-      authState.accessToken = accessToken;
+    print(response.statusCode);
+    if (response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: Text(
+                "Connection with Discord success",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
     } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Center(
+              child: Text(
+                "Connection with Discord failled",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
       print('Error during authentication with Discord: ${response.body}');
     }
   }
@@ -52,20 +74,16 @@ class DiscordAREA extends StatelessWidget {
       server.listen((HttpRequest request) async {
         String authorizationCode = request.uri.queryParameters['code'] ?? '';
         await server.close(force: true);
-        await postAuth2(authorizationCode,
-            "http://localhost:8080/oauth2/discord", redirectUri, context);
-        print('Authorization Code: $authorizationCode');
+        await postAuth2(authorizationCode, "http://localhost:8080/oauth2/discord", redirectUri, context);
       });
     });
   }
 
   void _launchDiscordOAuth(BuildContext context) async {
-    final String clientId =
-        dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
+    final String clientId = dotenv.env['DISCORD_CLIENT_ID'] ?? 'fallbackClientId';
     final String scopes = 'identify%20email';
     String redirectUri = "http://localhost:8082/login/auth/discord";
-    final Uri oauthUrl = Uri.parse(
-        'https://discord.com/api/oauth2/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=$scopes');
+    final Uri oauthUrl = Uri.parse('https://discord.com/api/oauth2/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&scope=$scopes');
 
     if (await canLaunch(oauthUrl.toString())) {
       await launch(oauthUrl.toString());
@@ -85,8 +103,11 @@ class DiscordAREA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> actions = JsonDataSingleton().getServiceActions('discord');
-    final List<Map<String, dynamic>> reactions = JsonDataSingleton().getServiceReactions('discord');
+    final List<Map<String, dynamic>> actions =
+        JsonDataSingleton().getServiceActions('discord');
+    final List<Map<String, dynamic>> reactions =
+        JsonDataSingleton().getServiceReactions('discord');
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -156,39 +177,46 @@ class DiscordAREA extends StatelessWidget {
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            ..._buildActionsButtons(context, actions),
+            ..._buildButtons(context, actions, true),
             const SizedBox(height: 16.0),
             const Text(
               'Actions',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16.0),
-            ..._buildActionsButtons(context, reactions),
+            ..._buildButtons(context, reactions, false),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildActionsButtons(
-      BuildContext context, List<Map<String, dynamic>> actions) {
-    return actions.map((action) {
+  List<Widget> _buildButtons(
+      BuildContext context, List<Map<String, dynamic>> items, bool isTrigger) {
+    return items.map((item) {
       return ElevatedButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ActionsDetails(
-                color: 0xFF7289DA,
-                service: 'Discord',
-                triggerName: action['name'],
-                description: action['description'],
-                actionText: 'Add this action',
-                onActionTap: () {
-                  // Your action code here
-                },
-                logoPath: 'assets/AREA/discord.png',
-              ),
+              builder: (context) => isTrigger
+                  ? TriggerDetails(
+                      color: 0xFF7289DA,
+                      service: 'Discord',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {},
+                      logoPath: 'assets/AREA/discord.png',
+                    )
+                  : ActionsDetails(
+                      color: 0xFF7289DA,
+                      service: 'Discord',
+                      triggerName: item['name'],
+                      description: item['description'],
+                      onActionTap: () {
+                      },
+                      logoPath: 'assets/AREA/discord.png',
+                    ),
             ),
           );
         },
@@ -196,9 +224,8 @@ class DiscordAREA extends StatelessWidget {
           primary: discordBlue,
           onPrimary: Colors.white,
         ),
-        child: Text(action['name']),
+        child: Text(item['name']),
       );
     }).toList();
   }
 }
-

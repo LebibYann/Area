@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './NavigationHeader.css';
 import { Link } from 'react-router-dom';
-import { logout, useLogin } from './utils';
+import { logout, useLogin, useServices } from './utils';
 import RedirectionButton from './components/RedirectionButton';
 import './components/Button.css';
 
@@ -15,6 +15,7 @@ const NavigationHeader = (): JSX.Element => {
             </section>
             <section className='links-section'>
                 <Link to={"/"} className='text'>Explore</Link>
+                <Link to={"/client.apk"} className='text'>Application</Link>
                 {!isLogged &&
                     <>
                         <Link to={"/login"} className='text'>Log in</Link>
@@ -29,12 +30,9 @@ const NavigationHeader = (): JSX.Element => {
                         <RedirectionButton href={"/create"} className='button black-button'>
                             Create
                         </RedirectionButton>
-                        <RedirectionButton onClick={() => {
-                            logout();
-                            window.location.reload();
-                        }} className='button white-button border'>
-                            Log out
-                        </RedirectionButton>
+                        <Link to={"/settings"} className='button white-button border'>
+                            Account
+                        </Link>
                     </>
                 }
             </section>

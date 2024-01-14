@@ -11,29 +11,24 @@ const Join = (): JSX.Element => {
 
     const [display, setDisplay] = useState<boolean>(false);
 
-    const domain = "https://accounts.google.com/o/oauth2/v2/auth";
-    const redirectUri = "http://localhost:8081/login/auth/google";
-    const responseType = "code";
-    const accessType = "offline";
-    const scope = "openid%20profile%20email";
-    const includeGrantedScopes = "true";
-
-    const googleUrl = domain + 
+    const googleUrl = "https://accounts.google.com/o/oauth2/v2/auth" + 
     `?client_id=` + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-    `&redirect_uri=${redirectUri}` +
-    `&access_type=${accessType}` +
-    `&response_type=${responseType}` +
-    `&scope=${scope}` +
-    `&include_granted_scopes=${includeGrantedScopes}`;
-
-    const discordUrl = "https://discord.com/api/oauth2/authorize?client_id=1184305079029878785&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8081%2Flogin%2Fauth%2Fdiscord&scope=email"
+    "&redirect_uri=http://localhost:8081/login/auth/google" +
+    "&access_type=offline" +
+    "&response_type=code" +
+    "&scope=openid%20profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send%20https%3A%2F%2Fmail.google.com%2F" +
+    "&include_granted_scopes=true";
 
     const spotifyUrl = "https://accounts.spotify.com/authorize?" + queryString.stringify({
         response_type: "code",
         client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-        scope: "user-read-private user-read-email",
+        scope: "user-read-private user-read-email app-remote-control streaming user-read-playback-state user-modify-playback-state user-read-currently-playing",
         redirect_uri: "http://localhost:8081/login/auth/spotify"
     })
+
+    const twitterUrl = "https://twitter.com/i/oauth2/authorize?response_type=code&client_id=RDd4M0owY3k1emZmQmR5aFlENmU6MTpjaQ&redirect_uri=http://localhost:8081/login/auth/twitter&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain"
+
+    const githubUrl = "https://github.com/login/oauth/authorize?client_id=fee6c82e9e3f4aa4c447&redirect_uri=http://localhost:8081/login/auth/github&response_type=code"
 
     const updateDisplay = () => {
       setDisplay(!display);
@@ -44,15 +39,11 @@ const Join = (): JSX.Element => {
             <h1 className="title">Get Started</h1>
             <section className="oauth-container">
                 <a href={googleUrl} className='oauth-button google'>
-                    <img src={Google}/>
+                    <img src={Google} className="service-icon"/>
                     Connect with Google
                 </a>
-                <a href={discordUrl} className='oauth-button discord'>
-                    <img src={Discord}/>
-                    Connect with Discord
-                </a>
                 <a href={spotifyUrl} className='oauth-button spotify'>
-                    <img src={Spotify}/>
+                    <img src={Spotify} className="service-icon"/>
                     Connect with Spotify
                 </a>
             </section>

@@ -38,7 +38,7 @@ a {
     margin-bottom: 0.5em;
 }
 
-.google {
+.google, .instagram {
     background-color: white;
     color: black;
 }
@@ -50,5 +50,10 @@ a {
 
 .spotify {
     background-color: black;
+    color: white;
+}
+
+.twitter {
+    background-color: #1DA1F2;
     color: white;
 }
