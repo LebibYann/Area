@@ -77,29 +77,4 @@ export class SpotifyService {
       return false;
     }
   }
-
-  @OnEvent(services[3].reactions[0].name)
-  handleSpotify0(data: SpotifyDto) {
-    this.logger.debug(`Spotify accessToken: ${data.token}`);
-    this.playsong(data.token);
-  }
-
-  async playsong (accessToken: string): Promise<void> {
-
-    const baseURL = 'https://api.spotify.com/v1/me/player/play';
-
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    };
-
-    try {
-      const response = await firstValueFrom(this.httpService.post(baseURL, {headers}));
-      if (response.status !== 200) {
-        throw new Error(`API call failed (Spotify): ${response.statusText}`);
-      }
-    } catch (error) {
-      this.logger.error(`API call failed (Spotify: ${error.message}`);
-    }
-  }
 }

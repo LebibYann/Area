@@ -62,7 +62,6 @@ export class CronLoopService {
         return;
       }
       // Get credentials for the user and the service
-      this.logger.debug(`Service id: ${trigger.serviceId}. Service name: ${ServiceName[this.servicesNames[trigger.serviceId]]}`);
       const credentials = await this.credentialService.findOneByUserAndService(
         area.userId,
         ServiceName[this.servicesNames[trigger.serviceId]]
@@ -75,8 +74,8 @@ export class CronLoopService {
       );
       const triggered = triggeredResults.some((result) => result);
       this.logger.debug(`Triggered: ${triggered}`);
-      if (!triggered)
-        return;
+      // if (!triggered)
+      //   return;
       this.triggerAction(area.actionId);
       this.logger.debug(`Removing area for user ${area.userId}`);
       await this.areaService.delete(area.id);
@@ -94,7 +93,7 @@ export class CronLoopService {
     // Get credentials for the user and the service
     const credentials = await this.credentialService.findOneByUserAndService(
       action.userId,
-      ServiceName[action.serviceId]
+      ServiceName[this.servicesNames[action.serviceId]]
     );
     if (!credentials) {
       throw new Error("TriggerAction: No credentials for this service.");

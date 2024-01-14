@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/provider.dart';
 import 'package:provider/provider.dart';
 import 'explore.dart';
+import 'package:mobile/pages/home/home.dart';
 
 class CreatePage extends StatelessWidget {
   String selectedAction = "";
@@ -86,18 +87,18 @@ class CreatePage extends StatelessWidget {
 
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('AREA successfully created')));
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreatePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         } else {
           print('Area failed!');
 
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error during AREA creation')));
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreatePage()),
+            MaterialPageRoute(builder: (context) => HomePage()),
           );
         }
       } else if (responseAction.statusCode == 401 &&
@@ -105,7 +106,7 @@ class CreatePage extends StatelessWidget {
         print(
             'Request failed: Status ${responseAction.statusCode}: ${responseAction.body} && ${responseReaction.statusCode}: ${responseReaction.body}');
       } else {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ExplorePage()),
         );
@@ -226,7 +227,6 @@ class CreatePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                obscureText: true,
               ),
       );
 

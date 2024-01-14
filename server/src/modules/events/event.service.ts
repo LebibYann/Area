@@ -7,7 +7,11 @@ import { CredentialService } from "../auth/services/credential.service";
 import { ServiceName } from "../about/about.const";
 import { TimerService } from "../providers/services/timer.service";
 import { SpotifyService } from "../providers/services/spotify.service";
+import { GithubService } from "../providers/services/github.service";
+import { TwitterService } from "../providers/services/twitter.service";
+import { WeatherService } from "../providers/services/weather.service";
 import { GoogleService } from "../providers/services/google.service";
+
 
 @Injectable()
 export class EventService {
@@ -18,6 +22,9 @@ export class EventService {
     private readonly aboutService: AboutService,
     private readonly credentialService: CredentialService,
     private readonly spotifyService: SpotifyService,
+    private readonly githubService: GithubService,
+    private readonly twitterService: TwitterService,
+    private readonly weatherService: WeatherService,
     private readonly googleService: GoogleService,
     private readonly timerService: TimerService
   ) {}
@@ -100,6 +107,54 @@ export class EventService {
         }
       }
       parameters = params;
+    }
+
+
+    if (ServiceName[this.servicesNames[serviceId]] == ServiceName.GITHUB) {
+      const credentials = await this.credentialService.findOneByUserAndService(
+        userId,
+        ServiceName[this.servicesNames[serviceId]]
+      );
+      if (!credentials) {
+        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+        throw new BadRequestException('No credentials for this service.');
+      }
+      if (!isAction && eventId == 1) {
+        const nbFollowers = await this.githubService.getNbFollowers(credentials.accessToken);
+        this.logger.debug(`User ${userId} has ${nbFollowers} followers on Github`);
+        let params = {
+          param1: nbFollowers
+        }
+        parameters = params;
+      }
+      if (!isAction && eventId == 0) {
+        const nbissues = await this.githubService.getGithubIssues(credentials.accessToken, parameters.param1, parameters.param2);
+        this.logger.debug(`User ${userId} has ${nbissues} issues on Github`);
+      }
+    }
+
+    if (ServiceName[this.servicesNames[serviceId]] == ServiceName.TWITTER) {
+      const credentials = await this.credentialService.findOneByUserAndService(
+        userId,
+        ServiceName[this.servicesNames[serviceId]]
+      );
+      if (!credentials) {
+        this.logger.debug(`User ${userId} has no credentials for service \"${this.servicesNames[serviceId]}\"`);
+        throw new BadRequestException('No credentials for this service.');
+      }
+      if (!isAction) {
+        const nbFollowers = await this.twitterService.getNbFollowers(credentials.accessToken);
+        this.logger.debug(`User ${userId} has ${nbFollowers} followers on Twitter`);
+        let params = {
+          param1: 0
+        }
+        if (eventId == 1) {
+          params = {
+            param1: nbFollowers
+          }
+        }
+        parameters = params;
+      }
     }
 
     if (ServiceName[this.servicesNames[serviceId]] == ServiceName.GMAIL && !isAction) {
