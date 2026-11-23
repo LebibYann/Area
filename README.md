@@ -29,7 +29,7 @@ The suite has three parts that talk to the same REST API: an application server,
 | Mobile client | Flutter, Dart | [`mobile/`](mobile) | – |
 | Database | MySQL (+ phpMyAdmin on 8082) | – | 3306 |
 
-The server holds one provider module per service ([`server/src/modules/providers/services`](server/src/modules/providers/services)) and polls them to fire the matching reactions.
+The server holds one provider module per service ([`server/src/modules/providers/services`](server/src/modules/providers/services)) and a cron loop polls them every 10 seconds to fire the matching reactions.
 
 ## My contribution
 
