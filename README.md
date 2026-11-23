@@ -1,95 +1,67 @@
-# AREA
+# AREA: an IFTTT / Zapier-style automation platform
 
-<p align="center">
-<img src="https://img.freepik.com/vecteurs-premium/icone-du-logo-carre-orange-vert-rouge-bleu-cercle_95164-3765.jpg" alt="AREA">
-</p>
+AREA lets users connect online services and chain them: when an **Action** happens on one service, a **REAction** runs on another. For example, "when a new GitHub issue is opened, post a message on Discord".
 
-## Description
+The suite has three parts that talk to the same REST API: an application server, a web client and a mobile client.
 
-This goal of this project is to implement a software suite that functions
-similar to the [IFTTT](https://ifttt.com/) service and/or the
-[Zapier](https://zapier.com/) service.
+<!-- TODO: add a screenshot or GIF of the web client here -->
 
- - An application server
- - A web client to interact with the application server from a web browser
- - A mobile client to interact with the application server from a mobile device
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-## Summary
+## Features
 
-* [Description](#description)
-* [Summary](#summary)
-* [Our Team](#our-team)
-* [Built With](#built-with)
-* [Usage](#usage)
-   * [Pre-requisites](#server)
-   * [Build](#build)
-   * [Run](#run)
-   * [Stop](#stop)
-* [Contributing](#contributing)
-* [Documentation](#documentation)
+- Account creation and login, plus OAuth2 sign-in to each connected service
+- 7 integrated services: GitHub, Discord, Google, Spotify, Twitter, Weather and Timer
+- Applet builder: pick an action, a reaction and fill their parameters, which the web client generates dynamically for each service
+- Web client and Flutter mobile client (Android APK downloadable from the web client)
 
-## Context
+## Architecture
 
-The application server will be written in TypeScript and will use the NestJS
-framework.
+| Part | Stack | Folder | Port |
+| --- | --- | --- | --- |
+| Application server (REST API, triggers) | NestJS, TypeScript | [`server/`](server) | 8080 |
+| Web client | React, TypeScript, Vite | [`web/`](web) | 8081 |
+| Mobile client | Flutter, Dart | [`mobile/`](mobile) | – |
+| Database | MySQL (+ phpMyAdmin on 8082) | – | 3306 |
 
-The web client will be written in TypeScript and will use the React framework.
+The server holds one provider module per service ([`server/src/modules/providers/services`](server/src/modules/providers/services)) and a cron loop polls them every 10 seconds to fire the matching reactions.
 
-The mobile client will be written in Dart and will use the Flutter framework.
+## My contribution
 
-## Our Team
+Team project of 4 at Epitech (Nov. 2023 – Jan. 2024). I built most of the **web client**:
 
-* Enzo PFEIFFER <enzo.pfeiffer@epitech.eu>
-* Valentin MAUREL <valentin1.maurel@epitech.eu>
-* Joseph SUSANYAN <joseph.susanyan@epitech.eu>
-* Yann LEBIB <yann.lebib@epitech.eu>
+- Generic OAuth2 callback handling shared by every service, and the Spotify OAuth2 flow
+- Service list, service detail and applet creation pages, with parameters generated from each action's definition
+- Login, registration and settings pages, and the overall UI and styling
+- ESLint setup and the front-end documentation
 
-## Built With
+## Getting started
 
-* Docker ![C++](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)  
-* React ![CMake](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)  
-* Flutter ![CMake](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)  
-* Nestjs ![CMake]( 	https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)  
-
-## Usage
-
-### Pre-requisites
-
-The project build use [Docker](https://www.docker.com/).
-
-Clone the project:
+Requires [Docker](https://www.docker.com/) and Docker Compose.
 
 ```bash
-git clone git@github.com:EpitechPromo2026/B-DEV-500-PAR-5-2-area-enzo.pfeiffer.git
+git clone https://github.com/LebibYann/Area.git
+cd Area
+docker-compose up --build
 ```
 
-### Build
-
-```bash
-docker-compose build
-```
-
-### Run
-
-```bash
-docker-compose up
-```
-
-### Stop
-
-```bash
-docker-compose down
-```
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+Then open the web client on <http://localhost:8081>. The API listens on <http://localhost:8080>. Stop everything with `docker-compose down`.
 
 ## Documentation
 
-You can find the developers documentation [in the wiki of the repository](https://github.com/EpitechPromo2026/B-DEV-500-PAR-5-2-area-enzo.pfeiffer.git/wiki)
+- [Project subject (PDF)](doc/B-DEV-500_AREA.pdf)
+- [Mobile architecture, UML (PDF)](doc/mobile_architecture_UML.pdf)
+- [Mobile client README](mobile/README.md)
+- [Contributing guide](CONTRIBUTING.md)
 
-You will find the following pages:
+## Team
 
-* [Docker](https://github.com/EpitechPromo2026/B-CPP-500-PAR-5-1-rtype-enzo.pfeiffer/wiki/Docker)
-* [User](https://github.com/EpitechPromo2026/B-CPP-500-PAR-5-1-rtype-enzo.pfeiffer/wiki/User)
+- [Yann Lebib](https://github.com/LebibYann): web client
+- Enzo Pfeiffer
+- Valentin Maurel
+- Joseph Susanyan
